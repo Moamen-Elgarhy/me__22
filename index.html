@@ -2,26 +2,26 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>الجدول الدراسي الأسبوعي الذكي</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>الجدول الدراسي الأسبوعي الموحد</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   
   <style>
     :root {
-      --bg-main: #0b1120;
-      --bg-card: #131c31;
-      --border-color: #23314d;
+      --bg-main: #070d19;
+      --bg-card: #0f172a;
+      --border-color: #1e293b;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       
-      --lec-bg: linear-gradient(135deg, rgba(30, 58, 138, 0.5), rgba(15, 23, 42, 0.7));
-      --lec-border: #3b82f6;
-      --sec-bg: linear-gradient(135deg, rgba(6, 78, 59, 0.5), rgba(15, 23, 42, 0.7));
-      --sec-border: #10b981;
-      --lab-bg: linear-gradient(135deg, rgba(124, 45, 18, 0.5), rgba(15, 23, 42, 0.7));
-      --lab-border: #f97316;
+      --lec-bg: linear-gradient(135deg, rgba(30, 58, 138, 0.4), rgba(15, 23, 42, 0.7));
+      --lec-border: #38bdf8;
+      --sec-bg: linear-gradient(135deg, rgba(6, 78, 59, 0.4), rgba(15, 23, 42, 0.7));
+      --sec-border: #34d399;
+      --lab-bg: linear-gradient(135deg, rgba(154, 52, 18, 0.4), rgba(15, 23, 42, 0.7));
+      --lab-border: #fb923c;
     }
 
     * {
@@ -29,6 +29,7 @@
       margin: 0;
       padding: 0;
       font-family: 'Cairo', sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
@@ -46,63 +47,83 @@
     .header {
       background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
       border: 1px solid var(--border-color);
-      border-radius: 18px;
+      border-radius: 20px;
       padding: 22px 28px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 16px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
     }
 
     .header h1 {
-      font-size: 1.6rem;
-      font-weight: 800;
+      font-size: 1.55rem;
+      font-weight: 900;
       color: #38bdf8;
-      margin-bottom: 4px;
+      letter-spacing: -0.5px;
     }
 
     .header p {
       color: var(--text-muted);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
+      margin-top: 4px;
     }
 
     .student-badge {
-      background: #1e293b;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.3);
       padding: 10px 18px;
       border-radius: 12px;
-      border-right: 4px solid #38bdf8;
-      font-weight: 700;
-      font-size: 0.95rem;
+      color: #38bdf8;
+      font-weight: 800;
+      font-size: 0.9rem;
     }
 
-    /* صندوق فلترة واستبعاد المواد */
     .filter-panel {
-      background: #131c31;
+      background: var(--bg-card);
       border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 16px 20px;
-      margin-bottom: 22px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+      border-radius: 18px;
+      padding: 18px 22px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
     }
 
-    .filter-title {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: #cbd5e1;
+    .filter-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 14px;
     }
 
-    .filter-title span {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      font-weight: normal;
+    .filter-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #cbd5e1;
+    }
+
+    .btn-reset {
+      background: #1e293b;
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 8px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-reset:hover {
+      background: #0284c7;
+      color: #fff;
+      border-color: #38bdf8;
     }
 
     .course-badges {
@@ -112,13 +133,13 @@
     }
 
     .btn-course {
-      background: rgba(30, 41, 59, 0.8);
-      color: #38bdf8;
-      border: 1px solid #0284c7;
-      padding: 8px 16px;
-      border-radius: 10px;
+      background: rgba(30, 41, 59, 0.6);
+      color: #e2e8f0;
+      border: 1px solid var(--border-color);
+      padding: 8px 14px;
+      border-radius: 12px;
       cursor: pointer;
-      font-size: 0.88rem;
+      font-size: 0.86rem;
       font-weight: 700;
       transition: all 0.2s ease;
       display: inline-flex;
@@ -128,38 +149,24 @@
     }
 
     .btn-course:hover {
+      border-color: #38bdf8;
       background: #1e293b;
     }
 
-    /* شكل المادة عند استبعادها */
     .btn-course.excluded {
       background: rgba(239, 68, 68, 0.12);
-      border-color: #ef4444;
+      border-color: rgba(239, 68, 68, 0.4);
       color: #f87171;
       text-decoration: line-through;
-      opacity: 0.75;
     }
 
-    .btn-reset {
-      background: transparent;
-      color: var(--text-muted);
-      border: 1px dashed var(--border-color);
-      padding: 8px 14px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 0.82rem;
-      font-weight: 600;
-      transition: all 0.2s ease;
-    }
-
-    .btn-reset:hover {
-      color: #fff;
-      border-color: #64748b;
+    .table-view {
+      display: block;
     }
 
     .table-wrap {
       overflow-x: auto;
-      border-radius: 16px;
+      border-radius: 18px;
       border: 1px solid var(--border-color);
       background: var(--bg-card);
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
@@ -174,54 +181,54 @@
     }
 
     th {
-      background: #0f172a;
-      color: #cbd5e1;
+      background: #0b1329;
+      color: #94a3b8;
       font-size: 0.85rem;
-      font-weight: 700;
+      font-weight: 800;
       padding: 12px 6px;
-      border-bottom: 2px solid #334155;
-      border-left: 1px solid #1f293d;
+      border-bottom: 2px solid #1e293b;
+      border-left: 1px solid #1e293b;
     }
 
     th span {
       display: block;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: #64748b;
-      font-weight: 500;
-      margin-top: 3px;
+      font-weight: 600;
+      margin-top: 2px;
     }
 
     td {
       padding: 8px 6px;
       border-bottom: 1px solid var(--border-color);
-      border-left: 1px solid #233147;
+      border-left: 1px solid #1e293b;
       vertical-align: middle;
-      background: #131c31;
+      background: var(--bg-card);
     }
 
     tr:nth-child(even) td {
-      background: #111a2e;
+      background: #0b1324;
     }
 
     .day-title {
-      background: #0f172a !important;
+      background: #0b1329 !important;
       color: #38bdf8;
-      font-weight: 800;
-      font-size: 1rem;
-      width: 100px;
+      font-weight: 900;
+      font-size: 0.95rem;
+      width: 90px;
       border-left: 2px solid var(--border-color);
     }
 
     .empty-cell {
-      color: #475569;
+      color: #334155;
       font-size: 1.1rem;
     }
 
     .item-card {
-      border-radius: 10px;
-      padding: 9px 8px;
+      border-radius: 12px;
+      padding: 8px 10px;
       text-align: right;
-      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+      transition: all 0.2s ease;
       border-right: 4px solid transparent;
       margin: 2px 0;
     }
@@ -234,69 +241,218 @@
       background: var(--lec-bg);
       border-color: var(--lec-border);
     }
-    .item-card.type-lec:hover {
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
-    }
 
     .item-card.type-sec {
       background: var(--sec-bg);
       border-color: var(--sec-border);
-    }
-    .item-card.type-sec:hover {
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
     }
 
     .item-card.type-lab {
       background: var(--lab-bg);
       border-color: var(--lab-border);
     }
-    .item-card.type-lab:hover {
-      box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
-    }
 
     .card-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 5px;
+      margin-bottom: 4px;
     }
 
     .subject-name {
-      font-weight: 700;
-      font-size: 0.88rem;
+      font-weight: 800;
+      font-size: 0.86rem;
       color: #ffffff;
     }
 
     .badge-type {
-      font-size: 0.68rem;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-weight: 700;
+      font-size: 0.65rem;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-weight: 800;
     }
 
-    .type-lec .badge-type { background: #1d4ed8; color: #dbeafe; }
-    .type-sec .badge-type { background: #047857; color: #d1fae5; }
-    .type-lab .badge-type { background: #b45309; color: #fef3c7; }
+    .type-lec .badge-type { background: rgba(56, 189, 248, 0.2); color: #7dd3fc; }
+    .type-sec .badge-type { background: rgba(52, 211, 153, 0.2); color: #6ee7b7; }
+    .type-lab .badge-type { background: rgba(251, 146, 60, 0.2); color: #fdba74; }
 
     .instructor {
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       color: #cbd5e1;
-      margin-bottom: 5px;
+      margin-bottom: 4px;
     }
 
     .location {
-      font-size: 0.76rem;
-      font-weight: 600;
+      font-size: 0.74rem;
+      font-weight: 700;
       display: inline-block;
-      background: rgba(0, 0, 0, 0.4);
-      padding: 2px 7px;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 2px 8px;
       border-radius: 6px;
       color: #e2e8f0;
     }
 
-    /* إخفاء الحصة تماماً عند استبعاد المادة */
-    .item-card.is-hidden {
+    .app-view {
+      display: none;
+    }
+
+    .app-day-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      scrollbar-width: none;
+    }
+
+    .app-day-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .day-tab-btn {
+      flex: 0 0 auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .day-tab-btn.active {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #38bdf8;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+    }
+
+    .app-timeline-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      border-right: 5px solid transparent;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .app-timeline-card.type-lec { border-right-color: var(--lec-border); }
+    .app-timeline-card.type-sec { border-right-color: var(--sec-border); }
+    .app-timeline-card.type-lab { border-right-color: var(--lab-border); }
+
+    .app-time-col {
+      min-width: 95px;
+      text-align: center;
+      border-left: 1px solid #1e293b;
+      padding-left: 14px;
+    }
+
+    .app-time-start {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #f8fafc;
+    }
+
+    .app-time-end {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .app-time-period {
+      font-size: 0.65rem;
+      color: #38bdf8;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .app-info-col {
+      flex: 1;
+    }
+
+    .app-info-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .app-subject-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .app-details {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+
+    .app-empty-day {
+      background: var(--bg-card);
+      border: 1px dashed #334155;
+      border-radius: 16px;
+      padding: 36px 20px;
+      text-align: center;
+      color: #64748b;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .item-card.is-hidden,
+    .app-timeline-card.is-hidden {
       display: none !important;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        padding: 12px 10px;
+      }
+
+      .table-view {
+        display: none;
+      }
+
+      .app-view {
+        display: block;
+      }
+
+      .header {
+        padding: 16px;
+        border-radius: 16px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .student-badge {
+        width: 100%;
+        text-align: center;
+      }
+
+      .filter-panel {
+        padding: 14px;
+        border-radius: 16px;
+      }
+
+      .filter-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn-reset {
+        justify-content: center;
+      }
     }
   </style>
 </head>
@@ -305,7 +461,7 @@
   <div class="container">
     <div class="header">
       <div>
-        <h1>الجدول الدراسي الأسبوعي الموحد</h1>
+        <h1>الجدول الدراسي الأسبوعي</h1>
         <p>كلية الحاسبات والذكاء الاصطناعي — المستوى الثاني</p>
       </div>
       <div class="student-badge">
@@ -313,11 +469,12 @@
       </div>
     </div>
 
-    <!-- لوحة استبعاد وفلترة المواد -->
     <div class="filter-panel">
-      <div class="filter-title">
-        <span>اضغط على أي مادة مش مسجلها لإخفائها فوراً من الجدول (محاضرات + سكاشن):</span>
-        <button class="btn-reset" onclick="resetAllCourses()">إعادة إظهار الكل</button>
+      <div class="filter-header">
+        <span class="filter-title">تصفية المواد المتاحة (اضغط على مادة لإخفائها):</span>
+        <button class="btn-reset" onclick="resetAllCourses()">
+          <span>↺</span> إعادة إظهار جميع المواد
+        </button>
       </div>
 
       <div class="course-badges">
@@ -342,232 +499,461 @@
       </div>
     </div>
 
-    <!-- الجدول الموحد الكامل -->
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th class="day-title">اليوم</th>
-            <th>1<br><span>09:00 - 09:45</span></th>
-            <th>2<br><span>09:45 - 10:30</span></th>
-            <th>3<br><span>10:30 - 11:15</span></th>
-            <th>4<br><span>11:15 - 12:00</span></th>
-            <th>5<br><span>12:00 - 12:45</span></th>
-            <th>6<br><span>12:45 - 01:30</span></th>
-            <th>7<br><span>01:30 - 02:15</span></th>
-            <th>8<br><span>02:15 - 03:00</span></th>
-            <th>9<br><span>03:00 - 03:45</span></th>
-            <th>10<br><span>03:45 - 04:30</span></th>
-            <th>11<br><span>04:30 - 05:15</span></th>
-            <th>12<br><span>05:15 - 06:00</span></th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- السبت -->
-          <tr>
-            <td class="day-title">السبت</td>
-            <td class="empty-cell" colspan="12" style="color: #64748b; font-size: 0.95rem;">
-              لا توجد محاضرات أو سكاشن مجدولة
-            </td>
-          </tr>
+    <div class="table-view">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th class="day-title">اليوم</th>
+              <th>1<br><span>09:00 - 09:45</span></th>
+              <th>2<br><span>09:45 - 10:30</span></th>
+              <th>3<br><span>10:30 - 11:15</span></th>
+              <th>4<br><span>11:15 - 12:00</span></th>
+              <th>5<br><span>12:00 - 12:45</span></th>
+              <th>6<br><span>12:45 - 01:30</span></th>
+              <th>7<br><span>01:30 - 02:15</span></th>
+              <th>8<br><span>02:15 - 03:00</span></th>
+              <th>9<br><span>03:00 - 03:45</span></th>
+              <th>10<br><span>03:45 - 04:30</span></th>
+              <th>11<br><span>04:30 - 05:15</span></th>
+              <th>12<br><span>05:15 - 06:00</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="day-title">السبت</td>
+              <td class="empty-cell" colspan="12">— لا توجد حصص مجدولة —</td>
+            </tr>
+            <tr>
+              <td class="day-title">الأحد</td>
+              <td class="empty-cell" colspan="12">— لا توجد حصص مجدولة —</td>
+            </tr>
+            <tr>
+              <td class="day-title">الإثنين</td>
+              <td colspan="2">
+                <div class="item-card type-lab" data-course="logic">
+                  <div class="card-top">
+                    <span class="subject-name">تصميم منطقي</span>
+                    <span class="badge-type">عملي</span>
+                  </div>
+                  <div class="instructor">م/ محمد مصطفى</div>
+                  <div class="location">📍 معمل تصميم منطقي 1</div>
+                </div>
+              </td>
+              <td colspan="2">
+                <div class="item-card type-lec" data-course="logic">
+                  <div class="card-top">
+                    <span class="subject-name">تصميم منطقي</span>
+                    <span class="badge-type">محاضرة</span>
+                  </div>
+                  <div class="instructor">د/ فاطمة صقر</div>
+                  <div class="location">📍 مدرج 4</div>
+                </div>
+              </td>
+              <td>
+                <div class="item-card type-sec" data-course="linear">
+                  <div class="card-top">
+                    <span class="subject-name">جبر خطي</span>
+                    <span class="badge-type">تمارين</span>
+                  </div>
+                  <div class="instructor">م/ آلاء إبراهيم</div>
+                  <div class="location">📍 قاعة 4</div>
+                </div>
+              </td>
+              <td class="empty-cell" colspan="7">—</td>
+            </tr>
+            <tr>
+              <td class="day-title">الثلاثاء</td>
+              <td colspan="2">
+                <div class="item-card type-lec" data-course="ds">
+                  <div class="card-top">
+                    <span class="subject-name">هياكل بيانات</span>
+                    <span class="badge-type">محاضرة</span>
+                  </div>
+                  <div class="instructor">د/ أحمد حسن</div>
+                  <div class="location">📍 مدرج 1</div>
+                </div>
+              </td>
+              <td>
+                <div class="item-card type-sec" data-course="stat">
+                  <div class="card-top">
+                    <span class="subject-name">تحليل إحصائي</span>
+                    <span class="badge-type">تمارين</span>
+                  </div>
+                  <div class="instructor">م/ ميادة مصطفى</div>
+                  <div class="location">📍 قاعة 4</div>
+                </div>
+              </td>
+              <td class="empty-cell" colspan="3">—</td>
+              <td colspan="2">
+                <div class="item-card type-lab" data-course="ds">
+                  <div class="card-top">
+                    <span class="subject-name">هياكل بيانات</span>
+                    <span class="badge-type">عملي</span>
+                  </div>
+                  <div class="instructor">م/ عمر رمضان</div>
+                  <div class="location">📍 معمل 2</div>
+                </div>
+              </td>
+              <td class="empty-cell" colspan="4">—</td>
+            </tr>
+            <tr>
+              <td class="day-title">الأربعاء</td>
+              <td class="empty-cell" colspan="4">—</td>
+              <td colspan="2">
+                <div class="item-card type-lec" data-course="is">
+                  <div class="card-top">
+                    <span class="subject-name">مقدمة في نظم المعلومات</span>
+                    <span class="badge-type">محاضرة</span>
+                  </div>
+                  <div class="instructor">د/ شيماء إسماعيل</div>
+                  <div class="location">📍 مدرج 2</div>
+                </div>
+              </td>
+              <td class="empty-cell" colspan="4">—</td>
+              <td colspan="2">
+                <div class="item-card type-lec" data-course="comm">
+                  <div class="card-top">
+                    <span class="subject-name">مهارات الاتصال</span>
+                    <span class="badge-type">محاضرة</span>
+                  </div>
+                  <div class="instructor">د/ محمد فوزي</div>
+                  <div class="location">📍 مدرج 2</div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="day-title">الخميس</td>
+              <td colspan="2">
+                <div class="item-card type-lec" data-course="linear">
+                  <div class="card-top">
+                    <span class="subject-name">جبر خطي</span>
+                    <span class="badge-type">محاضرة</span>
+                  </div>
+                  <div class="instructor">د/ مصطفى حسن</div>
+                  <div class="location">📍 مدرج 1</div>
+                </div>
+              </td>
+              <td colspan="2">
+                <div class="item-card type-lec" data-course="stat">
+                  <div class="card-top">
+                    <span class="subject-name">تحليل إحصائي</span>
+                    <span class="badge-type">محاضرة</span>
+                  </div>
+                  <div class="instructor">د/ نهى عبد الكريم</div>
+                  <div class="location">📍 مدرج 5</div>
+                </div>
+              </td>
+              <td>
+                <div class="item-card type-sec" data-course="logic">
+                  <div class="card-top">
+                    <span class="subject-name">تصميم منطقي</span>
+                    <span class="badge-type">تمارين</span>
+                  </div>
+                  <div class="instructor">م/ منة الله نبيل</div>
+                  <div class="location">📍 قاعة 9</div>
+                </div>
+              </td>
+              <td colspan="2">
+                <div class="item-card type-lab" data-course="is">
+                  <div class="card-top">
+                    <span class="subject-name">مقدمة في نظم المعلومات</span>
+                    <span class="badge-type">عملي</span>
+                  </div>
+                  <div class="instructor">م/ آيات عبد الرحمن</div>
+                  <div class="location">📍 معمل 10</div>
+                </div>
+              </td>
+              <td class="empty-cell" colspan="5">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-          <!-- الأحد -->
-          <tr>
-            <td class="day-title">الأحد</td>
-            <td class="empty-cell" colspan="12" style="color: #64748b; font-size: 0.95rem;">
-              لا توجد محاضرات أو سكاشن مجدولة
-            </td>
-          </tr>
+    <div class="app-view">
+      <div class="app-day-tabs">
+        <button class="day-tab-btn active" onclick="switchDay('mon', this)">الإثنين</button>
+        <button class="day-tab-btn" onclick="switchDay('tue', this)">الثلاثاء</button>
+        <button class="day-tab-btn" onclick="switchDay('wed', this)">الأربعاء</button>
+        <button class="day-tab-btn" onclick="switchDay('thu', this)">الخميس</button>
+        <button class="day-tab-btn" onclick="switchDay('sat', this)">السبت</button>
+        <button class="day-tab-btn" onclick="switchDay('sun', this)">الأحد</button>
+      </div>
 
-          <!-- الإثنين -->
-          <tr>
-            <td class="day-title">الإثنين</td>
-            <!-- ف1 وف2: عملي تصميم منطقي -->
-            <td colspan="2">
-              <div class="item-card type-lab" data-course="logic">
-                <div class="card-top">
-                  <span class="subject-name">تصميم منطقي</span>
-                  <span class="badge-type">عملي</span>
-                </div>
-                <div class="instructor">م/ محمد مصطفى</div>
-                <div class="location">📍 معمل تصميم منطقي 1</div>
-              </div>
-            </td>
-            <!-- ف3 وف4: محاضرة تصميم منطقي -->
-            <td colspan="2">
-              <div class="item-card type-lec" data-course="logic">
-                <div class="card-top">
-                  <span class="subject-name">تصميم منطقي</span>
-                  <span class="badge-type">محاضرة</span>
-                </div>
-                <div class="instructor">د/ فاطمة صقر</div>
-                <div class="location">📍 مدرج 4</div>
-              </div>
-            </td>
-            <!-- ف5: سكشن تمارين جبر خطي -->
-            <td>
-              <div class="item-card type-sec" data-course="linear">
-                <div class="card-top">
-                  <span class="subject-name">جبر خطي</span>
-                  <span class="badge-type">تمارين</span>
-                </div>
-                <div class="instructor">م/ آلاء إبراهيم</div>
-                <div class="location">📍 قاعة 4</div>
-              </div>
-            </td>
-            <td class="empty-cell" colspan="7">—</td>
-          </tr>
+      <div id="day-content-mon" class="day-content">
+        <div class="app-timeline-card type-lab" data-course="logic">
+          <div class="app-time-col">
+            <div class="app-time-start">09:00 ص</div>
+            <div class="app-time-end">10:30 ص</div>
+            <div class="app-time-period">فترة 1 - 2</div>
+          </div>
+          <div class="app-info-col">
+            <div class="app-info-header">
+              <span class="app-subject-title">تصميم منطقي</span>
+              <span class="badge-type">عملي</span>
+            </div>
+            <div class="app-details">
+              <span>م/ محمد مصطفى</span>
+              <span class="location">📍 معمل 1 منطقي</span>
+            </div>
+          </div>
+        </div>
 
-          <!-- الثلاثاء -->
-          <tr>
-            <td class="day-title">الثلاثاء</td>
-            <!-- ف1 وف2: محاضرة هياكل بيانات -->
-            <td colspan="2">
-              <div class="item-card type-lec" data-course="ds">
-                <div class="card-top">
-                  <span class="subject-name">هياكل بيانات</span>
-                  <span class="badge-type">محاضرة</span>
-                </div>
-                <div class="instructor">د/ أحمد حسن</div>
-                <div class="location">📍 مدرج 1</div>
-              </div>
-            </td>
-            <!-- ف3: سكشن تحليل إحصائي -->
-            <td>
-              <div class="item-card type-sec" data-course="stat">
-                <div class="card-top">
-                  <span class="subject-name">تحليل إحصائي</span>
-                  <span class="badge-type">تمارين</span>
-                </div>
-                <div class="instructor">م/ ميادة مصطفى</div>
-                <div class="location">📍 قاعة 4</div>
-              </div>
-            </td>
-            <td class="empty-cell" colspan="3">—</td>
-            <!-- ف7 وف8: عملي هياكل بيانات -->
-            <td colspan="2">
-              <div class="item-card type-lab" data-course="ds">
-                <div class="card-top">
-                  <span class="subject-name">هياكل بيانات</span>
-                  <span class="badge-type">عملي</span>
-                </div>
-                <div class="instructor">م/ عمر رمضان</div>
-                <div class="location">📍 معمل 2</div>
-              </div>
-            </td>
-            <td class="empty-cell" colspan="4">—</td>
-          </tr>
+        <div class="app-timeline-card type-lec" data-course="logic">
+          <div class="app-time-col">
+            <div class="app-time-start">10:30 ص</div>
+            <div class="app-time-end">12:00 م</div>
+            <div class="app-time-period">فترة 3 - 4</div>
+          </div>
+          <div class="app-info-col">
+            <div class="app-info-header">
+              <span class="app-subject-title">تصميم منطقي</span>
+              <span class="badge-type">محاضرة</span>
+            </div>
+            <div class="app-details">
+              <span>د/ فاطمة صقر</span>
+              <span class="location">📍 مدرج 4</span>
+            </div>
+          </div>
+        </div>
 
-          <!-- الأربعاء -->
-          <tr>
-            <td class="day-title">الأربعاء</td>
-            <td class="empty-cell" colspan="4">—</td>
-            <!-- ف5 وف6: محاضرة مقدمة نظم معلومات -->
-            <td colspan="2">
-              <div class="item-card type-lec" data-course="is">
-                <div class="card-top">
-                  <span class="subject-name">مقدمة في نظم المعلومات</span>
-                  <span class="badge-type">محاضرة</span>
-                </div>
-                <div class="instructor">د/ شيماء إسماعيل</div>
-                <div class="location">📍 مدرج 2</div>
-              </div>
-            </td>
-            <td class="empty-cell" colspan="4">—</td>
-            <!-- ف11 وف12: محاضرة مهارات الاتصال -->
-            <td colspan="2">
-              <div class="item-card type-lec" data-course="comm">
-                <div class="card-top">
-                  <span class="subject-name">مهارات الاتصال</span>
-                  <span class="badge-type">محاضرة</span>
-                </div>
-                <div class="instructor">د/ محمد فوزي</div>
-                <div class="location">📍 مدرج 2</div>
-              </div>
-            </td>
-          </tr>
+        <div class="app-timeline-card type-sec" data-course="linear">
+          <div class="app-time-col">
+            <div class="app-time-start">12:00 م</div>
+            <div class="app-time-end">12:45 م</div>
+            <div class="app-time-period">فترة 5</div>
+          </div>
+          <div class="app-info-col">
+            <div class="app-info-header">
+              <span class="app-subject-title">جبر خطي</span>
+              <span class="badge-type">تمارين</span>
+            </div>
+            <div class="app-details">
+              <span>م/ آلاء إبراهيم</span>
+              <span class="location">📍 قاعة 4</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-          <!-- الخميس -->
-          <tr>
-            <td class="day-title">الخميس</td>
-            <!-- ف1 وف2: محاضرة جبر خطي -->
-            <td colspan="2">
-              <div class="item-card type-lec" data-course="linear">
-                <div class="card-top">
-                  <span class="subject-name">جبر خطي</span>
-                  <span class="badge-type">محاضرة</span>
-                </div>
-                <div class="instructor">د/ مصطفى حسن</div>
-                <div class="location">📍 مدرج 1</div>
-              </div>
-            </td>
-            <!-- ف3 وف4: محاضرة تحليل إحصائي -->
-            <td colspan="2">
-              <div class="item-card type-lec" data-course="stat">
-                <div class="card-top">
-                  <span class="subject-name">تحليل إحصائي</span>
-                  <span class="badge-type">محاضرة</span>
-                </div>
-                <div class="instructor">د/ نهى عبد الكريم</div>
-                <div class="location">📍 مدرج 5</div>
-              </div>
-            </td>
-            <!-- ف5: سكشن تصميم منطقي تمارين -->
-            <td>
-              <div class="item-card type-sec" data-course="logic">
-                <div class="card-top">
-                  <span class="subject-name">تصميم منطقي</span>
-                  <span class="badge-type">تمارين</span>
-                </div>
-                <div class="instructor">م/ منة الله نبيل</div>
-                <div class="location">📍 قاعة 9</div>
-              </div>
-            </td>
-            <!-- ف6 وف7: عملي مقدمة في نظم المعلومات -->
-            <td colspan="2">
-              <div class="item-card type-lab" data-course="is">
-                <div class="card-top">
-                  <span class="subject-name">مقدمة في نظم المعلومات</span>
-                  <span class="badge-type">عملي</span>
-                </div>
-                <div class="instructor">م/ آيات عبد الرحمن</div>
-                <div class="location">📍 معمل 10</div>
-              </div>
-            </td>
-            <td class="empty-cell" colspan="5">—</td>
-          </tr>
-        </tbody>
-      </table>
+      <div id="day-content-tue" class="day-content" style="display: none;">
+        <div class="app-timeline-card type-lec" data-course="ds">
+          <div class="app-time-col">
+            <div class="app-time-start">09:00 ص</div>
+            <div class="app-time-end">10:30 ص</div>
+            <div class="app-time-period">فترة 1 - 2</div>
+          </div>
+          <div class="app-info-col">
+            <div class="app-info-header">
+              <span class="app-subject-title">هياكل بيانات</span>
+              <span class="badge-type">محاضرة</span>
+            </div>
+            <div class="app-details">
+              <span>د/ أحمد حسن</span>
+              <span class="location">📍 مدرج 1</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="app-timeline-card type-sec" data-course="stat">
+          <div class="app-time-col">
+            <div class="app-time-start">10:30 ص</div>
+            <div class="app-time-end">11:15 ص</div>
+            <div class="app-time-period">فترة 3</div>
+          </div>
+          <div class="app-info-col">
+            <div class="app-info-header">
+              <span class="app-subject-title">تحليل إحصائي</span>
+              <span class="badge-type">تمارين</span>
+            </div>
+            <div class="app-details">
+              <span>م/ ميادة مصطفى</span>
+              <span class="location">📍 قاعة 4</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="app-timeline-card type-lab" data-course="ds">
+          <div class="app-time-col">
+            <div class="app-time-start">01:30 م</div>
+            <div class="app-time-end">03:00 م</div>
+            <div class="app-time-period">فترة 7 - 8</div>
+          </div>
+          <div class="app-info-col">
+            <div class="app-info-header">
+              <span class="app-subject-title">هياكل بيانات</span>
+              <span class="badge-type">عملي</span>
+            </div>
+            <div class="app-details">
+              <span>م/ عمر رمضان</span>
+              <span class="location">📍 معمل 2</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="day-content-wed" class="day-content" style="display: none;">
+        <div class="app-timeline-card type-lec" data-course="is">
+          <div class="app-time-col">
+            <div class="app-time-start">12:00 م</div>
+            <div class="app-time-end">01:30 م</div>
+            <div class="app-time-period">فترة 5 - 6</div>
+          </div>
+          <div class="app-info-col">
+            <div class="app-info-header">
+              <span class="app-subject-title">مقدمة نظم معلومات</span>
+              <span class="badge-type">محاضرة</span>
+            </div>
+            <div class="app-details">
+              <span>د/ شيماء إسماعيل</span>
+              <span class="location">📍 مدرج 2</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="app-timeline-card type-lec" data-course="comm">
+          <div class="app-time-col">
+            <div class="app-time-start">04:30 م</div>
+            <div class="app-time-end">06:00 م</div>
+            <div class="app-time-period">فترة 11 - 12</div>
+          </div>
+          <div class="app-info-col">
+            <div class="app-info-header">
+              <span class="app-subject-title">مهارات الاتصال</span>
+              <span class="badge-type">محاضرة</span>
+            </div>
+            <div class="app-details">
+              <span>د/ محمد فوزي</span>
+              <span class="location">📍 مدرج 2</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="day-content-thu" class="day-content" style="display: none;">
+        <div class="app-timeline-card type-lec" data-course="linear">
+          <div class="app-time-col">
+            <div class="app-time-start">09:00 ص</div>
+            <div class="app-time-end">10:30 ص</div>
+            <div class="app-time-period">فترة 1 - 2</div>
+          </div>
+          <div class="app-info-col">
+            <div class="app-info-header">
+              <span class="app-subject-title">جبر خطي</span>
+              <span class="badge-type">محاضرة</span>
+            </div>
+            <div class="app-details">
+              <span>د/ مصطفى حسن</span>
+              <span class="location">📍 مدرج 1</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="app-timeline-card type-lec" data-course="stat">
+          <div class="app-time-col">
+            <div class="app-time-start">10:30 ص</div>
+            <div class="app-time-end">12:00 م</div>
+            <div class="app-time-period">فترة 3 - 4</div>
+          </div>
+          <div class="app-info-col">
+            <div class="app-info-header">
+              <span class="app-subject-title">تحليل إحصائي</span>
+              <span class="badge-type">محاضرة</span>
+            </div>
+            <div class="app-details">
+              <span>د/ نهى عبد الكريم</span>
+              <span class="location">📍 مدرج 5</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="app-timeline-card type-sec" data-course="logic">
+          <div class="app-time-col">
+            <div class="app-time-start">12:00 م</div>
+            <div class="app-time-end">12:45 م</div>
+            <div class="app-time-period">فترة 5</div>
+          </div>
+          <div class="app-info-col">
+            <div class="app-info-header">
+              <span class="app-subject-title">تصميم منطقي</span>
+              <span class="badge-type">تمارين</span>
+            </div>
+            <div class="app-details">
+              <span>م/ منة الله نبيل</span>
+              <span class="location">📍 قاعة 9</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="app-timeline-card type-lab" data-course="is">
+          <div class="app-time-col">
+            <div class="app-time-start">12:45 م</div>
+            <div class="app-time-end">02:15 م</div>
+            <div class="app-time-period">فترة 6 - 7</div>
+          </div>
+          <div class="app-info-col">
+            <div class="app-info-header">
+              <span class="app-subject-title">مقدمة نظم معلومات</span>
+              <span class="badge-type">عملي</span>
+            </div>
+            <div class="app-details">
+              <span>م/ آيات عبد الرحمن</span>
+              <span class="location">📍 معمل 10</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="day-content-sat" class="day-content" style="display: none;">
+        <div class="app-empty-day">
+          لا توجد محاضرات أو سكاشن مجدولة يوم السبت
+        </div>
+      </div>
+
+      <div id="day-content-sun" class="day-content" style="display: none;">
+        <div class="app-empty-day">
+          لا توجد محاضرات أو سكاشن مجدولة يوم الأحد
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
-    // تفعيل / استبعاد المادة بمجرد النقر عليها
     function toggleCourse(courseKey, btn) {
       btn.classList.toggle('excluded');
       const isExcluded = btn.classList.contains('excluded');
       btn.querySelector('span').textContent = isExcluded ? '✕' : '✓';
 
-      // إخفاء أو إظهار كافة الحصص المرتبطة بالمادة في الجدول
-      const targetCards = document.querySelectorAll(`.item-card[data-course="${courseKey}"]`);
-      targetCards.forEach(card => {
+      const targets = document.querySelectorAll(`[data-course="${courseKey}"]`);
+      targets.forEach(el => {
         if (isExcluded) {
-          card.classList.add('is-hidden');
+          el.classList.add('is-hidden');
         } else {
-          card.classList.remove('is-hidden');
+          el.classList.remove('is-hidden');
         }
       });
     }
 
-    // زر استرجاع كافة المواد
     function resetAllCourses() {
       document.querySelectorAll('.btn-course').forEach(btn => {
         btn.classList.remove('excluded');
         btn.querySelector('span').textContent = '✓';
       });
-      document.querySelectorAll('.item-card').forEach(card => {
-        card.classList.remove('is-hidden');
+      document.querySelectorAll('[data-course]').forEach(el => {
+        el.classList.remove('is-hidden');
       });
+    }
+
+    function switchDay(dayId, btn) {
+      document.querySelectorAll('.day-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      document.querySelectorAll('.day-content').forEach(c => c.style.display = 'none');
+      const target = document.getElementById(`day-content-${dayId}`);
+      if (target) {
+        target.style.display = 'block';
+      }
     }
   </script>
 </body>
