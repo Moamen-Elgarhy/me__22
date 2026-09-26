@@ -2,454 +2,665 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>بوابة الجداول الدراسية التفاعلية</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>بوابة الجداول الدراسية الأكاديمية | حاسبات بنها</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900;1000&display=swap" rel="stylesheet">
+<!-- مكتبة التقاط صور عالية الجودة لتحميل الجدول كاملاً -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
 <style>
-:root{
-  --bg-main:#060b14;
-  --bg-card:rgba(15, 23, 42, 0.85);
-  --border-color:#1e293b;
-  --text-main:#f8fafc;
-  --text-muted:#94a3b8;
-  --accent:#38bdf8;
-  --accent-glow:rgba(56,189,248,0.4);
-  --lec-bg:linear-gradient(135deg,rgba(30,58,138,0.45),rgba(15,23,42,0.8));
-  --lec-border:#38bdf8;
-  --sec-bg:linear-gradient(135deg,rgba(6,78,59,0.45),rgba(15,23,42,0.8));
-  --sec-border:#34d399;
-  --lab-bg:linear-gradient(135deg,rgba(154,52,18,0.45),rgba(15,23,42,0.8));
-  --lab-border:#fb923c;
-  --break-bg:linear-gradient(135deg,rgba(107,33,168,0.45),rgba(15,23,42,0.8));
-  --break-border:#c084fc;
+:root {
+  --bg-deep: #050811;
+  --bg-surface: rgba(15, 23, 42, 0.75);
+  --bg-surface-hover: rgba(30, 41, 59, 0.85);
+  --border-glass: rgba(255, 255, 255, 0.08);
+  --border-focus: rgba(56, 189, 248, 0.5);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  
+  --neon-cyan: #38bdf8;
+  --neon-purple: #c084fc;
+  --neon-emerald: #34d399;
+  --neon-amber: #fb923c;
+  --neon-rose: #f43f5e;
+  
+  /* تدرجات ألوان الحصص الشفافة النيون */
+  --lec-grad: linear-gradient(135deg, rgba(14, 116, 144, 0.35) 0%, rgba(30, 58, 138, 0.45) 100%);
+  --lec-border: #38bdf8;
+  --lec-glow: rgba(56, 189, 248, 0.25);
+
+  --sec-grad: linear-gradient(135deg, rgba(6, 95, 70, 0.35) 0%, rgba(15, 76, 58, 0.45) 100%);
+  --sec-border: #34d399;
+  --sec-glow: rgba(52, 211, 153, 0.25);
+
+  --lab-grad: linear-gradient(135deg, rgba(154, 52, 18, 0.35) 0%, rgba(124, 45, 18, 0.45) 100%);
+  --lab-border: #fb923c;
+  --lab-glow: rgba(251, 146, 60, 0.25);
+
+  --break-grad: linear-gradient(135deg, rgba(107, 33, 168, 0.45) 0%, rgba(76, 29, 149, 0.55) 100%);
+  --break-border: #c084fc;
+  --break-glow: rgba(192, 132, 252, 0.3);
 }
 
-*{
-  box-sizing:border-box;margin:0;padding:0;font-family:'Cairo',sans-serif;
-  -webkit-tap-highlight-color:transparent;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Cairo', system-ui, -apple-system, sans-serif;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html, body {
   width: 100%;
-  max-width: 100vw;
-  overflow-x: hidden; /* يمنع الزوم واللاج الأفقي تماماً */
+  min-height: 100vh;
+  background-color: var(--bg-deep);
+  color: var(--text-primary);
+  overflow-x: hidden;
 }
 
-body{
-  background: radial-gradient(circle at top center, #111e38 0%, var(--bg-main) 100%);
-  color:var(--text-main);padding:24px 16px;min-height:100vh;
+/* خلفية النجوم والتوهج الدائري الجمالي */
+body {
+  background: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(56, 189, 248, 0.15), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(192, 132, 252, 0.12), transparent),
+    radial-gradient(ellipse 50% 30% at 10% 80%, rgba(52, 211, 153, 0.08), transparent),
+    var(--bg-deep);
+  padding: 20px 14px;
 }
 
-.container{
+.container {
   width: 100%;
-  max-width:1520px;
-  margin:0 auto;
-  position:relative;
+  max-width: 1560px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
-.glow-orb {
-  position: fixed;
-  top: -100px;
-  right: 50%;
-  transform: translateX(50%);
-  width: 450px;
-  height: 450px;
-  background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, transparent 70%);
-  filter: blur(60px);
-  z-index: -1;
-  pointer-events: none;
-}
-
-/* شاشة الترحيب */
+/* شاشات الاختيار الجمالية (Wizard) */
 .wizard-box {
-  background: var(--bg-card);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glass);
   border-radius: 28px;
-  padding: 40px 24px;
+  padding: 38px 20px;
   text-align: center;
-  margin: 30px auto;
+  margin: 15px auto;
   max-width: 820px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-  animation: wizardPop 0.5s ease-out forwards;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  animation: modalEnter 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .wizard-title {
-  font-size: 2rem;
-  font-weight: 900;
-  background: linear-gradient(135deg, #38bdf8 0%, #a855f7 100%);
+  font-size: 2.1rem;
+  font-weight: 1000;
+  background: linear-gradient(135deg, #38bdf8 10%, #c084fc 50%, #f43f5e 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   line-height: 1.3;
 }
 
 .wizard-sub {
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-size: 1.05rem;
   margin-bottom: 30px;
+  font-weight: 600;
 }
 
 .choice-grid {
   display: flex;
   justify-content: center;
-  gap: 16px;
+  gap: 14px;
   flex-wrap: wrap;
 }
 
 .btn-choice {
-  background: rgba(30, 41, 59, 0.7);
+  background: rgba(30, 41, 59, 0.85);
   color: #fff;
-  border: 2px solid rgba(56, 189, 248, 0.25);
-  padding: 16px 28px;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 16px 30px;
   border-radius: 18px;
   font-size: 1.15rem;
-  font-weight: 800;
+  font-weight: 900;
   cursor: pointer;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-  transition: all 0.25s ease;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.btn-choice:hover {
-  transform: translateY(-4px);
-  border-color: var(--accent);
-  box-shadow: 0 12px 25px var(--accent-glow);
-  background: #1e293b;
-}
-
-.sections-flow {
-  display: none;
+.btn-choice:hover, .btn-choice:active {
+  transform: translateY(-4px) scale(1.03);
+  border-color: var(--neon-cyan);
+  background: rgba(14, 116, 144, 0.4);
+  box-shadow: 0 15px 30px rgba(56, 189, 248, 0.35);
 }
 
 .sections-grid {
-  display: grid !important;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 14px;
-  margin-top: 25px;
-  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 12px;
+  margin-top: 22px;
 }
 
 .btn-sec-card {
   background: rgba(15, 23, 42, 0.9);
   color: #e2e8f0;
-  border: 1px solid var(--border-color);
-  padding: 16px 12px;
+  border: 1px solid var(--border-glass);
+  padding: 15px 10px;
   border-radius: 16px;
-  font-size: 1.1rem;
-  font-weight: 800;
+  font-size: 1.05rem;
+  font-weight: 900;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
 }
 
-.btn-sec-card:hover {
-  transform: translateY(-4px) scale(1.04);
-  border-color: #34d399;
-  color: #34d399;
-  box-shadow: 0 8px 20px rgba(52, 211, 153, 0.3);
+.btn-sec-card:hover, .btn-sec-card:active {
+  transform: translateY(-4px) scale(1.05);
+  border-color: var(--neon-emerald);
+  color: var(--neon-emerald);
+  box-shadow: 0 8px 24px var(--sec-glow);
   background: #1e293b;
 }
 
 .btn-back {
   background: transparent;
-  color: var(--text-muted);
-  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-glass);
   padding: 8px 18px;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
-  font-weight: 700;
-  font-size: 0.85rem;
-  margin-top: 20px;
-  transition: all 0.2s;
+  margin-top: 24px;
+  font-weight: 800;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
 }
 
 .btn-back:hover {
   color: #fff;
-  border-color: #f43f5e;
+  border-color: var(--neon-rose);
 }
 
+/* التطبيق الرئيسي */
 .schedule-display-area {
   display: none;
 }
 
-.schedule-display-area.active {
+.header {
+  background: var(--bg-surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glass);
+  border-radius: 22px;
+  padding: 20px 26px;
+  margin-bottom: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+}
+
+.header h1 {
+  font-size: 1.6rem;
+  font-weight: 1000;
+  background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.header p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.student-badge {
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  padding: 10px 18px;
+  border-radius: 14px;
+  color: #38bdf8;
+  font-weight: 900;
+  font-size: 0.95rem;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+}
+
+.btn-change-sec {
+  background: #1e293b;
+  color: #f8fafc;
+  border: 1px solid var(--border-glass);
+  padding: 10px 16px;
+  border-radius: 14px;
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.btn-change-sec:hover {
+  background: #334155;
+  transform: translateY(-2px);
+}
+
+.btn-download {
+  background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+  color: #fff;
+  border: 1px solid rgba(56, 189, 248, 0.5);
+  padding: 10px 20px;
+  border-radius: 14px;
+  cursor: pointer;
+  font-weight: 900;
+  font-size: 0.92rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
+  transition: all 0.2s ease;
+}
+
+.btn-download:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(2, 132, 199, 0.6);
+}
+
+/* شريط تصفية المواد الأنيق */
+.filter-panel {
+  background: var(--bg-surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass);
+  border-radius: 18px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.filter-title {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #cbd5e1;
+}
+
+.btn-reset {
+  background: rgba(30, 41, 59, 0.8);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.course-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-course {
+  background: rgba(15, 23, 42, 0.8);
+  color: #e2e8f0;
+  border: 1px solid var(--border-glass);
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-course:hover {
+  border-color: var(--neon-cyan);
+  background: rgba(30, 41, 59, 0.9);
+}
+
+.btn-course.excluded {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #f87171;
+  text-decoration: line-through;
+}
+
+/* جدول الديسكتوب المتطور */
+.table-view {
   display: block;
-  animation: scheduleUnroll 0.4s ease-out forwards;
-}
-
-.header{
-  background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%);
-  border:1px solid var(--border-color);border-radius:20px;
-  padding:20px 26px;margin-bottom:20px;display:flex;
-  justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.4);
-}
-.header h1{
-  font-size:1.55rem;font-weight:900;color:#38bdf8;
-}
-.header p{
-  color:var(--text-muted);font-size:0.9rem;margin-top:4px;
-}
-.header-actions{
-  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
-}
-.student-badge{
-  background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.3);
-  padding:10px 18px;border-radius:12px;color:#38bdf8;font-weight:800;font-size:0.95rem;
-}
-.btn-change-sec{
-  background:#1e293b;color:#f8fafc;border:1px solid var(--border-color);
-  padding:10px 16px;border-radius:12px;cursor:pointer;font-weight:800;font-size:0.88rem;
-  transition:all 0.2s ease;
-}
-.btn-change-sec:hover{
-  background:#0284c7;border-color:#38bdf8;transform:scale(1.05);
-}
-.btn-download{
-  background:#0284c7;color:#fff;border:1px solid #38bdf8;
-  padding:10px 18px;border-radius:12px;cursor:pointer;
-  font-size:0.9rem;font-weight:800;display:inline-flex;
-  align-items:center;gap:8px;box-shadow:0 4px 14px rgba(2,132,199,0.4);
-  transition:all 0.2s ease;
-}
-.btn-download:hover{
-  background:#0369a1;transform:translateY(-2px);
-}
-
-.filter-panel{
-  background:var(--bg-card);border:1px solid var(--border-color);
-  border-radius:18px;padding:18px 22px;margin-bottom:24px;
-  box-shadow:0 8px 24px rgba(0,0,0,0.25);
-}
-.filter-header{
-  display:flex;justify-content:space-between;align-items:center;
-  flex-wrap:wrap;gap:12px;margin-bottom:14px;
-}
-.filter-title{
-  font-size:0.92rem;font-weight:700;color:#cbd5e1;
-}
-.btn-reset{
-  background:#1e293b;color:#38bdf8;border:1px solid rgba(56,189,248,0.3);
-  padding:8px 16px;border-radius:10px;cursor:pointer;font-size:0.82rem;font-weight:700;
-  display:inline-flex;align-items:center;gap:6px;transition:all 0.2s ease;
-}
-.btn-reset:hover{
-  background:#0284c7;color:#fff;border-color:#38bdf8;
-}
-.course-badges{
-  display:flex;gap:10px;flex-wrap:wrap;
-}
-.btn-course{
-  background:rgba(30,41,59,0.6);color:#e2e8f0;border:1px solid var(--border-color);
-  padding:8px 14px;border-radius:12px;cursor:pointer;font-size:0.86rem;font-weight:700;
-  transition:all 0.2s ease;display:inline-flex;align-items:center;gap:8px;user-select:none;
-}
-.btn-course:hover{
-  border-color:#38bdf8;background:#1e293b;
-}
-.btn-course.excluded{
-  background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.4);
-  color:#f87171;text-decoration:line-through;
-}
-
-/* جدول العرض المكتبي المعزول بدون تدمير الـ Layout */
-.table-view{
-  display:block;
   width: 100%;
 }
-.table-wrap{
+
+.table-wrap {
   width: 100%;
-  overflow-x:auto;
-  -webkit-overflow-scrolling: touch;
-  border-radius:18px;
-  border:1px solid var(--border-color);
-  background:var(--bg-card);
-  box-shadow:0 12px 30px rgba(0,0,0,0.4);
-}
-table{
-  width:100%;
-  border-collapse:separate;
-  border-spacing:0;
-  text-align:center;
-  min-width:1150px;
-  table-layout:fixed;
-}
-th{
-  background:#0b1329;color:#94a3b8;font-size:0.82rem;font-weight:800;
-  padding:12px 4px;border-bottom:2px solid #1e293b;border-left:1px solid #1e293b;
-  overflow:hidden;
-}
-th span{
-  display:block;font-size:0.7rem;color:#64748b;font-weight:600;margin-top:2px;
-}
-td{
-  padding:5px 4px;border-bottom:1px solid var(--border-color);
-  border-left:1px solid #1e293b;vertical-align:middle;background:var(--bg-card);
-  height:95px;
-}
-tr:nth-child(even) td{background:#0b1324;}
-
-.col-day {
-  width: 85px;
-}
-.day-title{
-  background:#0b1329 !important;color:#38bdf8;font-weight:900;
-  font-size:0.95rem;width:85px;border-left:2px solid var(--border-color);
-}
-.empty-cell{color:#334155;font-size:1.1rem;}
-
-.item-card{
-  height:100%;
-  width:100%;
-  border-radius:12px;
-  padding:8px 8px;
-  text-align:right;
-  transition:all 0.25s ease;
-  border-right:4px solid transparent;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  overflow:hidden;
-}
-.item-card:hover{
-  transform:translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-}
-.item-card.type-lec{background:var(--lec-bg);border-color:var(--lec-border);}
-.item-card.type-sec{background:var(--sec-bg);border-color:var(--sec-border);}
-.item-card.type-lab{background:var(--lab-bg);border-color:var(--lab-border);}
-.item-card.type-break{background:var(--break-bg);border-color:var(--break-border);text-align:center;}
-
-.card-top{
-  display:flex;justify-content:space-between;align-items:flex-start;gap:4px;
-}
-.subject-name{
-  font-weight:800;
-  font-size:0.83rem;
-  color:#fff;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.badge-type{
-  font-size:0.62rem;
-  padding:2px 6px;
-  border-radius:6px;
-  font-weight:800;
-  flex-shrink:0;
-}
-.type-lec .badge-type{background:rgba(56,189,248,0.2);color:#7dd3fc;}
-.type-sec .badge-type{background:rgba(52,211,153,0.2);color:#6ee7b7;}
-.type-lab .badge-type{background:rgba(251,146,60,0.2);color:#fdba74;}
-.type-break .badge-type{background:rgba(192,132,252,0.2);color:#d8b4fe;}
-
-.instructor{
-  font-size:0.73rem;
-  color:#cbd5e1;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  margin:2px 0;
-}
-.location{
-  font-size:0.7rem;
-  font-weight:700;
-  display:inline-block;
-  background:rgba(0,0,0,0.35);
-  padding:2px 6px;
-  border-radius:6px;
-  color:#e2e8f0;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  align-self:flex-start;
+  overflow-x: auto;
+  border-radius: 20px;
+  border: 1px solid var(--border-glass);
+  background: var(--bg-surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5);
 }
 
-/* عرض الموبايل */
-.app-view{display:none;}
-.app-day-tabs{
-  display:flex;gap:8px;overflow-x:auto;padding-bottom:12px;
-  margin-bottom:16px;scrollbar-width:none;
-}
-.app-day-tabs::-webkit-scrollbar{display:none;}
-.day-tab-btn{
-  flex:0 0 auto;background:var(--bg-card);border:1px solid var(--border-color);
-  color:var(--text-muted);padding:10px 18px;border-radius:12px;
-  font-size:0.9rem;font-weight:800;cursor:pointer;transition:all 0.2s ease;
-}
-.day-tab-btn.active{
-  background:#0284c7;color:#fff;border-color:#38bdf8;
-  box-shadow:0 4px 14px rgba(2,132,199,0.4);
-}
-.mobile-day-title{
-  display:none;font-size:1.1rem;font-weight:900;color:#38bdf8;
-  margin:16px 0 8px 0;padding-bottom:6px;border-bottom:2px solid #1e293b;
-}
-.app-timeline-card{
-  background:var(--bg-card);border:1px solid var(--border-color);
-  border-radius:16px;padding:16px;margin-bottom:12px;display:flex;
-  gap:16px;align-items:center;border-right:5px solid transparent;
-  box-shadow:0 4px 12px rgba(0,0,0,0.2);
-}
-.app-timeline-card.type-lec{border-right-color:var(--lec-border);}
-.app-timeline-card.type-sec{border-right-color:var(--sec-border);}
-.app-timeline-card.type-lab{border-right-color:var(--lab-border);}
-.app-timeline-card.type-break{border-right-color:var(--break-border);}
-
-.app-time-col{
-  min-width:95px;text-align:center;border-left:1px solid #1e293b;padding-left:14px;
-}
-.app-time-start{font-size:0.95rem;font-weight:800;color:#f8fafc;}
-.app-time-end{font-size:0.75rem;color:var(--text-muted);font-weight:600;margin-top:2px;}
-.app-time-period{font-size:0.65rem;color:#38bdf8;font-weight:700;margin-top:4px;}
-.app-info-col{flex:1;}
-.app-info-header{
-  display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;
-}
-.app-subject-title{font-size:1rem;font-weight:800;color:#fff;}
-.app-details{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-top:4px;font-size:0.8rem;color:#94a3b8;
-}
-.app-empty-day{
-  background:var(--bg-card);border:1px dashed #334155;border-radius:16px;
-  padding:36px 20px;text-align:center;color:#64748b;font-size:0.95rem;font-weight:700;
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: center;
+  min-width: 1160px;
+  table-layout: fixed;
 }
 
-.item-card.is-hidden,
-.app-timeline-card.is-hidden{
-  display:none !important;
+th {
+  background: rgba(11, 19, 41, 0.95);
+  color: #94a3b8;
+  font-size: 0.82rem;
+  font-weight: 900;
+  padding: 12px 4px;
+  border-bottom: 2px solid #1e293b;
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-@keyframes wizardPop {
-  0% { opacity: 0; transform: scale(0.95); }
+th span {
+  display: block;
+  font-size: 0.68rem;
+  color: #64748b;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+td {
+  padding: 6px 5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  height: 100px;
+  vertical-align: middle;
+}
+
+tr:nth-child(even) td {
+  background: rgba(11, 19, 36, 0.4);
+}
+
+.day-title {
+  background: rgba(11, 19, 41, 0.95) !important;
+  color: #38bdf8;
+  font-weight: 1000;
+  font-size: 0.95rem;
+  width: 80px;
+}
+
+.empty-cell {
+  color: #334155;
+  font-size: 1.1rem;
+}
+
+/* حركة التتريس والشقلبة الانسيابية لكروت الحصص (Drop & Bounce) */
+.item-card {
+  height: 100%;
+  width: 100%;
+  border-radius: 12px;
+  padding: 8px 10px;
+  text-align: right;
+  border-right: 4px solid transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+  animation: tetrisDrop 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.25) both;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.item-card:hover {
+  transform: translateY(-3px) scale(1.02);
+  z-index: 5;
+}
+
+.item-card.type-lec {
+  background: var(--lec-grad);
+  border-color: var(--lec-border);
+  box-shadow: 0 6px 18px var(--lec-glow);
+}
+
+.item-card.type-sec {
+  background: var(--sec-grad);
+  border-color: var(--sec-border);
+  box-shadow: 0 6px 18px var(--sec-glow);
+}
+
+.item-card.type-lab {
+  background: var(--lab-grad);
+  border-color: var(--lab-border);
+  box-shadow: 0 6px 18px var(--lab-glow);
+}
+
+.item-card.type-break {
+  background: var(--break-grad);
+  border-color: var(--break-border);
+  box-shadow: 0 6px 18px var(--break-glow);
+  text-align: center;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4px;
+}
+
+.subject-name {
+  font-weight: 900;
+  font-size: 0.84rem;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.badge-type {
+  font-size: 0.62rem;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.type-lec .badge-type { background: rgba(56, 189, 248, 0.25); color: #7dd3fc; }
+.type-sec .badge-type { background: rgba(52, 211, 153, 0.25); color: #6ee7b7; }
+.type-lab .badge-type { background: rgba(251, 146, 60, 0.25); color: #fdba74; }
+.type-break .badge-type { background: rgba(192, 132, 252, 0.25); color: #d8b4fe; }
+
+.instructor {
+  font-size: 0.74rem;
+  color: #cbd5e1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+}
+
+.location {
+  font-size: 0.7rem;
+  font-weight: 800;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 2px 7px;
+  border-radius: 6px;
+  color: #e2e8f0;
+  width: fit-content;
+}
+
+/* كروت الموبايل الشيك مع فيزياء الـ Slide-in النظيفة */
+.app-view {
+  display: none;
+}
+
+.app-day-tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 14px;
+  scrollbar-width: none;
+}
+
+.app-day-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.day-tab-btn {
+  flex: 1 0 auto;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid var(--border-glass);
+  color: var(--text-secondary);
+  padding: 10px 16px;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.day-tab-btn.active {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #fff;
+  border-color: var(--neon-cyan);
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4);
+}
+
+.app-timeline-card {
+  background: var(--bg-surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  border-right: 5px solid transparent;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  animation: tetrisDrop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.2) both;
+}
+
+.app-timeline-card.type-lec { border-right-color: var(--lec-border); }
+.app-timeline-card.type-sec { border-right-color: var(--sec-border); }
+.app-timeline-card.type-lab { border-right-color: var(--lab-border); }
+.app-timeline-card.type-break { border-right-color: var(--break-border); }
+
+.app-time-col {
+  min-width: 82px;
+  text-align: center;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  padding-left: 10px;
+}
+
+.app-time-start {
+  font-size: 0.92rem;
+  font-weight: 900;
+  color: #fff;
+}
+
+.app-time-end {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  font-weight: 700;
+}
+
+.app-time-period {
+  font-size: 0.68rem;
+  color: #38bdf8;
+  font-weight: 800;
+  margin-top: 2px;
+}
+
+.app-info-col {
+  flex: 1;
+}
+
+.app-subject-title {
+  font-size: 0.96rem;
+  font-weight: 900;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.app-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-top: 5px;
+  font-weight: 700;
+}
+
+.app-empty-day {
+  background: var(--bg-surface);
+  border: 1px dashed var(--border-glass);
+  border-radius: 16px;
+  padding: 30px 16px;
+  text-align: center;
+  color: #64748b;
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+.item-card.is-hidden, .app-timeline-card.is-hidden {
+  display: none !important;
+}
+
+/* الكي فريمز الخاصة بالشقلبة والتتريس السلس */
+@keyframes modalEnter {
+  0% { opacity: 0; transform: scale(0.92); }
   100% { opacity: 1; transform: scale(1); }
 }
 
-@keyframes scheduleUnroll {
-  0% { opacity: 0; transform: translateY(20px); }
-  100% { opacity: 1; transform: translateY(0); }
+@keyframes tetrisDrop {
+  0% {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.85);
+  }
+  70% {
+    transform: translateY(6px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
-@media(max-width:900px){
-  body{padding:12px 10px;}
-  .table-view{display:none;}
-  .app-view{display:block;}
-  .header{padding:16px;border-radius:16px;flex-direction:column;align-items:stretch;}
-  .header-actions{width:100%;display:flex;flex-direction:column;}
-  .student-badge,.btn-download,.btn-change-sec{width:100%;text-align:center;justify-content:center;}
-  .filter-panel{padding:14px;border-radius:16px;}
-  .filter-header{flex-direction:column;align-items:stretch;}
-  .btn-reset{justify-content:center;}
-  .wizard-title{font-size:1.6rem;}
+@media (max-width: 900px) {
+  body { padding: 12px 8px; }
+  .table-view { display: none; }
+  .app-view { display: block; }
+  .header { flex-direction: column; align-items: stretch; padding: 16px; }
+  .header-actions { flex-direction: column; }
+  .student-badge, .btn-download, .btn-change-sec { width: 100%; text-align: center; justify-content: center; }
+  .wizard-title { font-size: 1.65rem; }
 }
 </style>
 </head>
 <body>
-
-<div class="glow-orb"></div>
 
 <div class="container">
 
@@ -465,9 +676,9 @@ tr:nth-child(even) td{background:#0b1324;}
   </div>
 
   <!-- المرحلة 2: اختيار السكشن -->
-  <div id="stepSection" class="wizard-box sections-flow">
+  <div id="stepSection" class="wizard-box" style="display:none;">
     <div class="wizard-title" id="secGreetingTitle">منور يا بطل! سكشن كام بقى؟</div>
-    <div class="wizard-sub">دوس على رقم سكشنك والجدول هينزل يتشقلب قدامك حالا</div>
+    <div class="wizard-sub">دوس على رقم سكشنك وشوف شقلبة الجدول والشياكة</div>
     <div class="sections-grid" id="sectionsGridContainer"></div>
     <button class="btn-back" onclick="backToGroupStep()">↺ تغيير المجموعة</button>
   </div>
@@ -482,63 +693,62 @@ tr:nth-child(even) td{background:#0b1324;}
       <div class="header-actions">
         <div class="student-badge" id="badgeIndicator">المجموعة -- | سكشن --</div>
         <button class="btn-change-sec" onclick="backToSectionStep()">تغيير السكشن 🔁</button>
-        <button class="btn-download" onclick="window.print()">
-          <span>📥</span> تحميل الجدول (PDF)
+        <button class="btn-download" id="downloadFullBtn" onclick="downloadFullWeekSchedule()">
+          <span>📥</span> تحميل الجدول كاملاً (PNG)
         </button>
       </div>
     </div>
 
+    <!-- تصفية المواد -->
     <div class="filter-panel">
       <div class="filter-header">
-        <span class="filter-title">تصفية المواد (اضغط على مادة لإخفائها):</span>
-        <button class="btn-reset" onclick="resetAllCourses()">
-          <span>↺</span> إظهار جميع المواد
-        </button>
+        <span class="filter-title">تصفية المواد (اضغط لإخفاء المادة):</span>
+        <button class="btn-reset" onclick="resetAllCourses()">↺ إظهار جميع المواد</button>
       </div>
       <div class="course-badges">
-        <button class="btn-course" data-course="logic" onclick="toggleCourse('logic', this)"><span>✓</span> تصميم منطقي</button>
-        <button class="btn-course" data-course="linear" onclick="toggleCourse('linear', this)"><span>✓</span> جبر خطي</button>
-        <button class="btn-course" data-course="ds" onclick="toggleCourse('ds', this)"><span>✓</span> هياكل بيانات</button>
-        <button class="btn-course" data-course="stat" onclick="toggleCourse('stat', this)"><span>✓</span> تحليل إحصائي</button>
-        <button class="btn-course" data-course="is" onclick="toggleCourse('is', this)"><span>✓</span> مقدمة في نظم المعلومات</button>
-        <button class="btn-course" data-course="comm" onclick="toggleCourse('comm', this)"><span>✓</span> مهارات الاتصال</button>
+        <button class="btn-course" data-course="logic" onclick="toggleCourse('logic', this)">تصميم منطقي</button>
+        <button class="btn-course" data-course="linear" onclick="toggleCourse('linear', this)">جبر خطي</button>
+        <button class="btn-course" data-course="ds" onclick="toggleCourse('ds', this)">هياكل بيانات</button>
+        <button class="btn-course" data-course="stat" onclick="toggleCourse('stat', this)">تحليل إحصائي</button>
+        <button class="btn-course" data-course="is" onclick="toggleCourse('is', this)">مقدمة نظم معلومات</button>
+        <button class="btn-course" data-course="comm" onclick="toggleCourse('comm', this)">مهارات الاتصال</button>
       </div>
     </div>
 
-    <!-- العرض المكتبي -->
+    <!-- العرض المكتبي للديسكتوب -->
     <div class="table-view">
       <div class="table-wrap">
         <table>
           <colgroup>
             <col class="col-day">
-            <col style="width: calc((100% - 85px) / 12);">
-            <col style="width: calc((100% - 85px) / 12);">
-            <col style="width: calc((100% - 85px) / 12);">
-            <col style="width: calc((100% - 85px) / 12);">
-            <col style="width: calc((100% - 85px) / 12);">
-            <col style="width: calc((100% - 85px) / 12);">
-            <col style="width: calc((100% - 85px) / 12);">
-            <col style="width: calc((100% - 85px) / 12);">
-            <col style="width: calc((100% - 85px) / 12);">
-            <col style="width: calc((100% - 85px) / 12);">
-            <col style="width: calc((100% - 85px) / 12);">
-            <col style="width: calc((100% - 85px) / 12);">
+            <col style="width: calc((100% - 80px) / 12);">
+            <col style="width: calc((100% - 80px) / 12);">
+            <col style="width: calc((100% - 80px) / 12);">
+            <col style="width: calc((100% - 80px) / 12);">
+            <col style="width: calc((100% - 80px) / 12);">
+            <col style="width: calc((100% - 80px) / 12);">
+            <col style="width: calc((100% - 80px) / 12);">
+            <col style="width: calc((100% - 80px) / 12);">
+            <col style="width: calc((100% - 80px) / 12);">
+            <col style="width: calc((100% - 80px) / 12);">
+            <col style="width: calc((100% - 80px) / 12);">
+            <col style="width: calc((100% - 80px) / 12);">
           </colgroup>
           <thead>
             <tr>
               <th class="day-title">اليوم</th>
-              <th>1<br><span>09:00 - 09:45</span></th>
-              <th>2<br><span>09:45 - 10:30</span></th>
-              <th>3<br><span>10:30 - 11:15</span></th>
-              <th>4<br><span>11:15 - 12:00</span></th>
-              <th>5<br><span>12:00 - 12:45</span></th>
-              <th>6<br><span>12:45 - 01:30</span></th>
-              <th>7<br><span>01:30 - 02:15</span></th>
-              <th>8<br><span>02:15 - 03:00</span></th>
-              <th>9<br><span>03:00 - 03:45</span></th>
-              <th>10<br><span>03:45 - 04:30</span></th>
-              <th>11<br><span>04:30 - 05:15</span></th>
-              <th>12<br><span>05:15 - 06:00</span></th>
+              <th>1<br><span>09:00</span></th>
+              <th>2<br><span>09:45</span></th>
+              <th>3<br><span>10:30</span></th>
+              <th>4<br><span>11:15</span></th>
+              <th>5<br><span>12:00</span></th>
+              <th>6<br><span>12:45</span></th>
+              <th>7<br><span>01:30</span></th>
+              <th>8<br><span>02:15</span></th>
+              <th>9<br><span>03:00</span></th>
+              <th>10<br><span>03:45</span></th>
+              <th>11<br><span>04:30</span></th>
+              <th>12<br><span>05:15</span></th>
             </tr>
           </thead>
           <tbody id="tableBody"></tbody>
@@ -546,15 +756,15 @@ tr:nth-child(even) td{background:#0b1324;}
       </div>
     </div>
 
-    <!-- عرض الموبايل -->
+    <!-- عرض الموبايل التفاعلي -->
     <div class="app-view">
       <div class="app-day-tabs">
-        <button class="day-tab-btn active" onclick="switchDay('sat', this)">السبت</button>
-        <button class="day-tab-btn" onclick="switchDay('sun', this)">الأحد</button>
-        <button class="day-tab-btn" onclick="switchDay('mon', this)">الإثنين</button>
-        <button class="day-tab-btn" onclick="switchDay('tue', this)">الثلاثاء</button>
-        <button class="day-tab-btn" onclick="switchDay('wed', this)">الأربعاء</button>
-        <button class="day-tab-btn" onclick="switchDay('thu', this)">الخميس</button>
+        <button class="day-tab-btn" data-day="sat" onclick="switchDay('sat', this)">السبت</button>
+        <button class="day-tab-btn" data-day="sun" onclick="switchDay('sun', this)">الأحد</button>
+        <button class="day-tab-btn" data-day="mon" onclick="switchDay('mon', this)">الإثنين</button>
+        <button class="day-tab-btn" data-day="tue" onclick="switchDay('tue', this)">الثلاثاء</button>
+        <button class="day-tab-btn" data-day="wed" onclick="switchDay('wed', this)">الأربعاء</button>
+        <button class="day-tab-btn" data-day="thu" onclick="switchDay('thu', this)">الخميس</button>
       </div>
       <div id="mobileContainer"></div>
     </div>
@@ -592,12 +802,16 @@ const GROUPS_DATA = {
     title: 'المجموعة الرابعة',
     sections: [20, 21, 22, 23, 24, 25, 26],
     lectures: [
-      { day: 'الأحد', start: 1, span: 2, title: 'مهارات الاتصال', type: 'lec', typeName: 'محاضرة', course: 'comm', doc: 'د/ محمد العربي', loc: '📍 مدرج 5' },
-      { day: 'الأحد', start: 3, span: 2, title: 'تصميم منطقي', type: 'lec', typeName: 'محاضرة', course: 'logic', doc: 'د/ آية حاتم', loc: '📍 مدرج 1' },
-      { day: 'الثلاثاء', start: 1, span: 2, title: 'تحليل إحصائي', type: 'lec', typeName: 'محاضرة', course: 'stat', doc: 'د/ نهى عبد الكريم', loc: '📍 مدرج 5' },
-      { day: 'الثلاثاء', start: 3, span: 2, title: 'جبر خطي', type: 'lec', typeName: 'محاضرة', course: 'linear', doc: 'د/ مصطفى حسن', loc: '📍 مدرج 1' },
-      { day: 'الثلاثاء', start: 7, span: 2, title: 'هياكل بيانات', type: 'lec', typeName: 'محاضرة', course: 'ds', doc: 'د/ محمد السيد غنيمي', loc: '📍 مدرج 3' },
-      { day: 'الأربعاء', start: 5, span: 2, title: 'مقدمة في نظم المعلومات', type: 'lec', typeName: 'محاضرة', course: 'is', doc: 'د/ شيماء إسماعيل', loc: '📍 مدرج 2' }
+      // الأحد: مفيش محاضرات خالص (سكاشن بيضاء فقط)[cite: 1]
+      // الثلاثاء: المحاضرات بعد الظهر مع الاستراحة في النص[cite: 2]
+      { day: 'الثلاثاء', start: 7, span: 2, title: 'تصميم منطقي', type: 'lec', typeName: 'محاضرة', course: 'logic', doc: 'د/ آية حاتم', loc: '📍 مدرج 1' },
+      { day: 'الثلاثاء', start: 9, span: 2, title: 'مهارات الاتصال', type: 'lec', typeName: 'محاضرة', course: 'comm', doc: 'د/ محمد العربي', loc: '📍 مدرج 5' },
+      // الأربعاء: محاضرة نظم في النص[cite: 3]
+      { day: 'الأربعاء', start: 5, span: 2, title: 'مقدمة في نظم المعلومات', type: 'lec', typeName: 'محاضرة', course: 'is', doc: 'د/ شيماء إسماعيل', loc: '📍 مدرج 2' },
+      // الخميس: محاضرتين الصبح ومحاضرة بعد الظهر[cite: 4]
+      { day: 'الخميس', start: 1, span: 2, title: 'تحليل إحصائي', type: 'lec', typeName: 'محاضرة', course: 'stat', doc: 'د/ نهى عبد الكريم', loc: '📍 مدرج 5' },
+      { day: 'الخميس', start: 3, span: 2, title: 'جبر خطي', type: 'lec', typeName: 'محاضرة', course: 'linear', doc: 'د/ مصطفى حسن', loc: '📍 مدرج 1' },
+      { day: 'الخميس', start: 9, span: 2, title: 'هياكل بيانات', type: 'lec', typeName: 'محاضرة', course: 'ds', doc: 'د/ محمد السيد غنيمي', loc: '📍 مدرج 3' }
     ]
   },
   5: {
@@ -627,62 +841,62 @@ const GROUPS_DATA = {
 };
 
 const SECTIONS_DATA = {
-  // المجموعة 4
+  // المجموعة 4 (مفرغة 100% وبالمللي من صورك الأربعة المرفقة)[cite: 1, 2, 3, 4]
   20: [
-    { day: 'الأحد', start: 7, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ منيرة منير', loc: '📍 قاعة 12' },
-    { day: 'الأحد', start: 9, span: 2, title: 'مقدمة في نظم المعلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ جمال عصام', loc: '📍 معمل 14' },
-    { day: 'الثلاثاء', start: 9, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ منة يوسف', loc: '📍 معمل المعالج' },
+    { day: 'الثلاثاء', start: 1, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ منيرة منير', loc: '📍 قاعة 12' },
+    { day: 'الثلاثاء', start: 3, span: 2, title: 'مقدمة في نظم المعلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ جمال عصام', loc: '📍 معمل 14' },
     { day: 'الأربعاء', start: 1, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ نهى عماد', loc: '📍 قاعة 7' },
     { day: 'الأربعاء', start: 7, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ روان علاء', loc: '📍 قاعة 9' },
-    { day: 'الأربعاء', start: 9, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ روان علاء', loc: '📍 معمل تصميم 2' }
+    { day: 'الأربعاء', start: 9, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ روان علاء', loc: '📍 معمل تصميم 2' },
+    { day: 'الخميس', start: 5, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ منه يوسف', loc: '📍 معمل المعالج' }
   ],
   21: [
-    { day: 'الأحد', start: 7, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ غادة رفاعي', loc: '📍 قاعة 7' },
+    { day: 'الأحد', start: 7, span: 2, title: 'مقدمة في نظم المعلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ نورهان محمد', loc: '📍 معمل المعالج' },
+    { day: 'الأحد', start: 9, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ كرستين نادر', loc: '📍 قاعة 12' },
+    { day: 'الثلاثاء', start: 1, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ غاده رفاعي', loc: '📍 قاعة 7' },
     { day: 'الأربعاء', start: 7, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ روان علاء', loc: '📍 قاعة 9' },
     { day: 'الأربعاء', start: 9, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ روان علاء', loc: '📍 معمل تصميم 2' },
-    { day: 'الأربعاء', start: 11, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ ندى خالد', loc: '📍 معمل 15' },
-    { day: 'الخميس', start: 5, span: 2, title: 'مقدمة في نظم المعلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ نورهان محمد', loc: '📍 معمل المعالج' },
-    { day: 'الخميس', start: 9, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ كرستين نادر', loc: '📍 قاعة 12' }
+    { day: 'الأربعاء', start: 11, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ ندى خالد', loc: '📍 معمل 15' }
   ],
   22: [
-    { day: 'الأحد', start: 7, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ غادة رفاعي', loc: '📍 قاعة 7' },
-    { day: 'الأربعاء', start: 1, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ سهيلة نادر', loc: '📍 معمل تصميم 1' },
-    { day: 'الأربعاء', start: 11, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ منة يوسف', loc: '📍 معمل 10' },
-    { day: 'الخميس', start: 3, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ شهد حمدي', loc: '📍 قاعة 9' },
-    { day: 'الخميس', start: 5, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ كرستين نادر', loc: '📍 قاعة 12' },
-    { day: 'الخميس', start: 7, span: 2, title: 'مقدمة في نظم المعلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ فاطمة الزهراء', loc: '📍 معمل 5' }
+    { day: 'الأحد', start: 3, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ شهد حمدي', loc: '📍 قاعة 9' },
+    { day: 'الأحد', start: 5, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ كرستين نادر', loc: '📍 قاعة 12' },
+    { day: 'الأحد', start: 7, span: 2, title: 'مقدمة في نظم المعلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ فاطمه الزهراء', loc: '📍 معمل 5' },
+    { day: 'الثلاثاء', start: 1, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ غاده رفاعي', loc: '📍 قاعة 7' },
+    { day: 'الأربعاء', start: 3, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ سهيلة نادر', loc: '📍 معمل تصميم 1' },
+    { day: 'الأربعاء', start: 11, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ منه يوسف', loc: '📍 معمل 10' }
   ],
   23: [
-    { day: 'الأحد', start: 5, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ سهيلة نادر', loc: '📍 معمل تصميم 1' },
+    { day: 'الأحد', start: 3, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ مرح', loc: '📍 قاعة 3' },
+    { day: 'الأحد', start: 5, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ الاء ابراهيم', loc: '📍 قاعة 3' },
+    { day: 'الثلاثاء', start: 1, span: 2, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ سهيلة نادر', loc: '📍 معمل تصميم 1' },
     { day: 'الأربعاء', start: 3, span: 2, title: 'مقدمة في نظم المعلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ نورهان محمد', loc: '📍 معمل هواوي' },
-    { day: 'الأربعاء', start: 7, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ فاطمة الزهراء', loc: '📍 معمل 9' },
-    { day: 'الأربعاء', start: 11, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ يحيى محمد', loc: '📍 قاعة 7' },
-    { day: 'الخميس', start: 3, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ مرح', loc: '📍 قاعة 3' },
-    { day: 'الخميس', start: 5, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ آلاء إبراهيم', loc: '📍 قاعة 3' }
+    { day: 'الأربعاء', start: 7, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ فاطمه الزهراء', loc: '📍 معمل 9' },
+    { day: 'الأربعاء', start: 11, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ يحيى محمد', loc: '📍 قاعة 7' }
   ],
   24: [
-    { day: 'الأحد', start: 7, span: 2, title: 'مقدمة في نظم المعلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ جمال عصام', loc: '📍 معمل 14' },
-    { day: 'الأحد', start: 9, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ رويدا عادل', loc: '📍 معمل 12' },
-    { day: 'الثلاثاء', start: 9, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ نورهان صابر', loc: '📍 قاعة 4' },
+    { day: 'الأحد', start: 5, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ كرستين نادر', loc: '📍 قاعة 12' },
+    { day: 'الأحد', start: 7, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ منة الله نبيل', loc: '📍 قاعة 6' },
+    { day: 'الثلاثاء', start: 1, span: 2, title: 'مقدمة في نظم المعلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ جمال عصام', loc: '📍 معمل 14' },
+    { day: 'الثلاثاء', start: 3, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ رويدا عادل', loc: '📍 معمل 12' },
     { day: 'الأربعاء', start: 1, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ سهيلة نادر', loc: '📍 معمل تصميم 1' },
-    { day: 'الخميس', start: 5, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ كرستين نادر', loc: '📍 قاعة 12' },
-    { day: 'الخميس', start: 8, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ منة الله نبيل', loc: '📍 قاعة 6' }
+    { day: 'الخميس', start: 5, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ نورهان صابر', loc: '📍 قاعة 4' }
   ],
   25: [
-    { day: 'الأحد', start: 7, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ طه طلعت', loc: '📍 قاعة 11' },
-    { day: 'الأحد', start: 9, span: 2, title: 'مقدمة في نظم المعلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ مريم معاذ', loc: '📍 معمل المعالج' },
-    { day: 'الثلاثاء', start: 9, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ نورهان صابر', loc: '📍 قاعة 4' },
-    { day: 'الأربعاء', start: 1, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ سهيلة نادر', loc: '📍 معمل تصميم 1' },
-    { day: 'الأربعاء', start: 8, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ آلاء إبراهيم', loc: '📍 قاعة 4' },
-    { day: 'الأربعاء', start: 12, span: 1, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ ندى خالد', loc: '📍 معمل 15' }
+    { day: 'الثلاثاء', start: 1, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ طه طلعت', loc: '📍 قاعة 11' },
+    { day: 'الثلاثاء', start: 3, span: 2, title: 'مقدمة في نظم المعلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ مريم معاذ', loc: '📍 معمل المعالج' },
+    { day: 'الأربعاء', start: 3, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ سهيلة نادر', loc: '📍 معمل تصميم 1' },
+    { day: 'الأربعاء', start: 9, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ الاء ابراهيم', loc: '📍 قاعة 4' },
+    { day: 'الأربعاء', start: 12, span: 1, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ ندى خالد', loc: '📍 معمل 15' },
+    { day: 'الخميس', start: 5, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ نورهان صابر', loc: '📍 قاعة 4' }
   ],
   26: [
-    { day: 'الأحد', start: 7, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ طه طلعت', loc: '📍 قاعة 11' },
-    { day: 'الأحد', start: 9, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ سهيلة نادر', loc: '📍 معمل تصميم 1' },
+    { day: 'الأحد', start: 7, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ روان علاء', loc: '📍 قاعة 9' },
+    { day: 'الأحد', start: 9, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ كرستين نادر', loc: '📍 قاعة 12' },
+    { day: 'الثلاثاء', start: 1, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ طه طلعت', loc: '📍 قاعة 11' },
+    { day: 'الثلاثاء', start: 3, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ سهيلة نادر', loc: '📍 معمل تصميم 1' },
     { day: 'الأربعاء', start: 1, span: 2, title: 'مقدمة في نظم المعلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ طه طلعت', loc: '📍 معمل 1' },
-    { day: 'الأربعاء', start: 7, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ ندى خالد', loc: '📍 معمل 9' },
-    { day: 'الخميس', start: 7, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ روان علاء', loc: '📍 قاعة 9' },
-    { day: 'الخميس', start: 9, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ كرستين نادر', loc: '📍 قاعة 12' }
+    { day: 'الأربعاء', start: 7, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ ندى خالد', loc: '📍 معمل 9' }
   ],
 
   // المجموعة 5
@@ -806,7 +1020,6 @@ const SECTIONS_DATA = {
 let currentGroup = null;
 let currentSection = null;
 
-// وظيفة مخصصة لبناء أزرار السكاشن
 function renderSectionCards(groupId) {
   const groupInfo = GROUPS_DATA[groupId] || GROUPS_DATA[parseInt(groupId)];
   document.getElementById('secGreetingTitle').textContent = `يا هلا بـ ${groupInfo.title}! سكشن كام بقى؟ 😉`;
@@ -817,9 +1030,8 @@ function renderSectionCards(groupId) {
   groupInfo.sections.forEach((sec, idx) => {
     const btn = document.createElement('button');
     btn.className = 'btn-sec-card';
-    btn.style.animationDelay = `${idx * 0.04}s`;
+    btn.style.animation = `tetrisDrop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2) both ${idx * 0.04}s`;
     
-    // الأيقونات المميزة: 22 نار 🔥، 35 قلب ❤️، 32 نجمة ⭐
     let badgeEmoji = '';
     if (sec === 22) badgeEmoji = ' 🔥';
     else if (sec === 35) badgeEmoji = ' ❤️';
@@ -855,32 +1067,31 @@ function selectSection(secId) {
   document.getElementById('stepSection').style.display = 'none';
   
   const app = document.getElementById('scheduleApp');
-  app.classList.add('active');
+  app.style.display = 'block';
 
   const gInfo = GROUPS_DATA[currentGroup] || GROUPS_DATA[parseInt(currentGroup)];
   document.getElementById('badgeIndicator').textContent = `${gInfo.title} | سكشن ${secId}`;
   
   buildSchedule();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
 function backToGroupStep() {
   try { localStorage.clear(); } catch(e) {}
   history.replaceState(null, null, ' ');
   document.getElementById('stepSection').style.display = 'none';
-  document.getElementById('scheduleApp').classList.remove('active');
+  document.getElementById('scheduleApp').style.display = 'none';
   document.getElementById('stepGroup').style.display = 'block';
 }
 
 function backToSectionStep() {
   try { localStorage.removeItem('savedSection'); } catch(e) {}
   history.replaceState(null, null, ' ');
-  document.getElementById('scheduleApp').classList.remove('active');
+  document.getElementById('scheduleApp').style.display = 'none';
   
   const stepSec = document.getElementById('stepSection');
   stepSec.style.display = 'block';
   
-  // إعادة بناء أزرار السكاشن حتى تظهر كاملة فور الرجوع
   if (currentGroup) {
     renderSectionCards(currentGroup);
   }
@@ -895,6 +1106,9 @@ function buildSchedule() {
   const mobileContainer = document.getElementById('mobileContainer');
   tbody.innerHTML = '';
   mobileContainer.innerHTML = '';
+
+  let firstActiveDay = null;
+  let cardCount = 0; // لحساب توقيت هبوط كل كارت بالدور
 
   DAYS_CONFIG.forEach(dObj => {
     const day = dObj.name;
@@ -913,10 +1127,11 @@ function buildSchedule() {
     while (period <= 12) {
       if (day === 'الثلاثاء' && period === 5) {
         dayHasItems = true;
+        cardCount++;
         const td = document.createElement('td');
         td.colSpan = 2;
         td.innerHTML = `
-          <div class="item-card type-break">
+          <div class="item-card type-break" style="animation-delay: ${cardCount * 0.045}s;">
             <div class="card-top"><span class="subject-name" style="margin:auto;">استراحة رسمية</span><span class="badge-type">راحة</span></div>
             <div class="instructor" style="text-align:center;">12:00 م - 01:30 م</div>
           </div>
@@ -936,10 +1151,11 @@ function buildSchedule() {
       const lec = lectures.find(l => l.day === day && l.start === period);
       if (lec) {
         dayHasItems = true;
+        cardCount++;
         const td = document.createElement('td');
         td.colSpan = lec.span;
         td.innerHTML = `
-          <div class="item-card type-${lec.type}" data-course="${lec.course}">
+          <div class="item-card type-${lec.type}" data-course="${lec.course}" style="animation-delay: ${cardCount * 0.045}s;">
             <div class="card-top"><span class="subject-name">${lec.title}</span><span class="badge-type">${lec.typeName}</span></div>
             <div class="instructor">${lec.doc}</div>
             <div class="location">${lec.loc}</div>
@@ -960,10 +1176,11 @@ function buildSchedule() {
       const sec = sections.find(s => s.day === day && s.start === period);
       if (sec) {
         dayHasItems = true;
+        cardCount++;
         const td = document.createElement('td');
         td.colSpan = sec.span;
         td.innerHTML = `
-          <div class="item-card type-${sec.type}" data-course="${sec.course}">
+          <div class="item-card type-${sec.type}" data-course="${sec.course}" style="animation-delay: ${cardCount * 0.045}s;">
             <div class="card-top"><span class="subject-name">${sec.title}</span><span class="badge-type">${sec.typeName}</span></div>
             <div class="instructor">${sec.doc}</div>
             <div class="location">${sec.loc}</div>
@@ -993,35 +1210,33 @@ function buildSchedule() {
     }
     tbody.appendChild(tr);
 
+    // كروت الموبايل مع ضبط تأثير النزول التتابعي
     const dayWrap = document.createElement('div');
     dayWrap.id = `day-content-${dayId}`;
     dayWrap.className = 'day-content';
-    dayWrap.style.display = (dayId === 'sat') ? 'block' : 'none';
-
-    const titleH = document.createElement('div');
-    titleH.className = 'mobile-day-title';
-    titleH.textContent = `📅 يوم ${day}`;
-    dayWrap.appendChild(titleH);
+    dayWrap.setAttribute('data-dayname', day);
+    dayWrap.style.display = 'none';
 
     if (mobileItems.length === 0) {
-      dayWrap.innerHTML += `<div class="app-empty-day">لا توجد محاضرات أو سكاشن مجدولة يوم ${day}</div>`;
+      dayWrap.innerHTML = `<div class="app-empty-day">لا توجد محاضرات أو سكاشن مجدولة يوم ${day}</div>`;
     } else {
-      mobileItems.forEach(item => {
+      if (!firstActiveDay) firstActiveDay = dayId;
+      mobileItems.forEach((item, mIdx) => {
         const tStart = PERIOD_TIMES[item.startPeriod].start;
         const tEnd = PERIOD_TIMES[item.endPeriod].end;
         const pLabel = (item.startPeriod === item.endPeriod) ? `فترة ${item.startPeriod}` : `فترة ${item.startPeriod} - ${item.endPeriod}`;
         const cAttr = item.course ? `data-course="${item.course}"` : '';
 
         dayWrap.innerHTML += `
-          <div class="app-timeline-card type-${item.type}" ${cAttr}>
+          <div class="app-timeline-card type-${item.type}" ${cAttr} style="animation-delay: ${mIdx * 0.06}s;">
             <div class="app-time-col">
               <div class="app-time-start">${tStart}</div>
               <div class="app-time-end">${tEnd}</div>
               <div class="app-time-period">${pLabel}</div>
             </div>
             <div class="app-info-col">
-              <div class="app-info-header">
-                <span class="app-subject-title">${item.title}</span>
+              <div class="app-subject-title">
+                <span>${item.title}</span>
                 <span class="badge-type">${item.badge}</span>
               </div>
               <div class="app-details">
@@ -1037,13 +1252,19 @@ function buildSchedule() {
     mobileContainer.appendChild(dayWrap);
   });
 
+  // فتح أول يوم فيه دراسة تلقائياً
+  const targetDay = firstActiveDay || 'sun';
+  const targetTab = document.querySelector(`.day-tab-btn[data-day="${targetDay}"]`);
+  if (targetTab) {
+    switchDay(targetDay, targetTab);
+  }
+
   resetAllCourses();
 }
 
 function toggleCourse(courseKey, btn) {
   btn.classList.toggle('excluded');
   const isExcluded = btn.classList.contains('excluded');
-  btn.querySelector('span').textContent = isExcluded ? '✕' : '✓';
 
   const targets = document.querySelectorAll(`[data-course="${courseKey}"]`);
   targets.forEach(el => {
@@ -1058,7 +1279,6 @@ function toggleCourse(courseKey, btn) {
 function resetAllCourses() {
   document.querySelectorAll('.btn-course').forEach(btn => {
     btn.classList.remove('excluded');
-    btn.querySelector('span').textContent = '✓';
   });
   document.querySelectorAll('[data-course]').forEach(el => {
     el.classList.remove('is-hidden');
@@ -1072,6 +1292,93 @@ function switchDay(dayId, btn) {
   document.querySelectorAll('.day-content').forEach(c => c.style.display = 'none');
   const target = document.getElementById(`day-content-${dayId}`);
   if (target) target.style.display = 'block';
+}
+
+/* دالة تصوير وتحميل الأسبوع بالكامل دفعة واحدة بجودة عالية جداً */
+function downloadFullWeekSchedule() {
+  const btn = document.getElementById('downloadFullBtn');
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '⏳ جاري تصوير الأسبوع كاملاً...';
+  btn.style.pointerEvents = 'none';
+
+  const isMobile = window.innerWidth <= 900;
+  const gInfo = GROUPS_DATA[currentGroup] || { title: 'الكلية' };
+
+  if (!isMobile) {
+    const targetElement = document.querySelector('.table-wrap');
+    html2canvas(targetElement, {
+      backgroundColor: '#050811',
+      scale: 2
+    }).then(canvas => {
+      saveCanvas(canvas, `جدول_${gInfo.title}_سكشن_${currentSection}.png`);
+      btn.innerHTML = originalText;
+      btn.style.pointerEvents = 'auto';
+    }).catch(e => {
+      window.print();
+      btn.innerHTML = originalText;
+      btn.style.pointerEvents = 'auto';
+    });
+  } else {
+    // على الموبايل: إنشاء لقطة مجمعة لكل أيام الأسبوع وراء بعضها
+    const printClone = document.createElement('div');
+    printClone.style.position = 'fixed';
+    printClone.style.top = '-99999px';
+    printClone.style.left = '0';
+    printClone.style.width = '390px';
+    printClone.style.backgroundColor = '#050811';
+    printClone.style.padding = '18px';
+    printClone.style.color = '#f8fafc';
+    printClone.style.direction = 'rtl';
+    printClone.style.zIndex = '-999';
+
+    printClone.innerHTML = `
+      <div style="text-align:center;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid rgba(56,189,248,0.3);">
+        <h2 style="font-size:1.25rem;color:#38bdf8;font-weight:900;margin-bottom:4px;">${gInfo.title} — سكشن ${currentSection}</h2>
+        <p style="font-size:0.8rem;color:#94a3b8;">كلية الحاسبات والذكاء الاصطناعي — المستوى الثاني</p>
+      </div>
+    `;
+
+    document.querySelectorAll('.day-content').forEach(dc => {
+      const dayName = dc.getAttribute('data-dayname');
+      const cloneDay = dc.cloneNode(true);
+      cloneDay.style.display = 'block';
+
+      const dayHeader = document.createElement('div');
+      dayHeader.style.color = '#38bdf8';
+      dayHeader.style.fontSize = '0.95rem';
+      dayHeader.style.fontWeight = '900';
+      dayHeader.style.margin = '16px 0 8px 0';
+      dayHeader.textContent = `📅 يوم ${dayName}`;
+
+      printClone.appendChild(dayHeader);
+      printClone.appendChild(cloneDay);
+    });
+
+    document.body.appendChild(printClone);
+
+    html2canvas(printClone, {
+      backgroundColor: '#050811',
+      scale: 2,
+      useCORS: true
+    }).then(canvas => {
+      saveCanvas(canvas, `جدول_${gInfo.title}_سكشن_${currentSection}.png`);
+      document.body.removeChild(printClone);
+      btn.innerHTML = originalText;
+      btn.style.pointerEvents = 'auto';
+    }).catch(err => {
+      document.body.removeChild(printClone);
+      window.print();
+      btn.innerHTML = originalText;
+      btn.style.pointerEvents = 'auto';
+    });
+  }
+}
+
+function saveCanvas(canvas, filename) {
+  const link = document.createElement('a');
+  link.download = filename;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
 }
 
 (function autoLoadSavedSchedule() {
@@ -1099,7 +1406,7 @@ function switchDay(dayId, btn) {
     document.getElementById('stepSection').style.display = 'none';
 
     const app = document.getElementById('scheduleApp');
-    app.classList.add('active');
+    app.style.display = 'block';
     const gInfo = GROUPS_DATA[currentGroup] || GROUPS_DATA[parseInt(currentGroup)];
     document.getElementById('badgeIndicator').textContent = `${gInfo.title} | سكشن ${currentSection}`;
     
