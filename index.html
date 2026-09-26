@@ -3,28 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>جدول المحاضرات والسكاشن - المستوى الثاني</title>
+  <title>الجداول الدراسية الكاملة - المستوى الثاني</title>
   <style>
     :root {
       --primary: #1e3a8a;
       --secondary: #0284c7;
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
-      --border: #cbd5e1;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --border: #94a3b8;
       --text: #0f172a;
       --lecture-bg: #fef08a;
       --lecture-border: #ca8a04;
+      --lecture-text: #713f12;
       --section-bg: #e0f2fe;
       --section-border: #0284c7;
+      --section-text: #0369a1;
       --break-bg: #e9d5ff;
       --break-border: #9333ea;
+      --break-text: #6b21a8;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     body {
@@ -34,39 +37,52 @@
     }
 
     .container {
-      max-width: 1400px;
+      max-width: 1450px;
       margin: 0 auto;
     }
 
     header {
       text-align: center;
       margin-bottom: 25px;
+      background: var(--card);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     }
 
     h1 {
-      font-size: 1.6rem;
+      font-size: 1.8rem;
       color: var(--primary);
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
-    .controls {
+    p {
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+
+    .controls-wrapper {
       display: flex;
       justify-content: center;
-      gap: 15px;
+      gap: 20px;
       margin-bottom: 25px;
       flex-wrap: wrap;
+      background: var(--card);
+      padding: 15px 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     }
 
-    .select-box {
+    .control-item {
       display: flex;
       flex-direction: column;
       gap: 6px;
-      min-width: 220px;
+      min-width: 240px;
     }
 
     label {
-      font-size: 0.9rem;
-      font-weight: bold;
+      font-weight: 700;
+      font-size: 0.88rem;
       color: #334155;
     }
 
@@ -75,101 +91,154 @@
       border: 1px solid var(--border);
       border-radius: 8px;
       font-size: 1rem;
+      background: #fff;
+      color: var(--text);
       outline: none;
-      background: var(--card-bg);
+      transition: all 0.2s ease;
     }
 
     select:focus {
       border-color: var(--secondary);
-      box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.2);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
     }
 
-    .print-btn {
+    .btn-print {
       background: var(--primary);
       color: #fff;
+      font-weight: 700;
       border: none;
       cursor: pointer;
       align-self: flex-end;
-      font-weight: bold;
-      transition: opacity 0.2s;
     }
 
-    .print-btn:hover {
-      opacity: 0.9;
+    .btn-print:hover {
+      background: #172554;
     }
 
-    .table-wrapper {
-      overflow-x: auto;
-      background: var(--card-bg);
+    .schedule-panel {
+      display: none;
+      background: var(--card);
       border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-      border: 1px solid var(--border);
+    }
+
+    .schedule-panel.active {
+      display: block;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 10px;
+    }
+
+    .panel-header h2 {
+      font-size: 1.3rem;
+      color: var(--primary);
+    }
+
+    .table-container {
+      overflow-x: auto;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
+      min-width: 1100px;
       text-align: center;
-      min-width: 1050px;
     }
 
     th, td {
       border: 1px solid var(--border);
-      padding: 8px 4px;
-      font-size: 0.8rem;
+      padding: 6px 4px;
+      font-size: 0.78rem;
     }
 
     th {
-      background-color: #f1f5f9;
+      background: #e2e8f0;
       color: #1e293b;
-      font-weight: bold;
-      white-space: pre-line;
+      font-weight: 700;
+      line-height: 1.3;
     }
 
-    .day-col {
-      width: 80px;
-      background: #f8fafc;
-      font-weight: bold;
-      color: var(--primary);
-    }
-
-    .slot-cell {
-      height: 75px;
-      vertical-align: middle;
-      font-size: 0.78rem;
-      position: relative;
-    }
-
-    .lecture {
-      background-color: var(--lecture-bg);
-      border: 1px solid var(--lecture-border);
-      color: #713f12;
-      font-weight: 600;
-      border-radius: 4px;
-      padding: 4px;
-    }
-
-    .section {
-      background-color: var(--section-bg);
-      border: 1px solid var(--section-border);
-      color: #0369a1;
-      font-weight: 600;
-      border-radius: 4px;
-      padding: 4px;
-    }
-
-    .break {
-      background-color: var(--break-bg);
-      border: 1px solid var(--break-border);
-      color: #6b21a8;
-      font-weight: bold;
-    }
-
-    .subtext {
+    th span.time {
       display: block;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
+      color: #475569;
       font-weight: normal;
       margin-top: 2px;
+    }
+
+    .day-cell {
+      background: #f8fafc;
+      font-weight: 700;
+      color: var(--primary);
+      width: 80px;
+    }
+
+    td.cell-slot {
+      height: 70px;
+      vertical-align: middle;
+    }
+
+    .lecture-block {
+      background-color: var(--lecture-bg);
+      border: 1px solid var(--lecture-border);
+      color: var(--lecture-text);
+      font-weight: 700;
+      padding: 6px 4px;
+      border-radius: 4px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .section-block {
+      background-color: var(--section-bg);
+      border: 1px solid var(--section-border);
+      color: var(--section-text);
+      font-weight: 700;
+      padding: 6px 4px;
+      border-radius: 4px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .break-block {
+      background-color: var(--break-bg);
+      border: 1px solid var(--break-border);
+      color: var(--break-text);
+      font-weight: 700;
+      padding: 6px 4px;
+      border-radius: 4px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .details {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: normal;
+      margin-top: 3px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #64748b;
+      background: var(--card);
+      border-radius: 12px;
+      font-size: 1.1rem;
     }
 
     @media print {
@@ -177,18 +246,20 @@
         padding: 0;
         background: #fff;
       }
-      .controls, .print-btn {
+      .controls-wrapper, header, .btn-print {
         display: none !important;
       }
-      .table-wrapper {
-        border: none;
+      .schedule-panel {
+        display: block !important;
         box-shadow: none;
+        padding: 0;
+        margin: 0;
       }
       table {
         min-width: 100%;
       }
       th, td {
-        border-color: #000 !important;
+        border: 1px solid #000 !important;
       }
     }
   </style>
@@ -198,299 +269,1037 @@
 <div class="container">
   <header>
     <h1>بوابة الجداول الدراسية - المستوى الثاني</h1>
-    <p>حدد المجموعة والسكشن لعرض الجدول الفعلي الكامل</p>
+    <p>عرض الجداول المعتمدة للمجموعتين الخامسة والسادسة بالفترات الصحيحة</p>
   </header>
 
-  <div class="controls">
-    <div class="select-box">
-      <label for="groupSelect">المجموعة الدراسية:</label>
-      <select id="groupSelect" onchange="handleGroupChange()">
-        <option value="">-- اختر المجموعة --</option>
-        <option value="5">المجموعة الخامسة (27 - 33)</option>
-        <option value="6">المجموعة السادسة (34 - 40)</option>
+  <div class="controls-wrapper">
+    <div class="control-item">
+      <label for="groupSelector">اختر المجموعة:</label>
+      <select id="groupSelector" onchange="onGroupChanged()">
+        <option value="">-- اضغط للاختيار --</option>
+        <option value="group5">المجموعة الخامسة (سكاشن 27 إلى 33)</option>
+        <option value="group6">المجموعة السادسة (سكاشن 34 إلى 40)</option>
       </select>
     </div>
 
-    <div class="select-box">
-      <label for="sectionSelect">رقم السكشن:</label>
-      <select id="sectionSelect" onchange="renderSchedule()" disabled>
-        <option value="">-- اختر السكشن أولاً --</option>
+    <div class="control-item">
+      <label for="sectionSelector">اختر السكشن:</label>
+      <select id="sectionSelector" onchange="onSectionChanged()" disabled>
+        <option value="">-- اختر المجموعة أولاً --</option>
       </select>
     </div>
 
-    <button class="print-btn" onclick="window.print()">طباعة الجدول</button>
+    <button class="btn-print" onclick="window.print()">طباعة الجدول الحالي</button>
   </div>
 
-  <div class="table-wrapper">
-    <table id="scheduleTable">
-      <thead>
-        <tr>
-          <th class="day-col">اليوم</th>
-          <th>ف1<br><span style="font-size:0.7rem;">09:00 - 09:45</span></th>
-          <th>ف2<br><span style="font-size:0.7rem;">09:45 - 10:30</span></th>
-          <th>ف3<br><span style="font-size:0.7rem;">10:30 - 11:15</span></th>
-          <th>ف4<br><span style="font-size:0.7rem;">11:15 - 12:00</span></th>
-          <th>ف5<br><span style="font-size:0.7rem;">12:00 - 12:45</span></th>
-          <th>ف6<br><span style="font-size:0.7rem;">12:45 - 01:30</span></th>
-          <th>ف7<br><span style="font-size:0.7rem;">01:30 - 02:15</span></th>
-          <th>ف8<br><span style="font-size:0.7rem;">02:15 - 03:00</span></th>
-          <th>ف9<br><span style="font-size:0.7rem;">03:00 - 03:45</span></th>
-          <th>ف10<br><span style="font-size:0.7rem;">03:45 - 04:30</span></th>
-          <th>ف11<br><span style="font-size:0.7rem;">04:30 - 05:15</span></th>
-          <th>ف12<br><span style="font-size:0.7rem;">05:15 - 06:00</span></th>
-        </tr>
-      </thead>
-      <tbody id="tableBody">
-        <tr>
-          <td colspan="13" style="padding: 30px; color: #64748b;">يرجى اختيار المجموعة ورقم السكشن لعرض الجدول.</td>
-        </tr>
-      </tbody>
-    </table>
+  <div id="emptyNotice" class="empty-state">
+    يرجى تحديد المجموعة أولاً ثم اختيار رقم السكشن لعرض الجدول الترويسي والتفصيلي مباشرة.
   </div>
+
+  <!-- ==================== المجموعة الخامسة ==================== -->
+
+  <!-- سكشن 27 -->
+  <div id="sec-27" class="schedule-panel">
+    <div class="panel-header">
+      <h2>المستوى الثاني | المجموعة الخامسة — سكشن 27</h2>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th class="day-cell">اليوم</th>
+            <th>ف1<span class="time">09:00 - 09:45</span></th>
+            <th>ف2<span class="time">09:45 - 10:30</span></th>
+            <th>ف3<span class="time">10:30 - 11:15</span></th>
+            <th>ف4<span class="time">11:15 - 12:00</span></th>
+            <th>ف5<span class="time">12:00 - 12:45</span></th>
+            <th>ف6<span class="time">12:45 - 01:30</span></th>
+            <th>ف7<span class="time">01:30 - 02:15</span></th>
+            <th>ف8<span class="time">02:15 - 03:00</span></th>
+            <th>ف9<span class="time">03:00 - 03:45</span></th>
+            <th>ف10<span class="time">03:45 - 04:30</span></th>
+            <th>ف11<span class="time">04:30 - 05:15</span></th>
+            <th>ف12<span class="time">05:15 - 06:00</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="day-cell">السبت</td><td colspan="12" class="cell-slot"></td></tr>
+          <tr><td class="day-cell">الأحد</td><td colspan="12" class="cell-slot"></td></tr>
+          <tr>
+            <td class="day-cell">الإثنين</td>
+            <td colspan="2" class="cell-slot"><div class="section-block">مقدمة نظم معلومات (عملي)<span class="details">م/ إبراهيم عفيفي — معمل 10</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تصميم منطقي<span class="details">د/ فاطمة صقر — مدرج 4</span></div></td>
+            <td colspan="8" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الثلاثاء</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: هياكل بيانات<span class="details">د/ أحمد حسن — مدرج 1</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">هياكل بيانات (عملي)<span class="details">م/ صبحي طلعت — معمل 11</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="break-block">استراحة رسمية<span class="details">12:00 م - 01:30 م</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تحليل إحصائي (تمارين)<span class="details">م/ شهد حمدي — قاعة 11</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">جبر خطي (تمارين)<span class="details">م/ كرستين نادر — قاعة 10</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الأربعاء</td>
+            <td colspan="3" class="cell-slot"></td>
+            <td class="cell-slot"><div class="section-block">تصميم منطقي (عملي)<span class="details">م/ سهيلة نادر — معمل تصميم 1</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مقدمة نظم معلومات<span class="details">د/ شيماء إسماعيل — مدرج 2</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مهارات الاتصال<span class="details">د/ محمد فوزي — مدرج 2</span></div></td>
+            <td class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الخميس</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: جبر خطي<span class="details">د/ مصطفى حسن — مدرج 1</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تحليل إحصائي<span class="details">د/ نهى عبد الكريم — مدرج 5</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تصميم منطقي (تمارين)<span class="details">م/ طه طلعت — قاعة 3</span></div></td>
+            <td colspan="6" class="cell-slot"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- سكشن 28 -->
+  <div id="sec-28" class="schedule-panel">
+    <div class="panel-header">
+      <h2>المستوى الثاني | المجموعة الخامسة — سكشن 28</h2>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th class="day-cell">اليوم</th>
+            <th>ف1<span class="time">09:00 - 09:45</span></th>
+            <th>ف2<span class="time">09:45 - 10:30</span></th>
+            <th>ف3<span class="time">10:30 - 11:15</span></th>
+            <th>ف4<span class="time">11:15 - 12:00</span></th>
+            <th>ف5<span class="time">12:00 - 12:45</span></th>
+            <th>ف6<span class="time">12:45 - 01:30</span></th>
+            <th>ف7<span class="time">01:30 - 02:15</span></th>
+            <th>ف8<span class="time">02:15 - 03:00</span></th>
+            <th>ف9<span class="time">03:00 - 03:45</span></th>
+            <th>ف10<span class="time">03:45 - 04:30</span></th>
+            <th>ف11<span class="time">04:30 - 05:15</span></th>
+            <th>ف12<span class="time">05:15 - 06:00</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="day-cell">السبت</td><td colspan="12" class="cell-slot"></td></tr>
+          <tr><td class="day-cell">الأحد</td><td colspan="12" class="cell-slot"></td></tr>
+          <tr>
+            <td class="day-cell">الإثنين</td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تصميم منطقي<span class="details">د/ فاطمة صقر — مدرج 4</span></div></td>
+            <td class="cell-slot"></td>
+            <td class="cell-slot"><div class="section-block">تصميم منطقي (عملي)<span class="details">م/ روان علاء — معمل تصميم 2</span></div></td>
+            <td colspan="6" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الثلاثاء</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: هياكل بيانات<span class="details">د/ أحمد حسن — مدرج 1</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">مقدمة نظم معلومات (عملي)<span class="details">م/ إبراهيم عفيفي — معمل 10</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="break-block">استراحة رسمية<span class="details">12:00 م - 01:30 م</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تحليل إحصائي (تمارين)<span class="details">م/ شهد حمدي — قاعة 11</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">هياكل بيانات (عملي)<span class="details">م/ فاطمة الزهراء — معمل IoT</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الأربعاء</td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">جبر خطي (تمارين)<span class="details">م/ نهى عماد — قاعة 7</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تصميم منطقي (تمارين)<span class="details">م/ منيرة منير — قاعة 11</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مقدمة نظم معلومات<span class="details">د/ شيماء إسماعيل — مدرج 2</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مهارات الاتصال<span class="details">د/ محمد فوزي — مدرج 2</span></div></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الخميس</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: جبر خطي<span class="details">د/ مصطفى حسن — مدرج 1</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تحليل إحصائي<span class="details">د/ نهى عبد الكريم — مدرج 5</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تصميم منطقي (تمارين)<span class="details">م/ طه طلعت — قاعة 3</span></div></td>
+            <td colspan="6" class="cell-slot"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- سكشن 29 -->
+  <div id="sec-29" class="schedule-panel">
+    <div class="panel-header">
+      <h2>المستوى الثاني | المجموعة الخامسة — سكشن 29</h2>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th class="day-cell">اليوم</th>
+            <th>ف1<span class="time">09:00 - 09:45</span></th>
+            <th>ف2<span class="time">09:45 - 10:30</span></th>
+            <th>ف3<span class="time">10:30 - 11:15</span></th>
+            <th>ف4<span class="time">11:15 - 12:00</span></th>
+            <th>ف5<span class="time">12:00 - 12:45</span></th>
+            <th>ف6<span class="time">12:45 - 01:30</span></th>
+            <th>ف7<span class="time">01:30 - 02:15</span></th>
+            <th>ف8<span class="time">02:15 - 03:00</span></th>
+            <th>ف9<span class="time">03:00 - 03:45</span></th>
+            <th>ف10<span class="time">03:45 - 04:30</span></th>
+            <th>ف11<span class="time">04:30 - 05:15</span></th>
+            <th>ف12<span class="time">05:15 - 06:00</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="day-cell">السبت</td><td colspan="12" class="cell-slot"></td></tr>
+          <tr><td class="day-cell">الأحد</td><td colspan="12" class="cell-slot"></td></tr>
+          <tr>
+            <td class="day-cell">الإثنين</td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تصميم منطقي<span class="details">د/ فاطمة صقر — مدرج 4</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">هياكل بيانات (عملي)<span class="details">م/ إبراهيم رياض — معمل 8</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">جبر خطي (تمارين)<span class="details">م/ نيرة طارق — قاعة 5</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الثلاثاء</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: هياكل بيانات<span class="details">د/ أحمد حسن — مدرج 1</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تصميم منطقي (تمارين)<span class="details">م/ منيرة منير — قاعة 12</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="break-block">استراحة رسمية<span class="details">12:00 م - 01:30 م</span></div></td>
+            <td class="cell-slot"><div class="section-block">تصميم منطقي (عملي)<span class="details">م/ روان علاء — معمل تصميم 2</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تحليل إحصائي (تمارين)<span class="details">م/ شهد حمدي — قاعة 11</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الأربعاء</td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">مقدمة نظم معلومات (عملي)<span class="details">م/ فاطمة صبحي — معمل الوسائط</span></div></td>
+            <td colspan="3" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مقدمة نظم معلومات<span class="details">د/ شيماء إسماعيل — مدرج 2</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مهارات الاتصال<span class="details">د/ محمد فوزي — مدرج 2</span></div></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الخميس</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: جبر خطي<span class="details">د/ مصطفى حسن — مدرج 1</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تحليل إحصائي<span class="details">د/ نهى عبد الكريم — مدرج 5</span></div></td>
+            <td colspan="8" class="cell-slot"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- سكشن 30 -->
+  <div id="sec-30" class="schedule-panel">
+    <div class="panel-header">
+      <h2>المستوى الثاني | المجموعة الخامسة — سكشن 30</h2>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th class="day-cell">اليوم</th>
+            <th>ف1<span class="time">09:00 - 09:45</span></th>
+            <th>ف2<span class="time">09:45 - 10:30</span></th>
+            <th>ف3<span class="time">10:30 - 11:15</span></th>
+            <th>ف4<span class="time">11:15 - 12:00</span></th>
+            <th>ف5<span class="time">12:00 - 12:45</span></th>
+            <th>ف6<span class="time">12:45 - 01:30</span></th>
+            <th>ف7<span class="time">01:30 - 02:15</span></th>
+            <th>ف8<span class="time">02:15 - 03:00</span></th>
+            <th>ف9<span class="time">03:00 - 03:45</span></th>
+            <th>ف10<span class="time">03:45 - 04:30</span></th>
+            <th>ف11<span class="time">04:30 - 05:15</span></th>
+            <th>ف12<span class="time">05:15 - 06:00</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="day-cell">السبت</td><td colspan="12" class="cell-slot"></td></tr>
+          <tr><td class="day-cell">الأحد</td><td colspan="12" class="cell-slot"></td></tr>
+          <tr>
+            <td class="day-cell">الإثنين</td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تصميم منطقي<span class="details">د/ فاطمة صقر — مدرج 4</span></div></td>
+            <td class="cell-slot"><div class="section-block">تصميم منطقي (عملي)<span class="details">م/ روان علاء — معمل تصميم 2</span></div></td>
+            <td colspan="7" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الثلاثاء</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: هياكل بيانات<span class="details">د/ أحمد حسن — مدرج 1</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تصميم منطقي (تمارين)<span class="details">م/ منيرة منير — قاعة 12</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="break-block">استراحة رسمية<span class="details">12:00 م - 01:30 م</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">مقدمة نظم معلومات (عملي)<span class="details">م/ طه طلعت — معمل 7</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تحليل إحصائي (تمارين)<span class="details">م/ شهد حمدي — قاعة 11</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الأربعاء</td>
+            <td colspan="3" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">جبر خطي (تمارين)<span class="details">م/ نهى عماد — قاعة 7</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مقدمة نظم معلومات<span class="details">د/ شيماء إسماعيل — مدرج 2</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مهارات الاتصال<span class="details">د/ محمد فوزي — مدرج 2</span></div></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الخميس</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: جبر خطي<span class="details">د/ مصطفى حسن — مدرج 1</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تحليل إحصائي<span class="details">د/ نهى عبد الكريم — مدرج 5</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">هياكل بيانات (عملي)<span class="details">م/ رويدا عادل — معمل 12</span></div></td>
+            <td colspan="4" class="cell-slot"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- سكشن 31 -->
+  <div id="sec-31" class="schedule-panel">
+    <div class="panel-header">
+      <h2>المستوى الثاني | المجموعة الخامسة — سكشن 31</h2>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th class="day-cell">اليوم</th>
+            <th>ف1<span class="time">09:00 - 09:45</span></th>
+            <th>ف2<span class="time">09:45 - 10:30</span></th>
+            <th>ف3<span class="time">10:30 - 11:15</span></th>
+            <th>ف4<span class="time">11:15 - 12:00</span></th>
+            <th>ف5<span class="time">12:00 - 12:45</span></th>
+            <th>ف6<span class="time">12:45 - 01:30</span></th>
+            <th>ف7<span class="time">01:30 - 02:15</span></th>
+            <th>ف8<span class="time">02:15 - 03:00</span></th>
+            <th>ف9<span class="time">03:00 - 03:45</span></th>
+            <th>ف10<span class="time">03:45 - 04:30</span></th>
+            <th>ف11<span class="time">04:30 - 05:15</span></th>
+            <th>ف12<span class="time">05:15 - 06:00</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="day-cell">السبت</td><td colspan="12" class="cell-slot"></td></tr>
+          <tr><td class="day-cell">الأحد</td><td colspan="12" class="cell-slot"></td></tr>
+          <tr>
+            <td class="day-cell">الإثنين</td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تصميم منطقي<span class="details">د/ فاطمة صقر — مدرج 4</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">جبر خطي (تمارين)<span class="details">م/ آلاء إبراهيم — قاعة 4</span></div></td>
+            <td colspan="6" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الثلاثاء</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: هياكل بيانات<span class="details">د/ أحمد حسن — مدرج 1</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تحليل إحصائي (تمارين)<span class="details">م/ ميادة مصطفى — قاعة 4</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="break-block">استراحة رسمية<span class="details">12:00 م - 01:30 م</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">هياكل بيانات (عملي)<span class="details">م/ عمر رمضان — معمل 2</span></div></td>
+            <td class="cell-slot"><div class="section-block">تصميم منطقي (عملي)<span class="details">م/ روان علاء — معمل تصميم 2</span></div></td>
+            <td colspan="3" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الأربعاء</td>
+            <td colspan="3" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">مقدمة نظم معلومات (عملي)<span class="details">م/ طه طلعت — معمل 1</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مقدمة نظم معلومات<span class="details">د/ شيماء إسماعيل — مدرج 2</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مهارات الاتصال<span class="details">د/ محمد فوزي — مدرج 2</span></div></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الخميس</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: جبر خطي<span class="details">د/ مصطفى حسن — مدرج 1</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تحليل إحصائي<span class="details">د/ نهى عبد الكريم — مدرج 5</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تصميم منطقي (تمارين)<span class="details">م/ طه طلعت — قاعة 3</span></div></td>
+            <td colspan="6" class="cell-slot"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- سكشن 32 (جدولك المعتمد) -->
+  <div id="sec-32" class="schedule-panel">
+    <div class="panel-header">
+      <h2>المستوى الثاني | المجموعة الخامسة — سكشن 32 (جدولك المعتمد)</h2>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th class="day-cell">اليوم</th>
+            <th>ف1<span class="time">09:00 - 09:45</span></th>
+            <th>ف2<span class="time">09:45 - 10:30</span></th>
+            <th>ف3<span class="time">10:30 - 11:15</span></th>
+            <th>ف4<span class="time">11:15 - 12:00</span></th>
+            <th>ف5<span class="time">12:00 - 12:45</span></th>
+            <th>ف6<span class="time">12:45 - 01:30</span></th>
+            <th>ف7<span class="time">01:30 - 02:15</span></th>
+            <th>ف8<span class="time">02:15 - 03:00</span></th>
+            <th>ف9<span class="time">03:00 - 03:45</span></th>
+            <th>ف10<span class="time">03:45 - 04:30</span></th>
+            <th>ف11<span class="time">04:30 - 05:15</span></th>
+            <th>ف12<span class="time">05:15 - 06:00</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="day-cell">السبت</td><td colspan="12" class="cell-slot"></td></tr>
+          <tr><td class="day-cell">الأحد</td><td colspan="12" class="cell-slot"></td></tr>
+          <tr>
+            <td class="day-cell">الإثنين</td>
+            <td class="cell-slot"></td>
+            <td class="cell-slot"><div class="section-block">تصميم منطقي (عملي)<span class="details">م/ محمد مصطفى — معمل تصميم 1</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تصميم منطقي<span class="details">د/ فاطمة صقر — مدرج 4</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">جبر خطي (تمارين)<span class="details">م/ آلاء إبراهيم — قاعة 4</span></div></td>
+            <td colspan="6" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الثلاثاء</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: هياكل بيانات<span class="details">د/ أحمد حسن — مدرج 1</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تحليل إحصائي (تمارين)<span class="details">م/ ميادة مصطفى — قاعة 4</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="break-block">استراحة رسمية<span class="details">12:00 م - 01:30 م</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">هياكل بيانات (عملي)<span class="details">م/ عمر رمضان — معمل 2</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الأربعاء</td>
+            <td colspan="5" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مقدمة نظم معلومات<span class="details">د/ شيماء إسماعيل — مدرج 2</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مهارات الاتصال<span class="details">د/ محمد فوزي — مدرج 2</span></div></td>
+            <td class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الخميس</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: جبر خطي<span class="details">د/ مصطفى حسن — مدرج 1</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تحليل إحصائي<span class="details">د/ نهى عبد الكريم — مدرج 5</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تصميم منطقي (تمارين)<span class="details">م/ منة الله نبيل — قاعة 9</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">مقدمة نظم معلومات (عملي)<span class="details">م/ آيات عبد الرحمن — معمل 10</span></div></td>
+            <td colspan="4" class="cell-slot"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- سكشن 33 -->
+  <div id="sec-33" class="schedule-panel">
+    <div class="panel-header">
+      <h2>المستوى الثاني | المجموعة الخامسة — سكشن 33</h2>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th class="day-cell">اليوم</th>
+            <th>ف1<span class="time">09:00 - 09:45</span></th>
+            <th>ف2<span class="time">09:45 - 10:30</span></th>
+            <th>ف3<span class="time">10:30 - 11:15</span></th>
+            <th>ف4<span class="time">11:15 - 12:00</span></th>
+            <th>ف5<span class="time">12:00 - 12:45</span></th>
+            <th>ف6<span class="time">12:45 - 01:30</span></th>
+            <th>ف7<span class="time">01:30 - 02:15</span></th>
+            <th>ف8<span class="time">02:15 - 03:00</span></th>
+            <th>ف9<span class="time">03:00 - 03:45</span></th>
+            <th>ف10<span class="time">03:45 - 04:30</span></th>
+            <th>ف11<span class="time">04:30 - 05:15</span></th>
+            <th>ف12<span class="time">05:15 - 06:00</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="day-cell">السبت</td><td colspan="12" class="cell-slot"></td></tr>
+          <tr><td class="day-cell">الأحد</td><td colspan="12" class="cell-slot"></td></tr>
+          <tr>
+            <td class="day-cell">الإثنين</td>
+            <td class="cell-slot"><div class="section-block">تصميم منطقي (عملي)<span class="details">م/ محمد مصطفى — معمل تصميم 1</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تصميم منطقي<span class="details">د/ فاطمة صقر — مدرج 4</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تحليل إحصائي (تمارين)<span class="details">م/ شهد حمدي — قاعة 12</span></div></td>
+            <td colspan="6" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الثلاثاء</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: هياكل بيانات<span class="details">د/ أحمد حسن — مدرج 1</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">مقدمة نظم معلومات (عملي)<span class="details">م/ طه طلعت — معمل 7</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="break-block">استراحة رسمية<span class="details">12:00 م - 01:30 م</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">هياكل بيانات (عملي)<span class="details">م/ ندى عادل — معمل 7</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الأربعاء</td>
+            <td colspan="5" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مقدمة نظم معلومات<span class="details">د/ شيماء إسماعيل — مدرج 2</span></div></td>
+            <td class="cell-slot"><div class="section-block">جبر خطي (تمارين)<span class="details">م/ آلاء إبراهيم — قاعة 4</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مهارات الاتصال<span class="details">د/ محمد فوزي — مدرج 2</span></div></td>
+            <td class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الخميس</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: جبر خطي<span class="details">د/ مصطفى حسن — مدرج 1</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تحليل إحصائي<span class="details">د/ نهى عبد الكريم — مدرج 5</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تصميم منطقي (تمارين)<span class="details">م/ منة الله نبيل — قاعة 9</span></div></td>
+            <td colspan="6" class="cell-slot"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ==================== المجموعة السادسة ==================== -->
+
+  <!-- سكشن 34 -->
+  <div id="sec-34" class="schedule-panel">
+    <div class="panel-header">
+      <h2>المستوى الثاني | المجموعة السادسة — سكشن 34</h2>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th class="day-cell">اليوم</th>
+            <th>ف1<span class="time">09:00 - 09:45</span></th>
+            <th>ف2<span class="time">09:45 - 10:30</span></th>
+            <th>ف3<span class="time">10:30 - 11:15</span></th>
+            <th>ف4<span class="time">11:15 - 12:00</span></th>
+            <th>ف5<span class="time">12:00 - 12:45</span></th>
+            <th>ف6<span class="time">12:45 - 01:30</span></th>
+            <th>ف7<span class="time">01:30 - 02:15</span></th>
+            <th>ف8<span class="time">02:15 - 03:00</span></th>
+            <th>ف9<span class="time">03:00 - 03:45</span></th>
+            <th>ف10<span class="time">03:45 - 04:30</span></th>
+            <th>ف11<span class="time">04:30 - 05:15</span></th>
+            <th>ف12<span class="time">05:15 - 06:00</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="day-cell">السبت</td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تصميم منطقي (تمارين)<span class="details">م/ مصطفى سامي — قاعة 6</span></div></td>
+            <td class="cell-slot"><div class="section-block">تصميم منطقي (عملي)<span class="details">م/ مصطفى سامي — معمل تصميم 2</span></div></td>
+            <td colspan="3" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">مقدمة نظم معلومات (عملي)<span class="details">م/ جمال عصام — معمل 14</span></div></td>
+            <td colspan="4" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الأحد</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مهارات الاتصال<span class="details">د/ محمد فوزي — مدرج 4</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">هياكل بيانات (عملي)<span class="details">م/ أحمد عادل — معمل 9</span></div></td>
+            <td colspan="8" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الإثنين</td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تحليل إحصائي (تمارين)<span class="details">م/ شهد حمدي — قاعة 12</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تحليل إحصائي<span class="details">د/ آمال أبو الخير — مدرج 2</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">جبر خطي (تمارين)<span class="details">م/ كرستين نادر — قاعة 3</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مقدمة نظم معلومات<span class="details">د/ شيماء إسماعيل — مدرج 3</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الثلاثاء</td>
+            <td colspan="4" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="break-block">استراحة رسمية<span class="details">12:00 م - 01:30 م</span></div></td>
+            <td colspan="6" class="cell-slot"></td>
+          </tr>
+          <tr><td class="day-cell">الأربعاء</td><td colspan="12" class="cell-slot"></td></tr>
+          <tr>
+            <td class="day-cell">الخميس</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تصميم منطقي<span class="details">د/ فاطمة صقر — مدرج 4</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: هياكل بيانات<span class="details">د/ أحمد حسن — مدرج 3</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: جبر خطي<span class="details">د/ مصطفى حسن — مدرج 1</span></div></td>
+            <td colspan="4" class="cell-slot"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- سكشن 35 -->
+  <div id="sec-35" class="schedule-panel">
+    <div class="panel-header">
+      <h2>المستوى الثاني | المجموعة السادسة — سكشن 35</h2>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th class="day-cell">اليوم</th>
+            <th>ف1<span class="time">09:00 - 09:45</span></th>
+            <th>ف2<span class="time">09:45 - 10:30</span></th>
+            <th>ف3<span class="time">10:30 - 11:15</span></th>
+            <th>ف4<span class="time">11:15 - 12:00</span></th>
+            <th>ف5<span class="time">12:00 - 12:45</span></th>
+            <th>ف6<span class="time">12:45 - 01:30</span></th>
+            <th>ف7<span class="time">01:30 - 02:15</span></th>
+            <th>ف8<span class="time">02:15 - 03:00</span></th>
+            <th>ف9<span class="time">03:00 - 03:45</span></th>
+            <th>ف10<span class="time">03:45 - 04:30</span></th>
+            <th>ف11<span class="time">04:30 - 05:15</span></th>
+            <th>ف12<span class="time">05:15 - 06:00</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="day-cell">السبت</td>
+            <td colspan="2" class="cell-slot"></td>
+            <td class="cell-slot"><div class="section-block">تصميم منطقي (عملي)<span class="details">م/ مصطفى سامي — معمل تصميم 2</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">مقدمة نظم معلومات (عملي)<span class="details">م/ جمال عصام — معمل 14</span></div></td>
+            <td colspan="6" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الأحد</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مهارات الاتصال<span class="details">د/ محمد فوزي — مدرج 4</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تصميم منطقي (تمارين)<span class="details">م/ غادة رفاعي — قاعة 7</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">جبر خطي (تمارين)<span class="details">م/ كرستين نادر — قاعة 12</span></div></td>
+            <td colspan="4" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الإثنين</td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تحليل إحصائي (تمارين)<span class="details">م/ شهد حمدي — قاعة 12</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تحليل إحصائي<span class="details">د/ آمال أبو الخير — مدرج 2</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">هياكل بيانات (عملي)<span class="details">م/ أحمد عادل — معمل 9</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مقدمة نظم معلومات<span class="details">د/ شيماء إسماعيل — مدرج 3</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الثلاثاء</td>
+            <td colspan="4" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="break-block">استراحة رسمية<span class="details">12:00 م - 01:30 م</span></div></td>
+            <td colspan="6" class="cell-slot"></td>
+          </tr>
+          <tr><td class="day-cell">الأربعاء</td><td colspan="12" class="cell-slot"></td></tr>
+          <tr>
+            <td class="day-cell">الخميس</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تصميم منطقي<span class="details">د/ فاطمة صقر — مدرج 4</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: هياكل بيانات<span class="details">د/ أحمد حسن — مدرج 3</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: جبر خطي<span class="details">د/ مصطفى حسن — مدرج 1</span></div></td>
+            <td colspan="4" class="cell-slot"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- سكشن 36 -->
+  <div id="sec-36" class="schedule-panel">
+    <div class="panel-header">
+      <h2>المستوى الثاني | المجموعة السادسة — سكشن 36</h2>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th class="day-cell">اليوم</th>
+            <th>ف1<span class="time">09:00 - 09:45</span></th>
+            <th>ف2<span class="time">09:45 - 10:30</span></th>
+            <th>ف3<span class="time">10:30 - 11:15</span></th>
+            <th>ف4<span class="time">11:15 - 12:00</span></th>
+            <th>ف5<span class="time">12:00 - 12:45</span></th>
+            <th>ف6<span class="time">12:45 - 01:30</span></th>
+            <th>ف7<span class="time">01:30 - 02:15</span></th>
+            <th>ف8<span class="time">02:15 - 03:00</span></th>
+            <th>ف9<span class="time">03:00 - 03:45</span></th>
+            <th>ف10<span class="time">03:45 - 04:30</span></th>
+            <th>ف11<span class="time">04:30 - 05:15</span></th>
+            <th>ف12<span class="time">05:15 - 06:00</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="day-cell">السبت</td>
+            <td class="cell-slot"><div class="section-block">تصميم منطقي (عملي)<span class="details">م/ محمد مصطفى — معمل تصميم 1</span></div></td>
+            <td colspan="11" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الأحد</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مهارات الاتصال<span class="details">د/ محمد فوزي — مدرج 4</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تصميم منطقي (تمارين)<span class="details">م/ غادة رفاعي — قاعة 7</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تحليل إحصائي (تمارين)<span class="details">م/ روان علاء — قاعة 9</span></div></td>
+            <td colspan="4" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الإثنين</td>
+            <td colspan="2" class="cell-slot"><div class="section-block">مقدمة نظم معلومات (عملي)<span class="details">م/ محمد إبراهيم — معمل 5</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تحليل إحصائي<span class="details">د/ آمال أبو الخير — مدرج 2</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">جبر خطي (تمارين)<span class="details">م/ نيرة طارق — قاعة 5</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مقدمة نظم معلومات<span class="details">د/ شيماء إسماعيل — مدرج 3</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الثلاثاء</td>
+            <td colspan="4" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="break-block">استراحة رسمية<span class="details">12:00 م - 01:30 م</span></div></td>
+            <td colspan="6" class="cell-slot"></td>
+          </tr>
+          <tr><td class="day-cell">الأربعاء</td><td colspan="12" class="cell-slot"></td></tr>
+          <tr>
+            <td class="day-cell">الخميس</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تصميم منطقي<span class="details">د/ فاطمة صقر — مدرج 4</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: هياكل بيانات<span class="details">د/ أحمد حسن — مدرج 3</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: جبر خطي<span class="details">د/ مصطفى حسن — مدرج 1</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">هياكل بيانات (عملي)<span class="details">م/ أحمد رضوان — معمل 8</span></div></td>
+            <td class="cell-slot"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- سكشن 37 -->
+  <div id="sec-37" class="schedule-panel">
+    <div class="panel-header">
+      <h2>المستوى الثاني | المجموعة السادسة — سكشن 37</h2>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th class="day-cell">اليوم</th>
+            <th>ف1<span class="time">09:00 - 09:45</span></th>
+            <th>ف2<span class="time">09:45 - 10:30</span></th>
+            <th>ف3<span class="time">10:30 - 11:15</span></th>
+            <th>ف4<span class="time">11:15 - 12:00</span></th>
+            <th>ف5<span class="time">12:00 - 12:45</span></th>
+            <th>ف6<span class="time">12:45 - 01:30</span></th>
+            <th>ف7<span class="time">01:30 - 02:15</span></th>
+            <th>ف8<span class="time">02:15 - 03:00</span></th>
+            <th>ف9<span class="time">03:00 - 03:45</span></th>
+            <th>ف10<span class="time">03:45 - 04:30</span></th>
+            <th>ف11<span class="time">04:30 - 05:15</span></th>
+            <th>ف12<span class="time">05:15 - 06:00</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="day-cell">السبت</td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تصميم منطقي (تمارين)<span class="details">م/ مصطفى سامي — قاعة 6</span></div></td>
+            <td class="cell-slot"></td>
+            <td class="cell-slot"><div class="section-block">تصميم منطقي (عملي)<span class="details">م/ محمد مصطفى — معمل تصميم 1</span></div></td>
+            <td colspan="8" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الأحد</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مهارات الاتصال<span class="details">د/ محمد فوزي — مدرج 4</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تحليل إحصائي (تمارين)<span class="details">م/ شهد حمدي — قاعة 9</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">جبر خطي (تمارين)<span class="details">م/ آلاء إبراهيم — قاعة 3</span></div></td>
+            <td colspan="6" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الإثنين</td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">مقدمة نظم معلومات (عملي)<span class="details">م/ محمد إبراهيم — معمل 5</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تحليل إحصائي<span class="details">د/ آمال أبو الخير — مدرج 2</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">هياكل بيانات (عملي)<span class="details">م/ عبد الحميد أحمد — معمل 9</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مقدمة نظم معلومات<span class="details">د/ شيماء إسماعيل — مدرج 3</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الثلاثاء</td>
+            <td colspan="4" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="break-block">استراحة رسمية<span class="details">12:00 م - 01:30 م</span></div></td>
+            <td colspan="6" class="cell-slot"></td>
+          </tr>
+          <tr><td class="day-cell">الأربعاء</td><td colspan="12" class="cell-slot"></td></tr>
+          <tr>
+            <td class="day-cell">الخميس</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تصميم منطقي<span class="details">د/ فاطمة صقر — مدرج 4</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: هياكل بيانات<span class="details">د/ أحمد حسن — مدرج 3</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: جبر خطي<span class="details">د/ مصطفى حسن — مدرج 1</span></div></td>
+            <td colspan="4" class="cell-slot"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- سكشن 38 -->
+  <div id="sec-38" class="schedule-panel">
+    <div class="panel-header">
+      <h2>المستوى الثاني | المجموعة السادسة — سكشن 38</h2>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th class="day-cell">اليوم</th>
+            <th>ف1<span class="time">09:00 - 09:45</span></th>
+            <th>ف2<span class="time">09:45 - 10:30</span></th>
+            <th>ف3<span class="time">10:30 - 11:15</span></th>
+            <th>ف4<span class="time">11:15 - 12:00</span></th>
+            <th>ف5<span class="time">12:00 - 12:45</span></th>
+            <th>ف6<span class="time">12:45 - 01:30</span></th>
+            <th>ف7<span class="time">01:30 - 02:15</span></th>
+            <th>ف8<span class="time">02:15 - 03:00</span></th>
+            <th>ف9<span class="time">03:00 - 03:45</span></th>
+            <th>ف10<span class="time">03:45 - 04:30</span></th>
+            <th>ف11<span class="time">04:30 - 05:15</span></th>
+            <th>ف12<span class="time">05:15 - 06:00</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="day-cell">السبت</td>
+            <td colspan="2" class="cell-slot"><div class="section-block">مقدمة نظم معلومات (عملي)<span class="details">م/ محمد إبراهيم — معمل 5</span></div></td>
+            <td class="cell-slot"><div class="section-block">تصميم منطقي (عملي)<span class="details">م/ محمد مصطفى — معمل تصميم 1</span></div></td>
+            <td colspan="9" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الأحد</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مهارات الاتصال<span class="details">د/ محمد فوزي — مدرج 4</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">هياكل بيانات (عملي)<span class="details">م/ عبد الحميد أحمد — معمل 9</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تحليل إحصائي (تمارين)<span class="details">م/ روان علاء — قاعة 9</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">جبر خطي (تمارين)<span class="details">م/ آلاء إبراهيم — قاعة 3</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تصميم منطقي (تمارين)<span class="details">م/ منة الله نبيل — قاعة 6</span></div></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الإثنين</td>
+            <td colspan="4" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تحليل إحصائي<span class="details">د/ آمال أبو الخير — مدرج 2</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مقدمة نظم معلومات<span class="details">د/ شيماء إسماعيل — مدرج 3</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الثلاثاء</td>
+            <td colspan="4" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="break-block">استراحة رسمية<span class="details">12:00 م - 01:30 م</span></div></td>
+            <td colspan="6" class="cell-slot"></td>
+          </tr>
+          <tr><td class="day-cell">الأربعاء</td><td colspan="12" class="cell-slot"></td></tr>
+          <tr>
+            <td class="day-cell">الخميس</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تصميم منطقي<span class="details">د/ فاطمة صقر — مدرج 4</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: هياكل بيانات<span class="details">د/ أحمد حسن — مدرج 3</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: جبر خطي<span class="details">د/ مصطفى حسن — مدرج 1</span></div></td>
+            <td colspan="4" class="cell-slot"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- سكشن 39 -->
+  <div id="sec-39" class="schedule-panel">
+    <div class="panel-header">
+      <h2>المستوى الثاني | المجموعة السادسة — سكشن 39</h2>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th class="day-cell">اليوم</th>
+            <th>ف1<span class="time">09:00 - 09:45</span></th>
+            <th>ف2<span class="time">09:45 - 10:30</span></th>
+            <th>ف3<span class="time">10:30 - 11:15</span></th>
+            <th>ف4<span class="time">11:15 - 12:00</span></th>
+            <th>ف5<span class="time">12:00 - 12:45</span></th>
+            <th>ف6<span class="time">12:45 - 01:30</span></th>
+            <th>ف7<span class="time">01:30 - 02:15</span></th>
+            <th>ف8<span class="time">02:15 - 03:00</span></th>
+            <th>ف9<span class="time">03:00 - 03:45</span></th>
+            <th>ف10<span class="time">03:45 - 04:30</span></th>
+            <th>ف11<span class="time">04:30 - 05:15</span></th>
+            <th>ف12<span class="time">05:15 - 06:00</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="day-cell">السبت</td>
+            <td class="cell-slot"><div class="section-block">تصميم منطقي (عملي)<span class="details">م/ محمد مصطفى — معمل تصميم 1</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">مقدمة نظم معلومات (عملي)<span class="details">م/ محمد إبراهيم — معمل 5</span></div></td>
+            <td colspan="8" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الأحد</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مهارات الاتصال<span class="details">د/ محمد فوزي — مدرج 4</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تحليل إحصائي (تمارين)<span class="details">م/ روان علاء — قاعة 9</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تصميم منطقي (تمارين)<span class="details">م/ منة الله نبيل — قاعة 6</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الإثنين</td>
+            <td colspan="4" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تحليل إحصائي<span class="details">د/ آمال أبو الخير — مدرج 2</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">جبر خطي (تمارين)<span class="details">م/ نيرة طارق — قاعة 5</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مقدمة نظم معلومات<span class="details">د/ شيماء إسماعيل — مدرج 3</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الثلاثاء</td>
+            <td colspan="4" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="break-block">استراحة رسمية<span class="details">12:00 م - 01:30 م</span></div></td>
+            <td colspan="6" class="cell-slot"></td>
+          </tr>
+          <tr><td class="day-cell">الأربعاء</td><td colspan="12" class="cell-slot"></td></tr>
+          <tr>
+            <td class="day-cell">الخميس</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تصميم منطقي<span class="details">د/ فاطمة صقر — مدرج 4</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: هياكل بيانات<span class="details">د/ أحمد حسن — مدرج 3</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: جبر خطي<span class="details">د/ مصطفى حسن — مدرج 1</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">هياكل بيانات (عملي)<span class="details">م/ عبد الحميد أحمد — معمل 9</span></div></td>
+            <td class="cell-slot"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- سكشن 40 -->
+  <div id="sec-40" class="schedule-panel">
+    <div class="panel-header">
+      <h2>المستوى الثاني | المجموعة السادسة — سكشن 40</h2>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th class="day-cell">اليوم</th>
+            <th>ف1<span class="time">09:00 - 09:45</span></th>
+            <th>ف2<span class="time">09:45 - 10:30</span></th>
+            <th>ف3<span class="time">10:30 - 11:15</span></th>
+            <th>ف4<span class="time">11:15 - 12:00</span></th>
+            <th>ف5<span class="time">12:00 - 12:45</span></th>
+            <th>ف6<span class="time">12:45 - 01:30</span></th>
+            <th>ف7<span class="time">01:30 - 02:15</span></th>
+            <th>ف8<span class="time">02:15 - 03:00</span></th>
+            <th>ف9<span class="time">03:00 - 03:45</span></th>
+            <th>ف10<span class="time">03:45 - 04:30</span></th>
+            <th>ف11<span class="time">04:30 - 05:15</span></th>
+            <th>ف12<span class="time">05:15 - 06:00</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="day-cell">السبت</td><td colspan="12" class="cell-slot"></td></tr>
+          <tr>
+            <td class="day-cell">الأحد</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مهارات الاتصال<span class="details">د/ محمد فوزي — مدرج 4</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">مقدمة نظم معلومات (عملي)<span class="details">م/ فاطمة صبحي — معمل 12</span></div></td>
+            <td class="cell-slot"><div class="section-block">تصميم منطقي (عملي)<span class="details">م/ جمال عادل — معمل تصميم 2</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">جبر خطي (تمارين)<span class="details">م/ كرستين نادر — قاعة 12</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تصميم منطقي (تمارين)<span class="details">م/ منة الله نبيل — قاعة 6</span></div></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الإثنين</td>
+            <td colspan="4" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تحليل إحصائي<span class="details">د/ آمال أبو الخير — مدرج 2</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: مقدمة نظم معلومات<span class="details">د/ شيماء إسماعيل — مدرج 3</span></div></td>
+            <td colspan="2" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الثلاثاء</td>
+            <td colspan="4" class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="break-block">استراحة رسمية<span class="details">12:00 م - 01:30 م</span></div></td>
+            <td colspan="6" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الأربعاء</td>
+            <td colspan="2" class="cell-slot"><div class="section-block">هياكل بيانات (عملي)<span class="details">م/ رويدا عادل — معمل 12</span></div></td>
+            <td colspan="2" class="cell-slot"><div class="section-block">تحليل إحصائي (تمارين)<span class="details">م/ ميادة مصطفى — قاعة 4</span></div></td>
+            <td colspan="8" class="cell-slot"></td>
+          </tr>
+          <tr>
+            <td class="day-cell">الخميس</td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: تصميم منطقي<span class="details">د/ فاطمة صقر — مدرج 4</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: هياكل بيانات<span class="details">د/ أحمد حسن — مدرج 3</span></div></td>
+            <td class="cell-slot"></td>
+            <td colspan="2" class="cell-slot"><div class="lecture-block">محاضرة: جبر خطي<span class="details">د/ مصطفى حسن — مدرج 1</span></div></td>
+            <td colspan="4" class="cell-slot"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </div>
 
 <script>
-const DAYS = ['السبت', 'الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس'];
-
-const GROUPS_DATA = {
-  5: {
-    sections: [27, 28, 29, 30, 31, 32, 33],
-    lectures: [
-      { day: 'الإثنين', start: 3, span: 2, title: 'محاضرة: تصميم منطقي', info: 'د/ فاطمة صقر — مدرج 4' },
-      { day: 'الثلاثاء', start: 1, span: 2, title: 'محاضرة: هياكل بيانات', info: 'د/ أحمد حسن — مدرج 1' },
-      { day: 'الأربعاء', start: 6, span: 2, title: 'محاضرة: مقدمة نظم معلومات', info: 'د/ شيماء إسماعيل — مدرج 2' },
-      { day: 'الأربعاء', start: 10, span: 2, title: 'محاضرة: مهارات الاتصال', info: 'د/ محمد فوزي — مدرج 2' },
-      { day: 'الخميس', start: 1, span: 2, title: 'محاضرة: جبر خطي', info: 'د/ مصطفى حسن — مدرج 1' },
-      { day: 'الخميس', start: 3, span: 2, title: 'محاضرة: تحليل إحصائي', info: 'د/ نهى عبد الكريم — مدرج 5' }
-    ]
-  },
-  6: {
-    sections: [34, 35, 36, 37, 38, 39, 40],
-    lectures: [
-      { day: 'الأحد', start: 1, span: 2, title: 'محاضرة: مهارات الاتصال', info: 'د/ محمد فوزي — مدرج 4' },
-      { day: 'الإثنين', start: 5, span: 2, title: 'محاضرة: تحليل إحصائي', info: 'د/ آمال أبو الخير — مدرج 2' },
-      { day: 'الإثنين', start: 9, span: 2, title: 'محاضرة: مقدمة نظم معلومات', info: 'د/ شيماء إسماعيل — مدرج 3' },
-      { day: 'الخميس', start: 1, span: 2, title: 'محاضرة: تصميم منطقي', info: 'د/ فاطمة صقر — مدرج 4' },
-      { day: 'الخميس', start: 4, span: 2, title: 'محاضرة: هياكل بيانات', info: 'د/ أحمد حسن — مدرج 3' },
-      { day: 'الخميس', start: 7, span: 2, title: 'محاضرة: جبر خطي', info: 'د/ مصطفى حسن — مدرج 1' }
-    ]
-  }
+const GROUP_CONFIG = {
+  group5: [27, 28, 29, 30, 31, 32, 33],
+  group6: [34, 35, 36, 37, 38, 39, 40]
 };
 
-const SECTIONS_DATA = {
-  // المجموعة الخامسة
-  27: [
-    { day: 'الإثنين', start: 1, span: 2, title: 'مقدمة نظم معلومات (عملي)', info: 'م/ إبراهيم عفيفي — معمل 10' },
-    { day: 'الثلاثاء', start: 3, span: 2, title: 'هياكل بيانات (عملي)', info: 'م/ صبحي طلعت — معمل 11' },
-    { day: 'الثلاثاء', start: 7, span: 2, title: 'تحليل إحصائي (تمارين)', info: 'م/ شهد حمدي — قاعة 11' },
-    { day: 'الثلاثاء', start: 9, span: 2, title: 'جبر خطي (تمارين)', info: 'م/ كرستين نادر — قاعة 10' },
-    { day: 'الأربعاء', start: 4, span: 1, title: 'تصميم منطقي (عملي)', info: 'م/ سهيلة نادر — معمل تصميم منطقي 1' },
-    { day: 'الخميس', start: 5, span: 2, title: 'تصميم منطقي (تمارين)', info: 'م/ طه طلعت — قاعة 3' }
-  ],
-  28: [
-    { day: 'الإثنين', start: 6, span: 1, title: 'تصميم منطقي (عملي)', info: 'م/ روان علاء — معمل تصميم منطقي 2' },
-    { day: 'الثلاثاء', start: 3, span: 2, title: 'مقدمة نظم معلومات (عملي)', info: 'م/ إبراهيم عفيفي — معمل 10' },
-    { day: 'الثلاثاء', start: 7, span: 2, title: 'تحليل إحصائي (تمارين)', info: 'م/ شهد حمدي — قاعة 11' },
-    { day: 'الثلاثاء', start: 9, span: 2, title: 'هياكل بيانات (عملي)', info: 'م/ فاطمة الزهراء — معمل IoT' },
-    { day: 'الأربعاء', start: 2, span: 2, title: 'جبر خطي (تمارين)', info: 'م/ نهى عماد — قاعة 7' },
-    { day: 'الأربعاء', start: 4, span: 2, title: 'تصميم منطقي (تمارين)', info: 'م/ منيرة منير — قاعة 11' },
-    { day: 'الخميس', start: 5, span: 2, title: 'تصميم منطقي (تمارين)', info: 'م/ طه طلعت — قاعة 3' }
-  ],
-  29: [
-    { day: 'الإثنين', start: 5, span: 2, title: 'هياكل بيانات (عملي)', info: 'م/ إبراهيم رياض — معمل 8' },
-    { day: 'الإثنين', start: 9, span: 2, title: 'جبر خطي (تمارين)', info: 'م/ نيرة طارق — قاعة 5' },
-    { day: 'الثلاثاء', start: 3, span: 2, title: 'تصميم منطقي (تمارين)', info: 'م/ منيرة منير — قاعة 12' },
-    { day: 'الثلاثاء', start: 7, span: 1, title: 'تصميم منطقي (عملي)', info: 'م/ روان علاء — معمل تصميم منطقي 2' },
-    { day: 'الثلاثاء', start: 9, span: 2, title: 'تحليل إحصائي (تمارين)', info: 'م/ شهد حمدي — قاعة 11' },
-    { day: 'الأربعاء', start: 2, span: 2, title: 'مقدمة نظم معلومات (عملي)', info: 'م/ فاطمة صبحي — معمل الوسائط' }
-  ],
-  30: [
-    { day: 'الإثنين', start: 5, span: 1, title: 'تصميم منطقي (عملي)', info: 'م/ روان علاء — معمل تصميم منطقي 2' },
-    { day: 'الثلاثاء', start: 3, span: 2, title: 'تصميم منطقي (تمارين)', info: 'م/ منيرة منير — قاعة 12' },
-    { day: 'الثلاثاء', start: 7, span: 2, title: 'مقدمة نظم معلومات (عملي)', info: 'م/ طه طلعت — معمل 7' },
-    { day: 'الثلاثاء', start: 9, span: 2, title: 'تحليل إحصائي (تمارين)', info: 'م/ شهد حمدي — قاعة 11' },
-    { day: 'الأربعاء', start: 4, span: 2, title: 'جبر خطي (تمارين)', info: 'م/ نهى عماد — قاعة 7' },
-    { day: 'الخميس', start: 7, span: 2, title: 'هياكل بيانات (عملي)', info: 'م/ رويدا عادل — معمل 12' }
-  ],
-  31: [
-    { day: 'الإثنين', start: 5, span: 2, title: 'جبر خطي (تمارين)', info: 'م/ آلاء إبراهيم — قاعة 4' },
-    { day: 'الثلاثاء', start: 3, span: 2, title: 'تحليل إحصائي (تمارين)', info: 'م/ ميادة مصطفى — قاعة 4' },
-    { day: 'الثلاثاء', start: 7, span: 2, title: 'هياكل بيانات (عملي)', info: 'م/ عمر رمضان — معمل 2' },
-    { day: 'الثلاثاء', start: 9, span: 1, title: 'تصميم منطقي (عملي)', info: 'م/ روان علاء — معمل تصميم منطقي 2' },
-    { day: 'الأربعاء', start: 4, span: 2, title: 'مقدمة نظم معلومات (عملي)', info: 'م/ طه طلعت — معمل 1' },
-    { day: 'الخميس', start: 5, span: 2, title: 'تصميم منطقي (تمارين)', info: 'م/ طه طلعت — قاعة 3' }
-  ],
-  32: [
-    { day: 'الإثنين', start: 2, span: 1, title: 'تصميم منطقي (عملي)', info: 'م/ محمد مصطفى — معمل تصميم منطقي 1' },
-    { day: 'الإثنين', start: 5, span: 2, title: 'جبر خطي (تمارين)', info: 'م/ آلاء إبراهيم — قاعة 4' },
-    { day: 'الثلاثاء', start: 3, span: 2, title: 'تحليل إحصائي (تمارين)', info: 'م/ ميادة مصطفى — قاعة 4' },
-    { day: 'الثلاثاء', start: 9, span: 2, title: 'هياكل بيانات (عملي)', info: 'م/ عمر رمضان — معمل 2' },
-    { day: 'الخميس', start: 5, span: 2, title: 'تصميم منطقي (تمارين)', info: 'م/ منة الله نبيل — قاعة 9' },
-    { day: 'الخميس', start: 7, span: 2, title: 'مقدمة نظم معلومات (عملي)', info: 'م/ آيات عبد الرحمن — معمل 10' }
-  ],
-  33: [
-    { day: 'الإثنين', start: 1, span: 1, title: 'تصميم منطقي (عملي)', info: 'م/ محمد مصطفى — معمل تصميم منطقي 1' },
-    { day: 'الإثنين', start: 5, span: 2, title: 'تحليل إحصائي (تمارين)', info: 'م/ شهد حمدي — قاعة 12' },
-    { day: 'الثلاثاء', start: 3, span: 2, title: 'مقدمة نظم معلومات (عملي)', info: 'م/ طه طلعت — معمل 7' },
-    { day: 'الثلاثاء', start: 9, span: 2, title: 'هياكل بيانات (عملي)', info: 'م/ ندى عادل — معمل 7' },
-    { day: 'الأربعاء', start: 8, span: 2, title: 'جبر خطي (تمارين)', info: 'م/ آلاء إبراهيم — قاعة 4' },
-    { day: 'الخميس', start: 5, span: 2, title: 'تصميم منطقي (تمارين)', info: 'م/ منة الله نبيل — قاعة 9' }
-  ],
-
-  // المجموعة السادسة
-  34: [
-    { day: 'السبت', start: 1, span: 2, title: 'تصميم منطقي (تمارين)', info: 'م/ مصطفى سامي — قاعة 6' },
-    { day: 'السبت', start: 3, span: 1, title: 'تصميم منطقي (عملي)', info: 'م/ مصطفى سامي — معمل تصميم منطقي 2' },
-    { day: 'السبت', start: 7, span: 2, title: 'مقدمة نظم معلومات (عملي)', info: 'م/ جمال عصام — معمل 14' },
-    { day: 'الأحد', start: 3, span: 2, title: 'هياكل بيانات (عملي)', info: 'م/ أحمد عادل — معمل 9' },
-    { day: 'الإثنين', start: 3, span: 2, title: 'تحليل إحصائي (تمارين)', info: 'م/ شهد حمدي — قاعة 12' },
-    { day: 'الإثنين', start: 7, span: 2, title: 'جبر خطي (تمارين)', info: 'م/ كرستين نادر — قاعة 3' }
-  ],
-  35: [
-    { day: 'السبت', start: 3, span: 1, title: 'تصميم منطقي (عملي)', info: 'م/ مصطفى سامي — معمل تصميم منطقي 2' },
-    { day: 'السبت', start: 5, span: 2, title: 'مقدمة نظم معلومات (عملي)', info: 'م/ جمال عصام — معمل 14' },
-    { day: 'الأحد', start: 5, span: 2, title: 'تصميم منطقي (تمارين)', info: 'م/ غادة رفاعي — قاعة 7' },
-    { day: 'الأحد', start: 7, span: 2, title: 'جبر خطي (تمارين)', info: 'م/ كرستين نادر — قاعة 12' },
-    { day: 'الإثنين', start: 3, span: 2, title: 'تحليل إحصائي (تمارين)', info: 'م/ شهد حمدي — قاعة 12' },
-    { day: 'الإثنين', start: 7, span: 2, title: 'هياكل بيانات (عملي)', info: 'م/ أحمد عادل — معمل 9' }
-  ],
-  36: [
-    { day: 'السبت', start: 1, span: 1, title: 'تصميم منطقي (عملي)', info: 'م/ محمد مصطفى — معمل تصميم منطقي 1' },
-    { day: 'الأحد', start: 5, span: 2, title: 'تصميم منطقي (تمارين)', info: 'م/ غادة رفاعي — قاعة 7' },
-    { day: 'الأحد', start: 7, span: 2, title: 'تحليل إحصائي (تمارين)', info: 'م/ روان علاء — قاعة 9' },
-    { day: 'الإثنين', start: 1, span: 2, title: 'مقدمة نظم معلومات (عملي)', info: 'م/ محمد إبراهيم — معمل 5' },
-    { day: 'الإثنين', start: 7, span: 2, title: 'جبر خطي (تمارين)', info: 'م/ نيرة طارق — قاعة 5' },
-    { day: 'الخميس', start: 10, span: 2, title: 'هياكل بيانات (عملي)', info: 'م/ أحمد رضوان — معمل 8' }
-  ],
-  37: [
-    { day: 'السبت', start: 1, span: 2, title: 'تصميم منطقي (تمارين)', info: 'م/ مصطفى سامي — قاعة 6' },
-    { day: 'السبت', start: 4, span: 1, title: 'تصميم منطقي (عملي)', info: 'م/ محمد مصطفى — معمل تصميم منطقي 1' },
-    { day: 'الأحد', start: 3, span: 2, title: 'تحليل إحصائي (تمارين)', info: 'م/ شهد حمدي — قاعة 9' },
-    { day: 'الأحد', start: 5, span: 2, title: 'جبر خطي (تمارين)', info: 'م/ آلاء إبراهيم — قاعة 3' },
-    { day: 'الإثنين', start: 3, span: 2, title: 'مقدمة نظم معلومات (عملي)', info: 'م/ محمد إبراهيم — معمل 5' },
-    { day: 'الإثنين', start: 7, span: 2, title: 'هياكل بيانات (عملي)', info: 'م/ عبد الحميد أحمد — معمل 9' }
-  ],
-  38: [
-    { day: 'السبت', start: 1, span: 2, title: 'مقدمة نظم معلومات (عملي)', info: 'م/ محمد إبراهيم — معمل 5' },
-    { day: 'السبت', start: 3, span: 1, title: 'تصميم منطقي (عملي)', info: 'م/ محمد مصطفى — معمل تصميم منطقي 1' },
-    { day: 'الأحد', start: 3, span: 2, title: 'هياكل بيانات (عملي)', info: 'م/ عبد الحميد أحمد — معمل 9' },
-    { day: 'الأحد', start: 5, span: 2, title: 'تحليل إحصائي (تمارين)', info: 'م/ روان علاء — قاعة 9' },
-    { day: 'الأحد', start: 7, span: 2, title: 'جبر خطي (تمارين)', info: 'م/ آلاء إبراهيم — قاعة 3' },
-    { day: 'الأحد', start: 11, span: 2, title: 'تصميم منطقي (تمارين)', info: 'م/ منة الله نبيل — قاعة 6' }
-  ],
-  39: [
-    { day: 'السبت', start: 1, span: 1, title: 'تصميم منطقي (عملي)', info: 'م/ محمد مصطفى — معمل تصميم منطقي 1' },
-    { day: 'السبت', start: 3, span: 2, title: 'مقدمة نظم معلومات (عملي)', info: 'م/ محمد إبراهيم — معمل 5' },
-    { day: 'الأحد', start: 5, span: 2, title: 'تحليل إحصائي (تمارين)', info: 'م/ روان علاء — قاعة 9' },
-    { day: 'الأحد', start: 9, span: 2, title: 'تصميم منطقي (تمارين)', info: 'م/ منة الله نبيل — قاعة 6' },
-    { day: 'الإثنين', start: 7, span: 2, title: 'جبر خطي (تمارين)', info: 'م/ نيرة طارق — قاعة 5' },
-    { day: 'الخميس', start: 10, span: 2, title: 'هياكل بيانات (عملي)', info: 'م/ عبد الحميد أحمد — معمل 9' }
-  ],
-  40: [
-    { day: 'الأحد', start: 3, span: 2, title: 'مقدمة نظم معلومات (عملي)', info: 'م/ فاطمة صبحي — معمل 12' },
-    { day: 'الأحد', start: 5, span: 1, title: 'تصميم منطقي (عملي)', info: 'م/ جمال عادل — معمل تصميم منطقي 2' },
-    { day: 'الأحد', start: 7, span: 2, title: 'جبر خطي (تمارين)', info: 'م/ كرستين نادر — قاعة 12' },
-    { day: 'الأحد', start: 11, span: 2, title: 'تصميم منطقي (تمارين)', info: 'م/ منة الله نبيل — قاعة 6' },
-    { day: 'الأربعاء', start: 1, span: 2, title: 'هياكل بيانات (عملي)', info: 'م/ رويدا عادل — معمل 12' },
-    { day: 'الأربعاء', start: 3, span: 2, title: 'تحليل إحصائي (تمارين)', info: 'م/ ميادة مصطفى — قاعة 4' }
-  ]
-};
-
-function handleGroupChange() {
-  const groupVal = document.getElementById('groupSelect').value;
-  const sectionSelect = document.getElementById('sectionSelect');
-  sectionSelect.innerHTML = '<option value="">-- اختر السكشن --</option>';
-
-  if (!groupVal) {
-    sectionSelect.disabled = true;
-    renderEmpty();
+function onGroupChanged() {
+  const groupKey = document.getElementById('groupSelector').value;
+  const sectionSelector = document.getElementById('sectionSelector');
+  
+  // إخفاء كل الجداول
+  hideAllSchedules();
+  
+  sectionSelector.innerHTML = '<option value="">-- اضغط لاختيار السكشن --</option>';
+  
+  if (!groupKey) {
+    sectionSelector.disabled = true;
+    document.getElementById('emptyNotice').style.display = 'block';
     return;
   }
-
-  const groupInfo = GROUPS_DATA[groupVal];
-  groupInfo.sections.forEach(sec => {
+  
+  const sections = GROUP_CONFIG[groupKey];
+  sections.forEach(function(sec) {
     const opt = document.createElement('option');
     opt.value = sec;
-    opt.textContent = `سكشن ${sec}`;
-    sectionSelect.appendChild(opt);
+    opt.textContent = `سكشن ${sec}` + (sec === 32 ? ' (المرجع الأساسي)' : '');
+    sectionSelector.appendChild(opt);
   });
-
-  sectionSelect.disabled = false;
-  renderEmpty();
+  
+  sectionSelector.disabled = false;
+  document.getElementById('emptyNotice').style.display = 'block';
 }
 
-function renderEmpty() {
-  document.getElementById('tableBody').innerHTML = `
-    <tr>
-      <td colspan="13" style="padding: 30px; color: #64748b;">يرجى اختيار السكشن لعرض الجدول.</td>
-    </tr>
-  `;
+function onSectionChanged() {
+  const secNumber = document.getElementById('sectionSelector').value;
+  hideAllSchedules();
+  
+  if (!secNumber) {
+    document.getElementById('emptyNotice').style.display = 'block';
+    return;
+  }
+  
+  document.getElementById('emptyNotice').style.display = 'none';
+  const targetPanel = document.getElementById(`sec-${secNumber}`);
+  if (targetPanel) {
+    targetPanel.classList.add('active');
+  }
 }
 
-function renderSchedule() {
-  const groupVal = document.getElementById('groupSelect').value;
-  const secVal = document.getElementById('sectionSelect').value;
-  if (!groupVal || !secVal) return;
-
-  const lectures = GROUPS_DATA[groupVal].lectures;
-  const sections = SECTIONS_DATA[secVal] || [];
-  const tbody = document.getElementById('tableBody');
-  tbody.innerHTML = '';
-
-  DAYS.forEach(day => {
-    const tr = document.createElement('tr');
-    
-    // عمود اليوم
-    const dayTd = document.createElement('td');
-    dayTd.className = 'day-col';
-    dayTd.textContent = day;
-    tr.appendChild(dayTd);
-
-    let period = 1;
-    while (period <= 12) {
-      // 1. استراحة الثلاثاء ف5 و ف6
-      if (day === 'الثلاثاء' && period === 5) {
-        const td = document.createElement('td');
-        td.colSpan = 2;
-        td.className = 'slot-cell break';
-        td.innerHTML = 'فترة استراحة رسمية<span class="subtext">12:00 م - 01:30 م</span>';
-        tr.appendChild(td);
-        period += 2;
-        continue;
-      }
-
-      // 2. البحث عن محاضرة
-      const lec = lectures.find(l => l.day === day && l.start === period);
-      if (lec) {
-        const td = document.createElement('td');
-        td.colSpan = lec.span;
-        td.className = 'slot-cell lecture';
-        td.innerHTML = `${lec.title}<span class="subtext">${lec.info}</span>`;
-        tr.appendChild(td);
-        period += lec.span;
-        continue;
-      }
-
-      // 3. البحث عن سكشن أو معمل
-      const sec = sections.find(s => s.day === day && s.start === period);
-      if (sec) {
-        const td = document.createElement('td');
-        td.colSpan = sec.span;
-        td.className = 'slot-cell section';
-        td.innerHTML = `${sec.title}<span class="subtext">${sec.info}</span>`;
-        tr.appendChild(td);
-        period += sec.span;
-        continue;
-      }
-
-      // 4. خلية فارغة
-      const td = document.createElement('td');
-      td.className = 'slot-cell';
-      tr.appendChild(td);
-      period++;
-    }
-
-    tbody.appendChild(tr);
+function hideAllSchedules() {
+  const panels = document.querySelectorAll('.schedule-panel');
+  panels.forEach(function(panel) {
+    panel.classList.remove('active');
   });
 }
 </script>
