@@ -1,981 +1,978 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>جدول المحاضرات والسكاشن - المستوى الثاني</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f9;
-      margin: 0;
-      padding: 20px;
-      direction: rtl;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>بوابة الجداول الدراسية التفاعلية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-main:#060b14;
+  --bg-card:rgba(15, 23, 42, 0.85);
+  --border-color:#1e293b;
+  --text-main:#f8fafc;
+  --text-muted:#94a3b8;
+  --accent:#38bdf8;
+  --accent-glow:rgba(56,189,248,0.4);
+  --lec-bg:linear-gradient(135deg,rgba(30,58,138,0.45),rgba(15,23,42,0.8));
+  --lec-border:#38bdf8;
+  --sec-bg:linear-gradient(135deg,rgba(6,78,59,0.45),rgba(15,23,42,0.8));
+  --sec-border:#34d399;
+  --lab-bg:linear-gradient(135deg,rgba(154,52,18,0.45),rgba(15,23,42,0.8));
+  --lab-border:#fb923c;
+  --break-bg:linear-gradient(135deg,rgba(107,33,168,0.45),rgba(15,23,42,0.8));
+  --break-border:#c084fc;
+}
 
-    h1, h2 {
-      text-align: center;
-      color: #333;
-    }
+*{
+  box-sizing:border-box;margin:0;padding:0;font-family:'Cairo',sans-serif;
+  -webkit-tap-highlight-color:transparent;
+}
 
-    .selector-container {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin-bottom: 25px;
-      flex-wrap: wrap;
-    }
+body{
+  background: radial-gradient(circle at top center, #111e38 0%, var(--bg-main) 100%);
+  color:var(--text-main);padding:24px 16px;min-height:100vh;
+  overflow-x:hidden;
+}
 
-    .select-group {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 5px;
-    }
+.container{
+  max-width:1520px;margin:0 auto;position:relative;
+}
 
-    label {
-      font-weight: bold;
-      color: #333;
-    }
+.glow-orb {
+  position: fixed;
+  top: -100px;
+  right: 50%;
+  transform: translateX(50%);
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, transparent 70%);
+  filter: blur(60px);
+  z-index: -1;
+  pointer-events: none;
+  animation: pulseGlow 6s ease-in-out infinite alternate;
+}
 
-    select, button {
-      padding: 10px 15px;
-      font-size: 16px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      outline: none;
-      background: #fff;
-    }
+/* شاشة الترحيب */
+.wizard-box {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 28px;
+  padding: 40px 24px;
+  text-align: center;
+  margin: 30px auto;
+  max-width: 780px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 30px rgba(56,189,248,0.1);
+  animation: wizardPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
 
-    .btn-print {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
-      align-self: flex-end;
-    }
+.wizard-title {
+  font-size: 2.1rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #38bdf8 0%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
 
-    .btn-print:hover {
-      background-color: #0056b3;
-    }
+.wizard-sub {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  margin-bottom: 30px;
+}
 
-    .schedule-container {
-      width: 100%;
-      overflow-x: auto;
-      background: #fff;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      display: none;
-    }
+.choice-grid {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: center;
-      min-width: 1100px;
-    }
+.btn-choice {
+  background: rgba(30, 41, 59, 0.7);
+  color: #fff;
+  border: 2px solid rgba(56, 189, 248, 0.25);
+  padding: 18px 36px;
+  border-radius: 18px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
 
-    th, td {
-      border: 1px solid #000;
-      padding: 8px 4px;
-      font-size: 13px;
-    }
+.btn-choice:hover {
+  transform: translateY(-8px) scale(1.06);
+  border-color: var(--accent);
+  box-shadow: 0 15px 30px var(--accent-glow);
+  background: #1e293b;
+}
 
-    th {
-      background-color: #e9ecef;
-      color: #000;
-      font-weight: bold;
-    }
+.sections-flow {
+  display: none;
+  animation: flipDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
 
-    .day-col {
-      background-color: #f8f9fa;
-      font-weight: bold;
-      width: 90px;
-    }
+.sections-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 14px;
+  margin-top: 25px;
+}
 
-    .lecture {
-      background-color: #ffff00 !important;
-      color: #000;
-      font-weight: bold;
-    }
+.btn-sec-card {
+  background: rgba(15, 23, 42, 0.9);
+  color: #e2e8f0;
+  border: 1px solid var(--border-color);
+  padding: 16px 12px;
+  border-radius: 16px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+}
 
-    .section {
-      background-color: #ffffff;
-      color: #000;
-    }
+.btn-sec-card:hover {
+  transform: translateY(-6px) rotate(2deg) scale(1.08);
+  border-color: #34d399;
+  color: #34d399;
+  box-shadow: 0 10px 25px rgba(52, 211, 153, 0.3);
+  background: #1e293b;
+}
 
-    .break {
-      background-color: #c084fc !important;
-      color: #000;
-      font-weight: bold;
-    }
+.btn-back {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 8px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-top: 20px;
+  transition: all 0.2s;
+}
 
-    .sub-info {
-      font-size: 11px;
-      display: block;
-      margin-top: 3px;
-      font-weight: normal;
-    }
+.btn-back:hover {
+  color: #fff;
+  border-color: #f43f5e;
+}
 
-    @media print {
-      body {
-        padding: 0;
-        background: #fff;
-      }
-      .selector-container, h1, p {
-        display: none !important;
-      }
-      .schedule-container {
-        box-shadow: none;
-        padding: 0;
-        display: block !important;
-      }
-      table {
-        min-width: 100%;
-      }
-    }
-  </style>
+.schedule-display-area {
+  display: none;
+}
+
+.schedule-display-area.active {
+  display: block;
+  animation: scheduleUnroll 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.header{
+  background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%);
+  border:1px solid var(--border-color);border-radius:20px;
+  padding:20px 26px;margin-bottom:20px;display:flex;
+  justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.4);
+}
+.header h1{
+  font-size:1.55rem;font-weight:900;color:#38bdf8;
+}
+.header p{
+  color:var(--text-muted);font-size:0.9rem;margin-top:4px;
+}
+.header-actions{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+}
+.student-badge{
+  background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.3);
+  padding:10px 18px;border-radius:12px;color:#38bdf8;font-weight:800;font-size:0.95rem;
+}
+.btn-change-sec{
+  background:#1e293b;color:#f8fafc;border:1px solid var(--border-color);
+  padding:10px 16px;border-radius:12px;cursor:pointer;font-weight:800;font-size:0.88rem;
+  transition:all 0.2s ease;
+}
+.btn-change-sec:hover{
+  background:#0284c7;border-color:#38bdf8;transform:scale(1.05);
+}
+.btn-download{
+  background:#0284c7;color:#fff;border:1px solid #38bdf8;
+  padding:10px 18px;border-radius:12px;cursor:pointer;
+  font-size:0.9rem;font-weight:800;display:inline-flex;
+  align-items:center;gap:8px;box-shadow:0 4px 14px rgba(2,132,199,0.4);
+  transition:all 0.2s ease;
+}
+.btn-download:hover{
+  background:#0369a1;transform:translateY(-2px);
+}
+
+.filter-panel{
+  background:var(--bg-card);border:1px solid var(--border-color);
+  border-radius:18px;padding:18px 22px;margin-bottom:24px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.25);
+}
+.filter-header{
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:12px;margin-bottom:14px;
+}
+.filter-title{
+  font-size:0.92rem;font-weight:700;color:#cbd5e1;
+}
+.btn-reset{
+  background:#1e293b;color:#38bdf8;border:1px solid rgba(56,189,248,0.3);
+  padding:8px 16px;border-radius:10px;cursor:pointer;font-size:0.82rem;font-weight:700;
+  display:inline-flex;align-items:center;gap:6px;transition:all 0.2s ease;
+}
+.btn-reset:hover{
+  background:#0284c7;color:#fff;border-color:#38bdf8;
+}
+.course-badges{
+  display:flex;gap:10px;flex-wrap:wrap;
+}
+.btn-course{
+  background:rgba(30,41,59,0.6);color:#e2e8f0;border:1px solid var(--border-color);
+  padding:8px 14px;border-radius:12px;cursor:pointer;font-size:0.86rem;font-weight:700;
+  transition:all 0.2s ease;display:inline-flex;align-items:center;gap:8px;user-select:none;
+}
+.btn-course:hover{
+  border-color:#38bdf8;background:#1e293b;
+}
+.btn-course.excluded{
+  background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.4);
+  color:#f87171;text-decoration:line-through;
+}
+
+/* جدول العرض المكتبي المضبوط هندسياً */
+.table-view{display:block;}
+.table-wrap{
+  overflow-x:auto;border-radius:18px;border:1px solid var(--border-color);
+  background:var(--bg-card);box-shadow:0 12px 30px rgba(0,0,0,0.4);
+}
+table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  text-align:center;
+  min-width:1250px;
+  table-layout:fixed; /* السر هنا لتثبيت وتوحيد عرض الأعمدة بدقة */
+}
+th{
+  background:#0b1329;color:#94a3b8;font-size:0.82rem;font-weight:800;
+  padding:12px 4px;border-bottom:2px solid #1e293b;border-left:1px solid #1e293b;
+  overflow:hidden;
+}
+th span{
+  display:block;font-size:0.7rem;color:#64748b;font-weight:600;margin-top:2px;
+}
+td{
+  padding:5px 4px;border-bottom:1px solid var(--border-color);
+  border-left:1px solid #1e293b;vertical-align:middle;background:var(--bg-card);
+  height:95px; /* ارتفاع موحد لجميع الصفوف لمنع التذبذب */
+}
+tr:nth-child(even) td{background:#0b1324;}
+
+/* تثبيت عرض عمود اليوم */
+.col-day {
+  width: 90px;
+}
+.day-title{
+  background:#0b1329 !important;color:#38bdf8;font-weight:900;
+  font-size:0.95rem;width:90px;border-left:2px solid var(--border-color);
+}
+.empty-cell{color:#334155;font-size:1.1rem;}
+
+/* بطاقة الحصة داخل الخلية مع نظام Flex متكامل */
+.item-card{
+  height:100%;
+  width:100%;
+  border-radius:12px;
+  padding:8px 8px;
+  text-align:right;
+  transition:all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border-right:4px solid transparent;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  overflow:hidden;
+}
+.item-card:hover{
+  transform:translateY(-3px) scale(1.015);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  z-index: 5;
+}
+.item-card.type-lec{background:var(--lec-bg);border-color:var(--lec-border);}
+.item-card.type-sec{background:var(--sec-bg);border-color:var(--sec-border);}
+.item-card.type-lab{background:var(--lab-bg);border-color:var(--lab-border);}
+.item-card.type-break{background:var(--break-bg);border-color:var(--break-border);text-align:center;}
+
+.card-top{
+  display:flex;justify-content:space-between;align-items:flex-start;gap:4px;
+}
+.subject-name{
+  font-weight:800;
+  font-size:0.83rem;
+  color:#fff;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.badge-type{
+  font-size:0.62rem;
+  padding:2px 6px;
+  border-radius:6px;
+  font-weight:800;
+  flex-shrink:0;
+}
+.type-lec .badge-type{background:rgba(56,189,248,0.2);color:#7dd3fc;}
+.type-sec .badge-type{background:rgba(52,211,153,0.2);color:#6ee7b7;}
+.type-lab .badge-type{background:rgba(251,146,60,0.2);color:#fdba74;}
+.type-break .badge-type{background:rgba(192,132,252,0.2);color:#d8b4fe;}
+
+.instructor{
+  font-size:0.73rem;
+  color:#cbd5e1;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  margin:2px 0;
+}
+.location{
+  font-size:0.7rem;
+  font-weight:700;
+  display:inline-block;
+  background:rgba(0,0,0,0.35);
+  padding:2px 6px;
+  border-radius:6px;
+  color:#e2e8f0;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  align-self:flex-start;
+}
+
+/* عرض الموبايل */
+.app-view{display:none;}
+.app-day-tabs{
+  display:flex;gap:8px;overflow-x:auto;padding-bottom:12px;
+  margin-bottom:16px;scrollbar-width:none;
+}
+.app-day-tabs::-webkit-scrollbar{display:none;}
+.day-tab-btn{
+  flex:0 0 auto;background:var(--bg-card);border:1px solid var(--border-color);
+  color:var(--text-muted);padding:10px 18px;border-radius:12px;
+  font-size:0.9rem;font-weight:800;cursor:pointer;transition:all 0.2s ease;
+}
+.day-tab-btn.active{
+  background:#0284c7;color:#fff;border-color:#38bdf8;
+  box-shadow:0 4px 14px rgba(2,132,199,0.4);
+}
+.mobile-day-title{
+  display:none;font-size:1.1rem;font-weight:900;color:#38bdf8;
+  margin:16px 0 8px 0;padding-bottom:6px;border-bottom:2px solid #1e293b;
+}
+.app-timeline-card{
+  background:var(--bg-card);border:1px solid var(--border-color);
+  border-radius:16px;padding:16px;margin-bottom:12px;display:flex;
+  gap:16px;align-items:center;border-right:5px solid transparent;
+  box-shadow:0 4px 12px rgba(0,0,0,0.2);
+  transition:all 0.25s ease;
+}
+.app-timeline-card.type-lec{border-right-color:var(--lec-border);}
+.app-timeline-card.type-sec{border-right-color:var(--sec-border);}
+.app-timeline-card.type-lab{border-right-color:var(--lab-border);}
+.app-timeline-card.type-break{border-right-color:var(--break-border);}
+
+.app-time-col{
+  min-width:95px;text-align:center;border-left:1px solid #1e293b;padding-left:14px;
+}
+.app-time-start{font-size:0.95rem;font-weight:800;color:#f8fafc;}
+.app-time-end{font-size:0.75rem;color:var(--text-muted);font-weight:600;margin-top:2px;}
+.app-time-period{font-size:0.65rem;color:#38bdf8;font-weight:700;margin-top:4px;}
+.app-info-col{flex:1;}
+.app-info-header{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;
+}
+.app-subject-title{font-size:1rem;font-weight:800;color:#fff;}
+.app-details{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-top:4px;font-size:0.8rem;color:#94a3b8;
+}
+.app-empty-day{
+  background:var(--bg-card);border:1px dashed #334155;border-radius:16px;
+  padding:36px 20px;text-align:center;color:#64748b;font-size:0.95rem;font-weight:700;
+}
+
+.item-card.is-hidden,
+.app-timeline-card.is-hidden{
+  display:none !important;
+}
+
+/* Animations */
+@keyframes wizardPop {
+  0% { opacity: 0; transform: scale(0.7) translateY(40px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes flipDown {
+  0% { opacity: 0; transform: perspective(600px) rotateX(-20deg) translateY(-20px); }
+  100% { opacity: 1; transform: perspective(600px) rotateX(0deg) translateY(0); }
+}
+
+@keyframes scheduleUnroll {
+  0% { opacity: 0; transform: translateY(60px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes pulseGlow {
+  0% { opacity: 0.5; transform: translateX(50%) scale(0.9); }
+  100% { opacity: 0.9; transform: translateX(50%) scale(1.15); }
+}
+
+@media(max-width:900px){
+  body{padding:12px 10px;}
+  .table-view{display:none;}
+  .app-view{display:block;}
+  .header{padding:16px;border-radius:16px;flex-direction:column;align-items:stretch;}
+  .header-actions{width:100%;display:flex;flex-direction:column;}
+  .student-badge,.btn-download,.btn-change-sec{width:100%;text-align:center;justify-content:center;}
+  .filter-panel{padding:14px;border-radius:16px;}
+  .filter-header{flex-direction:column;align-items:stretch;}
+  .btn-reset{justify-content:center;}
+  .wizard-title{font-size:1.6rem;}
+}
+</style>
 </head>
 <body>
 
-  <h1>جدول المحاضرات والسكاشن — المستوى الثاني</h1>
-  <p style="text-align: center; color: #666; margin-bottom: 20px;">اختر المجموعة ورقم السكشن لعرض الجدول الخاص بك</p>
+<div class="glow-orb"></div>
 
-  <div class="selector-container">
-    <div class="select-group">
-      <label for="groupSelect">اختر المجموعة:</label>
-      <select id="groupSelect" onchange="updateSections()">
-        <option value="">-- اختر المجموعة --</option>
-        <option value="group5">المجموعة الخامسة (27 - 33)</option>
-        <option value="group6">المجموعة السادسة (34 - 40)</option>
-      </select>
+<div class="container">
+
+  <!-- المرحلة 1: اختيار المجموعة -->
+  <div id="stepGroup" class="wizard-box">
+    <div class="wizard-title">أنت في مجموعة كام يا حبيب قلبي؟ 😉</div>
+    <div class="wizard-sub">حدد مجموعتك الدراسية عشان نظبطلك الدنيا بالمللي</div>
+    <div class="choice-grid">
+      <button class="btn-choice" onclick="selectGroup('5')">🔥 المجموعة الخامسة</button>
+      <button class="btn-choice" onclick="selectGroup('6')">⚡ المجموعة السادسة</button>
+    </div>
+  </div>
+
+  <!-- المرحلة 2: اختيار السكشن -->
+  <div id="stepSection" class="wizard-box sections-flow">
+    <div class="wizard-title" id="secGreetingTitle">منور يا بطل! سكشن كام بقى؟</div>
+    <div class="wizard-sub">دوس على رقم سكشنك والجدول هينزل يتشقلب قدامك حالا</div>
+    <div class="sections-grid" id="sectionsGridContainer"></div>
+    <button class="btn-back" onclick="backToGroupStep()">↺ تغيير المجموعة</button>
+  </div>
+
+  <!-- المرحلة 3: عرض الجدول الرئيسي -->
+  <div id="scheduleApp" class="schedule-display-area">
+    <div class="header">
+      <div>
+        <h1 id="mainAppTitle">الجدول الدراسي الأسبوعي</h1>
+        <p>كلية الحاسبات والذكاء الاصطناعي — المستوى الثاني</p>
+      </div>
+      <div class="header-actions">
+        <div class="student-badge" id="badgeIndicator">المجموعة -- | سكشن --</div>
+        <button class="btn-change-sec" onclick="backToSectionStep()">تغيير السكشن 🔁</button>
+        <button class="btn-download" onclick="window.print()">
+          <span>📥</span> تحميل الجدول (PDF)
+        </button>
+      </div>
     </div>
 
-    <div class="select-group">
-      <label for="sectionSelect">اختر السكشن:</label>
-      <select id="sectionSelect" onchange="showSectionSchedule()" disabled>
-        <option value="">-- اختر السكشن --</option>
-      </select>
+    <div class="filter-panel">
+      <div class="filter-header">
+        <span class="filter-title">تصفية المواد (اضغط على مادة لإخفائها):</span>
+        <button class="btn-reset" onclick="resetAllCourses()">
+          <span>↺</span> إظهار جميع المواد
+        </button>
+      </div>
+      <div class="course-badges">
+        <button class="btn-course" data-course="logic" onclick="toggleCourse('logic', this)"><span>✓</span> تصميم منطقي</button>
+        <button class="btn-course" data-course="linear" onclick="toggleCourse('linear', this)"><span>✓</span> جبر خطي</button>
+        <button class="btn-course" data-course="ds" onclick="toggleCourse('ds', this)"><span>✓</span> هياكل بيانات</button>
+        <button class="btn-course" data-course="stat" onclick="toggleCourse('stat', this)"><span>✓</span> تحليل إحصائي</button>
+        <button class="btn-course" data-course="is" onclick="toggleCourse('is', this)"><span>✓</span> مقدمة في نظم المعلومات</button>
+        <button class="btn-course" data-course="comm" onclick="toggleCourse('comm', this)"><span>✓</span> مهارات الاتصال</button>
+      </div>
     </div>
 
-    <button class="btn-print" onclick="window.print()">طباعة الجدول</button>
+    <!-- العرض المكتبي (الجدول الرئيسي بتوزيع متكافئ) -->
+    <div class="table-view">
+      <div class="table-wrap">
+        <table>
+          <!-- ضبط نسب الأعمدة الـ 12 بالتساوي الصارم -->
+          <colgroup>
+            <col class="col-day">
+            <col style="width: calc((100% - 90px) / 12);">
+            <col style="width: calc((100% - 90px) / 12);">
+            <col style="width: calc((100% - 90px) / 12);">
+            <col style="width: calc((100% - 90px) / 12);">
+            <col style="width: calc((100% - 90px) / 12);">
+            <col style="width: calc((100% - 90px) / 12);">
+            <col style="width: calc((100% - 90px) / 12);">
+            <col style="width: calc((100% - 90px) / 12);">
+            <col style="width: calc((100% - 90px) / 12);">
+            <col style="width: calc((100% - 90px) / 12);">
+            <col style="width: calc((100% - 90px) / 12);">
+            <col style="width: calc((100% - 90px) / 12);">
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="day-title">اليوم</th>
+              <th>1<br><span>09:00 - 09:45</span></th>
+              <th>2<br><span>09:45 - 10:30</span></th>
+              <th>3<br><span>10:30 - 11:15</span></th>
+              <th>4<br><span>11:15 - 12:00</span></th>
+              <th>5<br><span>12:00 - 12:45</span></th>
+              <th>6<br><span>12:45 - 01:30</span></th>
+              <th>7<br><span>01:30 - 02:15</span></th>
+              <th>8<br><span>02:15 - 03:00</span></th>
+              <th>9<br><span>03:00 - 03:45</span></th>
+              <th>10<br><span>03:45 - 04:30</span></th>
+              <th>11<br><span>04:30 - 05:15</span></th>
+              <th>12<br><span>05:15 - 06:00</span></th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- عرض الموبايل (Cards Timeline) -->
+    <div class="app-view">
+      <div class="app-day-tabs">
+        <button class="day-tab-btn active" onclick="switchDay('sat', this)">السبت</button>
+        <button class="day-tab-btn" onclick="switchDay('sun', this)">الأحد</button>
+        <button class="day-tab-btn" onclick="switchDay('mon', this)">الإثنين</button>
+        <button class="day-tab-btn" onclick="switchDay('tue', this)">الثلاثاء</button>
+        <button class="day-tab-btn" onclick="switchDay('wed', this)">الأربعاء</button>
+        <button class="day-tab-btn" onclick="switchDay('thu', this)">الخميس</button>
+      </div>
+      <div id="mobileContainer"></div>
+    </div>
   </div>
 
-  <!-- ==================== جداول المجموعة الخامسة ==================== -->
+</div>
 
-  <!-- سكشن 27 -->
-  <div id="table-27" class="schedule-container">
-    <h2>المجموعة الخامسة — سكشن 27</h2>
-    <table>
-      <thead>
-        <tr>
-          <th class="day-col">اليوم</th>
-          <th>1<br>09:00 - 09:45</th><th>2<br>09:45 - 10:30</th><th>3<br>10:30 - 11:15</th><th>4<br>11:15 - 12:00</th>
-          <th>5<br>12:00 - 12:45</th><th>6<br>12:45 - 01:30</th><th>7<br>01:30 - 02:15</th><th>8<br>02:15 - 03:00</th>
-          <th>9<br>03:00 - 03:45</th><th>10<br>03:45 - 04:30</th><th>11<br>04:30 - 05:15</th><th>12<br>05:15 - 06:00</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td class="day-col">السبت</td><td colspan="12"></td></tr>
-        <tr><td class="day-col">الأحد</td><td colspan="12"></td></tr>
-        <tr>
-          <td class="day-col">الإثنين</td>
-          <td colspan="2" class="section">مقدمة نظم معلومات عملي<span class="sub-info">م/ ابراهيم عفيفي معمل 10</span></td>
-          <td colspan="2" class="lecture">تصميم منطقى<span class="sub-info">د/ فاطمه صقر مدرج 4</span></td>
-          <td colspan="8"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الثلاثاء</td>
-          <td colspan="2" class="lecture">هياكل بيانات<span class="sub-info">د/ احمد حسن مدرج 1</span></td>
-          <td colspan="2" class="section">هياكل بيانات عملي<span class="sub-info">م/ صبحي طلعت معمل 11</span></td>
-          <td colspan="2" class="break">فترة استراحة</td>
-          <td colspan="2" class="section">تحليل احصائي<span class="sub-info">م/ شهد حمدي قاعة 11</span></td>
-          <td colspan="2" class="section">جبر خطي<span class="sub-info">م/ كرستين نادر قاعة 10</span></td>
-          <td colspan="2"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الأربعاء</td>
-          <td colspan="3"></td>
-          <td class="section">تصميم منطقى عملى<span class="sub-info">م/ سهيلة نادر معمل تصميم منطقى 1</span></td>
-          <td></td>
-          <td colspan="2" class="lecture">مقدمة فى نظم المعلومات<span class="sub-info">د/ شيماء اسماعيل مدرج 2</span></td>
-          <td colspan="2"></td>
-          <td colspan="2" class="lecture">مهارات الاتصال<span class="sub-info">د/ محمد فوزى مدرج 2</span></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td class="day-col">الخميس</td>
-          <td colspan="2" class="lecture">جبر خطي<span class="sub-info">د/ مصطفى حسن مدرج 1</span></td>
-          <td colspan="2" class="lecture">تحليل إحصائي<span class="sub-info">د/ نهى عبد الكريم مدرج 5</span></td>
-          <td colspan="2" class="section">تصميم منطقى تمارين<span class="sub-info">م/ طه طلعت قاعة 3</span></td>
-          <td colspan="6"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+<script>
+const DAYS_CONFIG = [
+  { id: 'sat', name: 'السبت' },
+  { id: 'sun', name: 'الأحد' },
+  { id: 'mon', name: 'الإثنين' },
+  { id: 'tue', name: 'الثلاثاء' },
+  { id: 'wed', name: 'الأربعاء' },
+  { id: 'thu', name: 'الخميس' }
+];
 
-  <!-- سكشن 28 -->
-  <div id="table-28" class="schedule-container">
-    <h2>المجموعة الخامسة — سكشن 28</h2>
-    <table>
-      <thead>
-        <tr>
-          <th class="day-col">اليوم</th>
-          <th>1<br>09:00 - 09:45</th><th>2<br>09:45 - 10:30</th><th>3<br>10:30 - 11:15</th><th>4<br>11:15 - 12:00</th>
-          <th>5<br>12:00 - 12:45</th><th>6<br>12:45 - 01:30</th><th>7<br>01:30 - 02:15</th><th>8<br>02:15 - 03:00</th>
-          <th>9<br>03:00 - 03:45</th><th>10<br>03:45 - 04:30</th><th>11<br>04:30 - 05:15</th><th>12<br>05:15 - 06:00</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td class="day-col">السبت</td><td colspan="12"></td></tr>
-        <tr><td class="day-col">الأحد</td><td colspan="12"></td></tr>
-        <tr>
-          <td class="day-col">الإثنين</td>
-          <td colspan="2"></td>
-          <td colspan="2" class="lecture">تصميم منطقى<span class="sub-info">د/ فاطمه صقر مدرج 4</span></td>
-          <td></td>
-          <td class="section">تصميم منطقى عملى<span class="sub-info">م/ روان علاء معمل تصميم منطقى 2</span></td>
-          <td colspan="6"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الثلاثاء</td>
-          <td colspan="2" class="lecture">هياكل بيانات<span class="sub-info">د/ احمد حسن مدرج 1</span></td>
-          <td colspan="2" class="section">مقدمة فى نظم المعلومات<span class="sub-info">م/ ابراهيم عفيفي معمل 10</span></td>
-          <td colspan="2" class="break">فترة استراحة</td>
-          <td colspan="2" class="section">تحليل احصائي<span class="sub-info">م/ شهد حمدي قاعة 11</span></td>
-          <td colspan="2" class="section">هياكل بيانات<span class="sub-info">م/ فاطمه الزهراء معمل IoT</span></td>
-          <td colspan="2"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الأربعاء</td>
-          <td></td>
-          <td colspan="2" class="section">جبر خطي<span class="sub-info">م/ نهي عماد قاعة 7</span></td>
-          <td colspan="2" class="section">تصميم منطقى تمارين<span class="sub-info">م/ منيره منير قاعة 11</span></td>
-          <td></td>
-          <td colspan="2" class="lecture">مقدمة فى نظم المعلومات<span class="sub-info">د/ شيماء اسماعيل مدرج 2</span></td>
-          <td colspan="2"></td>
-          <td colspan="2" class="lecture">مهارات الاتصال<span class="sub-info">د/ محمد فوزى مدرج 2</span></td>
-        </tr>
-        <tr>
-          <td class="day-col">الخميس</td>
-          <td colspan="2" class="lecture">جبر خطي<span class="sub-info">د/ مصطفى حسن مدرج 1</span></td>
-          <td colspan="2" class="lecture">تحليل إحصائي<span class="sub-info">د/ نهى عبد الكريم مدرج 5</span></td>
-          <td colspan="2" class="section">تصميم منطقى تمارين<span class="sub-info">م/ طه طلعت قاعة 3</span></td>
-          <td colspan="6"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+const PERIOD_TIMES = {
+  1: { start: '09:00 ص', end: '09:45 ص' },
+  2: { start: '09:45 ص', end: '10:30 ص' },
+  3: { start: '10:30 ص', end: '11:15 ص' },
+  4: { start: '11:15 ص', end: '12:00 م' },
+  5: { start: '12:00 م', end: '12:45 م' },
+  6: { start: '12:45 م', end: '01:30 م' },
+  7: { start: '01:30 م', end: '02:15 م' },
+  8: { start: '02:15 م', end: '03:00 م' },
+  9: { start: '03:00 م', end: '03:45 م' },
+  10: { start: '03:45 م', end: '04:30 م' },
+  11: { start: '04:30 م', end: '05:15 م' },
+  12: { start: '05:15 م', end: '06:00 م' }
+};
 
-  <!-- سكشن 29 -->
-  <div id="table-29" class="schedule-container">
-    <h2>المجموعة الخامسة — سكشن 29</h2>
-    <table>
-      <thead>
-        <tr>
-          <th class="day-col">اليوم</th>
-          <th>1<br>09:00 - 09:45</th><th>2<br>09:45 - 10:30</th><th>3<br>10:30 - 11:15</th><th>4<br>11:15 - 12:00</th>
-          <th>5<br>12:00 - 12:45</th><th>6<br>12:45 - 01:30</th><th>7<br>01:30 - 02:15</th><th>8<br>02:15 - 03:00</th>
-          <th>9<br>03:00 - 03:45</th><th>10<br>03:45 - 04:30</th><th>11<br>04:30 - 05:15</th><th>12<br>05:15 - 06:00</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td class="day-col">السبت</td><td colspan="12"></td></tr>
-        <tr><td class="day-col">الأحد</td><td colspan="12"></td></tr>
-        <tr>
-          <td class="day-col">الإثنين</td>
-          <td colspan="2"></td>
-          <td colspan="2" class="lecture">تصميم منطقى<span class="sub-info">د/ فاطمه صقر مدرج 4</span></td>
-          <td colspan="2" class="section">هياكل بيانات<span class="sub-info">م/ ابراهيم رياض معمل 8</span></td>
-          <td colspan="2"></td>
-          <td colspan="2" class="section">جبر خطي<span class="sub-info">م/ نيرة طارق قاعة 5</span></td>
-          <td colspan="2"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الثلاثاء</td>
-          <td colspan="2" class="lecture">هياكل بيانات<span class="sub-info">د/ احمد حسن مدرج 1</span></td>
-          <td colspan="2" class="section">تصميم منطقى تمارين<span class="sub-info">م/ منيره منير قاعة 12</span></td>
-          <td colspan="2" class="break">فترة استراحة</td>
-          <td class="section">تصميم منطقى عملى<span class="sub-info">م/ روان علاء معمل تصميم منطقى 2</span></td>
-          <td></td>
-          <td colspan="2" class="section">تحليل احصائي<span class="sub-info">م/ شهد حمدي قاعة 11</span></td>
-          <td colspan="2"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الأربعاء</td>
-          <td></td>
-          <td colspan="2" class="section">مقدمة فى نظم المعلومات<span class="sub-info">م/ فاطمة صبحى معمل الوسائط</span></td>
-          <td colspan="3"></td>
-          <td colspan="2" class="lecture">مقدمة فى نظم المعلومات<span class="sub-info">د/ شيماء اسماعيل مدرج 2</span></td>
-          <td colspan="2"></td>
-          <td colspan="2" class="lecture">مهارات الاتصال<span class="sub-info">د/ محمد فوزى مدرج 2</span></td>
-        </tr>
-        <tr>
-          <td class="day-col">الخميس</td>
-          <td colspan="2" class="lecture">جبر خطي<span class="sub-info">د/ مصطفى حسن مدرج 1</span></td>
-          <td colspan="2" class="lecture">تحليل إحصائي<span class="sub-info">د/ نهى عبد الكريم مدرج 5</span></td>
-          <td colspan="8"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+const GROUPS_DATA = {
+  5: {
+    title: 'المجموعة الخامسة',
+    sections: [27, 28, 29, 30, 31, 32, 33],
+    lectures: [
+      { day: 'الإثنين', start: 3, span: 2, title: 'تصميم منطقي', type: 'lec', typeName: 'محاضرة', course: 'logic', doc: 'د/ فاطمة صقر', loc: '📍 مدرج 4' },
+      { day: 'الثلاثاء', start: 1, span: 2, title: 'هياكل بيانات', type: 'lec', typeName: 'محاضرة', course: 'ds', doc: 'د/ أحمد حسن', loc: '📍 مدرج 1' },
+      { day: 'الأربعاء', start: 6, span: 2, title: 'مقدمة نظم معلومات', type: 'lec', typeName: 'محاضرة', course: 'is', doc: 'د/ شيماء إسماعيل', loc: '📍 مدرج 2' },
+      { day: 'الأربعاء', start: 10, span: 2, title: 'مهارات الاتصال', type: 'lec', typeName: 'محاضرة', course: 'comm', doc: 'د/ محمد فوزي', loc: '📍 مدرج 2' },
+      { day: 'الخميس', start: 1, span: 2, title: 'جبر خطي', type: 'lec', typeName: 'محاضرة', course: 'linear', doc: 'د/ مصطفى حسن', loc: '📍 مدرج 1' },
+      { day: 'الخميس', start: 3, span: 2, title: 'تحليل إحصائي', type: 'lec', typeName: 'محاضرة', course: 'stat', doc: 'د/ نهى عبد الكريم', loc: '📍 مدرج 5' }
+    ]
+  },
+  6: {
+    title: 'المجموعة السادسة',
+    sections: [34, 35, 36, 37, 38, 39, 40],
+    lectures: [
+      { day: 'الأحد', start: 1, span: 2, title: 'مهارات الاتصال', type: 'lec', typeName: 'محاضرة', course: 'comm', doc: 'د/ محمد فوزي', loc: '📍 مدرج 4' },
+      { day: 'الإثنين', start: 5, span: 2, title: 'تحليل إحصائي', type: 'lec', typeName: 'محاضرة', course: 'stat', doc: 'د/ آمال أبو الخير', loc: '📍 مدرج 2' },
+      { day: 'الإثنين', start: 9, span: 2, title: 'مقدمة نظم معلومات', type: 'lec', typeName: 'محاضرة', course: 'is', doc: 'د/ شيماء إسماعيل', loc: '📍 مدرج 3' },
+      { day: 'الخميس', start: 1, span: 2, title: 'تصميم منطقي', type: 'lec', typeName: 'محاضرة', course: 'logic', doc: 'د/ فاطمة صقر', loc: '📍 مدرج 4' },
+      { day: 'الخميس', start: 4, span: 2, title: 'هياكل بيانات', type: 'lec', typeName: 'محاضرة', course: 'ds', doc: 'د/ أحمد حسن', loc: '📍 مدرج 3' },
+      { day: 'الخميس', start: 7, span: 2, title: 'جبر خطي', type: 'lec', typeName: 'محاضرة', course: 'linear', doc: 'د/ مصطفى حسن', loc: '📍 مدرج 1' }
+    ]
+  }
+};
 
-  <!-- سكشن 30 -->
-  <div id="table-30" class="schedule-container">
-    <h2>المجموعة الخامسة — سكشن 30</h2>
-    <table>
-      <thead>
-        <tr>
-          <th class="day-col">اليوم</th>
-          <th>1<br>09:00 - 09:45</th><th>2<br>09:45 - 10:30</th><th>3<br>10:30 - 11:15</th><th>4<br>11:15 - 12:00</th>
-          <th>5<br>12:00 - 12:45</th><th>6<br>12:45 - 01:30</th><th>7<br>01:30 - 02:15</th><th>8<br>02:15 - 03:00</th>
-          <th>9<br>03:00 - 03:45</th><th>10<br>03:45 - 04:30</th><th>11<br>04:30 - 05:15</th><th>12<br>05:15 - 06:00</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td class="day-col">السبت</td><td colspan="12"></td></tr>
-        <tr><td class="day-col">الأحد</td><td colspan="12"></td></tr>
-        <tr>
-          <td class="day-col">الإثنين</td>
-          <td colspan="2"></td>
-          <td colspan="2" class="lecture">تصميم منطقى<span class="sub-info">د/ فاطمه صقر مدرج 4</span></td>
-          <td class="section">تصميم منطقى عملى<span class="sub-info">م/ روان علاء معمل تصميم منطقى 2</span></td>
-          <td colspan="7"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الثلاثاء</td>
-          <td colspan="2" class="lecture">هياكل بيانات<span class="sub-info">د/ احمد حسن مدرج 1</span></td>
-          <td colspan="2" class="section">تصميم منطقى تمارين<span class="sub-info">م/ منيره منير قاعة 12</span></td>
-          <td colspan="2" class="break">فترة استراحة</td>
-          <td colspan="2" class="section">مقدمة فى نظم المعلومات<span class="sub-info">م/ طه طلعت معمل 7</span></td>
-          <td colspan="2" class="section">تحليل احصائي<span class="sub-info">م/ شهد حمدي قاعة 11</span></td>
-          <td colspan="2"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الأربعاء</td>
-          <td colspan="3"></td>
-          <td colspan="2" class="section">جبر خطي<span class="sub-info">م/ نهي عماد قاعة 7</span></td>
-          <td></td>
-          <td colspan="2" class="lecture">مقدمة فى نظم المعلومات<span class="sub-info">د/ شيماء اسماعيل مدرج 2</span></td>
-          <td colspan="2"></td>
-          <td colspan="2" class="lecture">مهارات الاتصال<span class="sub-info">د/ محمد فوزى مدرج 2</span></td>
-        </tr>
-        <tr>
-          <td class="day-col">الخميس</td>
-          <td colspan="2" class="lecture">جبر خطي<span class="sub-info">د/ مصطفى حسن مدرج 1</span></td>
-          <td colspan="2" class="lecture">تحليل إحصائي<span class="sub-info">د/ نهى عبد الكريم مدرج 5</span></td>
-          <td colspan="2"></td>
-          <td colspan="2" class="section">هياكل بيانات عملي<span class="sub-info">م/ رويدا عادل معمل 12</span></td>
-          <td colspan="4"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+const SECTIONS_DATA = {
+  // المجموعة 5
+  27: [
+    { day: 'الإثنين', start: 1, span: 2, title: 'مقدمة نظم معلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ إبراهيم عفيفي', loc: '📍 معمل 10' },
+    { day: 'الثلاثاء', start: 3, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ صبحي طلعت', loc: '📍 معمل 11' },
+    { day: 'الثلاثاء', start: 7, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ شهد حمدي', loc: '📍 قاعة 11' },
+    { day: 'الثلاثاء', start: 9, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ كرستين نادر', loc: '📍 قاعة 10' },
+    { day: 'الأربعاء', start: 4, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ سهيلة نادر', loc: '📍 معمل 1' },
+    { day: 'الخميس', start: 5, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ طه طلعت', loc: '📍 قاعة 3' }
+  ],
+  28: [
+    { day: 'الإثنين', start: 6, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ روان علاء', loc: '📍 معمل 2' },
+    { day: 'الثلاثاء', start: 3, span: 2, title: 'مقدمة نظم معلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ إبراهيم عفيفي', loc: '📍 معمل 10' },
+    { day: 'الثلاثاء', start: 7, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ شهد حمدي', loc: '📍 قاعة 11' },
+    { day: 'الثلاثاء', start: 9, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ فاطمة الزهراء', loc: '📍 معمل IoT' },
+    { day: 'الأربعاء', start: 2, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ نهى عماد', loc: '📍 قاعة 7' },
+    { day: 'الأربعاء', start: 4, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ منيرة منير', loc: '📍 قاعة 11' },
+    { day: 'الخميس', start: 5, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ طه طلعت', loc: '📍 قاعة 3' }
+  ],
+  29: [
+    { day: 'الإثنين', start: 5, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ إبراهيم رياض', loc: '📍 معمل 8' },
+    { day: 'الإثنين', start: 9, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ نيرة طارق', loc: '📍 قاعة 5' },
+    { day: 'الثلاثاء', start: 3, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ منيرة منير', loc: '📍 قاعة 12' },
+    { day: 'الثلاثاء', start: 7, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ روان علاء', loc: '📍 معمل 2' },
+    { day: 'الثلاثاء', start: 9, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ شهد حمدي', loc: '📍 قاعة 11' },
+    { day: 'الأربعاء', start: 2, span: 2, title: 'مقدمة نظم معلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ فاطمة صبحي', loc: '📍 الوسائط' }
+  ],
+  30: [
+    { day: 'الإثنين', start: 5, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ روان علاء', loc: '📍 معمل 2' },
+    { day: 'الثلاثاء', start: 3, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ منيرة منير', loc: '📍 قاعة 12' },
+    { day: 'الثلاثاء', start: 7, span: 2, title: 'مقدمة نظم معلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ طه طلعت', loc: '📍 معمل 7' },
+    { day: 'الثلاثاء', start: 9, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ شهد حمدي', loc: '📍 قاعة 11' },
+    { day: 'الأربعاء', start: 4, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ نهى عماد', loc: '📍 قاعة 7' },
+    { day: 'الخميس', start: 7, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ رويدا عادل', loc: '📍 معمل 12' }
+  ],
+  31: [
+    { day: 'الإثنين', start: 5, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ آلاء إبراهيم', loc: '📍 قاعة 4' },
+    { day: 'الثلاثاء', start: 3, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ ميادة مصطفى', loc: '📍 قاعة 4' },
+    { day: 'الثلاثاء', start: 7, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ عمر رمضان', loc: '📍 معمل 2' },
+    { day: 'الثلاثاء', start: 9, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ روان علاء', loc: '📍 معمل 2' },
+    { day: 'الأربعاء', start: 4, span: 2, title: 'مقدمة نظم معلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ طه طلعت', loc: '📍 معمل 1' },
+    { day: 'الخميس', start: 5, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ طه طلعت', loc: '📍 قاعة 3' }
+  ],
+  32: [
+    { day: 'الإثنين', start: 2, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ محمد مصطفى', loc: '📍 معمل تصميم 1' },
+    { day: 'الإثنين', start: 5, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ آلاء إبراهيم', loc: '📍 قاعة 4' },
+    { day: 'الثلاثاء', start: 3, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ ميادة مصطفى', loc: '📍 قاعة 4' },
+    { day: 'الثلاثاء', start: 9, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ عمر رمضان', loc: '📍 معمل 2' },
+    { day: 'الخميس', start: 5, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ منة الله نبيل', loc: '📍 قاعة 9' },
+    { day: 'الخميس', start: 7, span: 2, title: 'مقدمة نظم معلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ آيات عبد الرحمن', loc: '📍 معمل 10' }
+  ],
+  33: [
+    { day: 'الإثنين', start: 1, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ محمد مصطفى', loc: '📍 معمل تصميم 1' },
+    { day: 'الإثنين', start: 5, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ شهد حمدي', loc: '📍 قاعة 12' },
+    { day: 'الثلاثاء', start: 3, span: 2, title: 'مقدمة نظم معلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ طه طلعت', loc: '📍 معمل 7' },
+    { day: 'الثلاثاء', start: 9, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ ندى عادل', loc: '📍 معمل 7' },
+    { day: 'الأربعاء', start: 8, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ آلاء إبراهيم', loc: '📍 قاعة 4' },
+    { day: 'الخميس', start: 5, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ منة الله نبيل', loc: '📍 قاعة 9' }
+  ],
 
-  <!-- سكشن 31 -->
-  <div id="table-31" class="schedule-container">
-    <h2>المجموعة الخامسة — سكشن 31</h2>
-    <table>
-      <thead>
-        <tr>
-          <th class="day-col">اليوم</th>
-          <th>1<br>09:00 - 09:45</th><th>2<br>09:45 - 10:30</th><th>3<br>10:30 - 11:15</th><th>4<br>11:15 - 12:00</th>
-          <th>5<br>12:00 - 12:45</th><th>6<br>12:45 - 01:30</th><th>7<br>01:30 - 02:15</th><th>8<br>02:15 - 03:00</th>
-          <th>9<br>03:00 - 03:45</th><th>10<br>03:45 - 04:30</th><th>11<br>04:30 - 05:15</th><th>12<br>05:15 - 06:00</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td class="day-col">السبت</td><td colspan="12"></td></tr>
-        <tr><td class="day-col">الأحد</td><td colspan="12"></td></tr>
-        <tr>
-          <td class="day-col">الإثنين</td>
-          <td colspan="2"></td>
-          <td colspan="2" class="lecture">تصميم منطقى<span class="sub-info">د/ فاطمه صقر مدرج 4</span></td>
-          <td colspan="2" class="section">جبر خطي<span class="sub-info">م/ الاء ابراهيم قاعة 4</span></td>
-          <td colspan="6"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الثلاثاء</td>
-          <td colspan="2" class="lecture">هياكل بيانات<span class="sub-info">د/ احمد حسن مدرج 1</span></td>
-          <td colspan="2" class="section">تحليل احصائي<span class="sub-info">م/ مياده مصطفي قاعة 4</span></td>
-          <td colspan="2" class="break">فترة استراحة</td>
-          <td colspan="2" class="section">هياكل بيانات<span class="sub-info">م/ عمر رمضان معمل 2</span></td>
-          <td class="section">تصميم منطقى عملى<span class="sub-info">م/ روان علاء معمل تصميم منطقى 2</span></td>
-          <td colspan="3"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الأربعاء</td>
-          <td colspan="3"></td>
-          <td colspan="2" class="section">مقدمة فى نظم المعلومات<span class="sub-info">م/ طه طلعت معمل 1</span></td>
-          <td></td>
-          <td colspan="2" class="lecture">مقدمة فى نظم المعلومات<span class="sub-info">د/ شيماء اسماعيل مدرج 2</span></td>
-          <td colspan="2"></td>
-          <td colspan="2" class="lecture">مهارات الاتصال<span class="sub-info">د/ محمد فوزى مدرج 2</span></td>
-        </tr>
-        <tr>
-          <td class="day-col">الخميس</td>
-          <td colspan="2" class="lecture">جبر خطي<span class="sub-info">د/ مصطفى حسن مدرج 1</span></td>
-          <td colspan="2" class="lecture">تحليل إحصائي<span class="sub-info">د/ نهى عبد الكريم مدرج 5</span></td>
-          <td colspan="2" class="section">تصميم منطقى تمارين<span class="sub-info">م/ طه طلعت قاعة 3</span></td>
-          <td colspan="6"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  // المجموعة 6
+  34: [
+    { day: 'السبت', start: 1, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ مصطفى سامي', loc: '📍 قاعة 6' },
+    { day: 'السبت', start: 3, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ مصطفى سامي', loc: '📍 معمل 2' },
+    { day: 'السبت', start: 7, span: 2, title: 'مقدمة نظم معلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ جمال عصام', loc: '📍 معمل 14' },
+    { day: 'الأحد', start: 3, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ أحمد عادل', loc: '📍 معمل 9' },
+    { day: 'الإثنين', start: 3, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ شهد حمدي', loc: '📍 قاعة 12' },
+    { day: 'الإثنين', start: 7, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ كرستين نادر', loc: '📍 قاعة 3' }
+  ],
+  35: [
+    { day: 'السبت', start: 3, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ مصطفى سامي', loc: '📍 معمل 2' },
+    { day: 'السبت', start: 5, span: 2, title: 'مقدمة نظم معلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ جمال عصام', loc: '📍 معمل 14' },
+    { day: 'الأحد', start: 5, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ غادة رفاعي', loc: '📍 قاعة 7' },
+    { day: 'الأحد', start: 7, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ كرستين نادر', loc: '📍 قاعة 12' },
+    { day: 'الإثنين', start: 3, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ شهد حمدي', loc: '📍 قاعة 12' },
+    { day: 'الإثنين', start: 7, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ أحمد عادل', loc: '📍 معمل 9' }
+  ],
+  36: [
+    { day: 'السبت', start: 1, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ محمد مصطفى', loc: '📍 معمل 1' },
+    { day: 'الأحد', start: 5, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ غادة رفاعي', loc: '📍 قاعة 7' },
+    { day: 'الأحد', start: 7, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ روان علاء', loc: '📍 قاعة 9' },
+    { day: 'الإثنين', start: 1, span: 2, title: 'مقدمة نظم معلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ محمد إبراهيم', loc: '📍 معمل 5' },
+    { day: 'الإثنين', start: 7, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ نيرة طارق', loc: '📍 قاعة 5' },
+    { day: 'الخميس', start: 10, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ أحمد رضوان', loc: '📍 معمل 8' }
+  ],
+  37: [
+    { day: 'السبت', start: 1, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ مصطفى سامي', loc: '📍 قاعة 6' },
+    { day: 'السبت', start: 4, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ محمد مصطفى', loc: '📍 معمل 1' },
+    { day: 'الأحد', start: 3, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ شهد حمدي', loc: '📍 قاعة 9' },
+    { day: 'الأحد', start: 5, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ آلاء إبراهيم', loc: '📍 قاعة 3' },
+    { day: 'الإثنين', start: 3, span: 2, title: 'مقدمة نظم معلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ محمد إبراهيم', loc: '📍 معمل 5' },
+    { day: 'الإثنين', start: 7, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ عبد الحميد أحمد', loc: '📍 معمل 9' }
+  ],
+  38: [
+    { day: 'السبت', start: 1, span: 2, title: 'مقدمة نظم معلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ محمد إبراهيم', loc: '📍 معمل 5' },
+    { day: 'السبت', start: 3, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ محمد مصطفى', loc: '📍 معمل 1' },
+    { day: 'الأحد', start: 3, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ عبد الحميد أحمد', loc: '📍 معمل 9' },
+    { day: 'الأحد', start: 5, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ روان علاء', loc: '📍 قاعة 9' },
+    { day: 'الأحد', start: 7, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ آلاء إبراهيم', loc: '📍 قاعة 3' },
+    { day: 'الأحد', start: 11, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ منة الله نبيل', loc: '📍 قاعة 6' }
+  ],
+  39: [
+    { day: 'السبت', start: 1, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ محمد مصطفى', loc: '📍 معمل 1' },
+    { day: 'السبت', start: 3, span: 2, title: 'مقدمة نظم معلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ محمد إبراهيم', loc: '📍 معمل 5' },
+    { day: 'الأحد', start: 5, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ روان علاء', loc: '📍 قاعة 9' },
+    { day: 'الأحد', start: 9, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ منة الله نبيل', loc: '📍 قاعة 6' },
+    { day: 'الإثنين', start: 7, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ نيرة طارق', loc: '📍 قاعة 5' },
+    { day: 'الخميس', start: 10, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ عبد الحميد أحمد', loc: '📍 معمل 9' }
+  ],
+  40: [
+    { day: 'الأحد', start: 3, span: 2, title: 'مقدمة نظم معلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ فاطمة صبحي', loc: '📍 معمل 12' },
+    { day: 'الأحد', start: 5, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ جمال عادل', loc: '📍 معمل 2' },
+    { day: 'الأحد', start: 7, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ كرستين نادر', loc: '📍 قاعة 12' },
+    { day: 'الأحد', start: 11, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ منة الله نبيل', loc: '📍 قاعة 6' },
+    { day: 'الأربعاء', start: 1, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ رويدا عادل', loc: '📍 معمل 12' },
+    { day: 'الأربعاء', start: 3, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ ميادة مصطفى', loc: '📍 قاعة 4' }
+  ]
+};
 
-  <!-- سكشن 32 (المرجع المعتمد) -->
-  <div id="table-32" class="schedule-container">
-    <h2>المجموعة الخامسة — سكشن 32 (جدولك المعتمد)</h2>
-    <table>
-      <thead>
-        <tr>
-          <th class="day-col">اليوم</th>
-          <th>1<br>09:00 - 09:45</th><th>2<br>09:45 - 10:30</th><th>3<br>10:30 - 11:15</th><th>4<br>11:15 - 12:00</th>
-          <th>5<br>12:00 - 12:45</th><th>6<br>12:45 - 01:30</th><th>7<br>01:30 - 02:15</th><th>8<br>02:15 - 03:00</th>
-          <th>9<br>03:00 - 03:45</th><th>10<br>03:45 - 04:30</th><th>11<br>04:30 - 05:15</th><th>12<br>05:15 - 06:00</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td class="day-col">السبت</td><td colspan="12"></td></tr>
-        <tr><td class="day-col">الأحد</td><td colspan="12"></td></tr>
-        <tr>
-          <td class="day-col">الإثنين</td>
-          <td></td>
-          <td class="section">تصميم منطقى عملى<span class="sub-info">م/ محمد مصطفي معمل تصميم منطقى 1</span></td>
-          <td colspan="2" class="lecture">تصميم منطقى<span class="sub-info">د/ فاطمه صقر مدرج 4</span></td>
-          <td colspan="2" class="section">جبر خطي<span class="sub-info">م/ الاء ابراهيم قاعة 4</span></td>
-          <td colspan="6"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الثلاثاء</td>
-          <td colspan="2" class="lecture">هياكل بيانات<span class="sub-info">د/ احمد حسن مدرج 1</span></td>
-          <td colspan="2" class="section">تحليل احصائي<span class="sub-info">م/ مياده مصطفي قاعة 4</span></td>
-          <td colspan="2" class="break">فترة استراحة</td>
-          <td colspan="2"></td>
-          <td colspan="2" class="section">هياكل بيانات<span class="sub-info">م/ عمر رمضان معمل 2</span></td>
-          <td colspan="2"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الأربعاء</td>
-          <td colspan="5"></td>
-          <td colspan="2" class="lecture">مقدمة فى نظم المعلومات<span class="sub-info">د/ شيماء اسماعيل مدرج 2</span></td>
-          <td colspan="2"></td>
-          <td colspan="2" class="lecture">مهارات الاتصال<span class="sub-info">د/ محمد فوزى مدرج 2</span></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td class="day-col">الخميس</td>
-          <td colspan="2" class="lecture">جبر خطي<span class="sub-info">د/ مصطفى حسن مدرج 1</span></td>
-          <td colspan="2" class="lecture">تحليل إحصائي<span class="sub-info">د/ نهى عبد الكريم مدرج 5</span></td>
-          <td colspan="2" class="section">تصميم منطقى تمارين<span class="sub-info">م/ منة الله نبيل قاعة 9</span></td>
-          <td colspan="2" class="section">مقدمة فى نظم المعلومات<span class="sub-info">م/ ايات عبدالرحمن معمل 10</span></td>
-          <td colspan="4"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+let currentGroup = null;
+let currentSection = null;
 
-  <!-- سكشن 33 -->
-  <div id="table-33" class="schedule-container">
-    <h2>المجموعة الخامسة — سكشن 33</h2>
-    <table>
-      <thead>
-        <tr>
-          <th class="day-col">اليوم</th>
-          <th>1<br>09:00 - 09:45</th><th>2<br>09:45 - 10:30</th><th>3<br>10:30 - 11:15</th><th>4<br>11:15 - 12:00</th>
-          <th>5<br>12:00 - 12:45</th><th>6<br>12:45 - 01:30</th><th>7<br>01:30 - 02:15</th><th>8<br>02:15 - 03:00</th>
-          <th>9<br>03:00 - 03:45</th><th>10<br>03:45 - 04:30</th><th>11<br>04:30 - 05:15</th><th>12<br>05:15 - 06:00</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td class="day-col">السبت</td><td colspan="12"></td></tr>
-        <tr><td class="day-col">الأحد</td><td colspan="12"></td></tr>
-        <tr>
-          <td class="day-col">الإثنين</td>
-          <td class="section">تصميم منطقى عملى<span class="sub-info">م/ محمد مصطفي معمل تصميم منطقى 1</span></td>
-          <td></td>
-          <td colspan="2" class="lecture">تصميم منطقى<span class="sub-info">د/ فاطمه صقر مدرج 4</span></td>
-          <td colspan="2" class="section">تحليل احصائي<span class="sub-info">م/ شهد حمدي قاعة 12</span></td>
-          <td colspan="6"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الثلاثاء</td>
-          <td colspan="2" class="lecture">هياكل بيانات<span class="sub-info">د/ احمد حسن مدرج 1</span></td>
-          <td colspan="2" class="section">مقدمة فى نظم المعلومات<span class="sub-info">م/ طه طلعت معمل 7</span></td>
-          <td colspan="2" class="break">فترة استراحة</td>
-          <td colspan="2"></td>
-          <td colspan="2" class="section">هياكل بيانات<span class="sub-info">م/ ندي عادل معمل 7</span></td>
-          <td colspan="2"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الأربعاء</td>
-          <td colspan="5"></td>
-          <td colspan="2" class="lecture">مقدمة فى نظم المعلومات<span class="sub-info">د/ شيماء اسماعيل مدرج 2</span></td>
-          <td class="section">جبر خطي<span class="sub-info">م/ الاء ابراهيم قاعة 4</span></td>
-          <td></td>
-          <td colspan="2" class="lecture">مهارات الاتصال<span class="sub-info">د/ محمد فوزى مدرج 2</span></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td class="day-col">الخميس</td>
-          <td colspan="2" class="lecture">جبر خطي<span class="sub-info">د/ مصطفى حسن مدرج 1</span></td>
-          <td colspan="2" class="lecture">تحليل إحصائي<span class="sub-info">د/ نهى عبد الكريم مدرج 5</span></td>
-          <td colspan="2" class="section">تصميم منطقى تمارين<span class="sub-info">م/ منة الله نبيل قاعة 9</span></td>
-          <td colspan="6"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+function selectGroup(groupId) {
+  currentGroup = groupId;
+  document.getElementById('stepGroup').style.display = 'none';
 
-  <!-- ==================== جداول المجموعة السادسة ==================== -->
+  const stepSec = document.getElementById('stepSection');
+  stepSec.style.display = 'block';
 
-  <!-- سكشن 34 -->
-  <div id="table-34" class="schedule-container">
-    <h2>المجموعة السادسة — سكشن 34</h2>
-    <table>
-      <thead>
-        <tr>
-          <th class="day-col">اليوم</th>
-          <th>1<br>09:00 - 09:45</th><th>2<br>09:45 - 10:30</th><th>3<br>10:30 - 11:15</th><th>4<br>11:15 - 12:00</th>
-          <th>5<br>12:00 - 12:45</th><th>6<br>12:45 - 01:30</th><th>7<br>01:30 - 02:15</th><th>8<br>02:15 - 03:00</th>
-          <th>9<br>03:00 - 03:45</th><th>10<br>03:45 - 04:30</th><th>11<br>04:30 - 05:15</th><th>12<br>05:15 - 06:00</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="day-col">السبت</td>
-          <td colspan="2" class="section">تصميم منطقى تمارين<span class="sub-info">م/ مصطفى سامي قاعة 6</span></td>
-          <td class="section">تصميم منطقى عملى<span class="sub-info">م/ مصطفي سامي معمل تصميم منطقى 2</span></td>
-          <td colspan="3"></td>
-          <td colspan="2" class="section">مقدمة فى نظم المعلومات<span class="sub-info">م/ جمال عصام معمل 14</span></td>
-          <td colspan="4"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الأحد</td>
-          <td colspan="2" class="lecture">مهارات الاتصال<span class="sub-info">د/ محمد فوزى مدرج 4</span></td>
-          <td colspan="2" class="section">هياكل بيانات<span class="sub-info">م/ احمد عادل معمل 9</span></td>
-          <td colspan="8"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الإثنين</td>
-          <td colspan="2"></td>
-          <td colspan="2" class="section">تحليل احصائي<span class="sub-info">م/ شهد حمدي قاعة 12</span></td>
-          <td colspan="2" class="lecture">تحليل احصائي<span class="sub-info">د/ امال ابو الخير مدرج 2</span></td>
-          <td colspan="2" class="section">جبر خطي<span class="sub-info">م/ كرستين نادر قاعة 3</span></td>
-          <td colspan="2" class="lecture">مقدمة فى نظم المعلومات<span class="sub-info">د/ شيماء اسماعيل مدرج 3</span></td>
-          <td colspan="2"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الثلاثاء</td>
-          <td colspan="4"></td>
-          <td colspan="2" class="break">فترة استراحة</td>
-          <td colspan="6"></td>
-        </tr>
-        <tr><td class="day-col">الأربعاء</td><td colspan="12"></td></tr>
-        <tr>
-          <td class="day-col">الخميس</td>
-          <td colspan="2" class="lecture">تصميم منطقى<span class="sub-info">د/ فاطمه صقر مدرج 4</span></td>
-          <td></td>
-          <td colspan="2" class="lecture">هياكل بيانات<span class="sub-info">د/ احمد حسن مدرج 3</span></td>
-          <td></td>
-          <td colspan="2" class="lecture">جبر خطي<span class="sub-info">د/ مصطفى حسن مدرج 1</span></td>
-          <td colspan="4"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  document.getElementById('secGreetingTitle').textContent = `يا هلا بـ ${GROUPS_DATA[groupId].title}! سكشن كام بقى؟ 😉`;
 
-  <!-- سكشن 35 -->
-  <div id="table-35" class="schedule-container">
-    <h2>المجموعة السادسة — سكشن 35</h2>
-    <table>
-      <thead>
-        <tr>
-          <th class="day-col">اليوم</th>
-          <th>1<br>09:00 - 09:45</th><th>2<br>09:45 - 10:30</th><th>3<br>10:30 - 11:15</th><th>4<br>11:15 - 12:00</th>
-          <th>5<br>12:00 - 12:45</th><th>6<br>12:45 - 01:30</th><th>7<br>01:30 - 02:15</th><th>8<br>02:15 - 03:00</th>
-          <th>9<br>03:00 - 03:45</th><th>10<br>03:45 - 04:30</th><th>11<br>04:30 - 05:15</th><th>12<br>05:15 - 06:00</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="day-col">السبت</td>
-          <td colspan="2"></td>
-          <td class="section">تصميم منطقى عملى<span class="sub-info">م/ مصطفي سامي معمل تصميم منطقى 2</span></td>
-          <td></td>
-          <td colspan="2" class="section">مقدمة فى نظم المعلومات<span class="sub-info">م/ جمال عصام معمل 14</span></td>
-          <td colspan="6"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الأحد</td>
-          <td colspan="2" class="lecture">مهارات الاتصال<span class="sub-info">د/ محمد فوزى مدرج 4</span></td>
-          <td colspan="2"></td>
-          <td colspan="2" class="section">تصميم منطقى تمارين<span class="sub-info">م/ غاده رفاعي قاعة 7</span></td>
-          <td colspan="2" class="section">جبر خطي<span class="sub-info">م/ كرستين نادر قاعة 12</span></td>
-          <td colspan="4"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الإثنين</td>
-          <td colspan="2"></td>
-          <td colspan="2" class="section">تحليل احصائي<span class="sub-info">م/ شهد حمدي قاعة 12</span></td>
-          <td colspan="2" class="lecture">تحليل احصائي<span class="sub-info">د/ امال ابو الخير مدرج 2</span></td>
-          <td colspan="2" class="section">هياكل بيانات<span class="sub-info">م/ احمد عادل معمل 9</span></td>
-          <td colspan="2" class="lecture">مقدمة فى نظم المعلومات<span class="sub-info">د/ شيماء اسماعيل مدرج 3</span></td>
-          <td colspan="2"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الثلاثاء</td>
-          <td colspan="4"></td>
-          <td colspan="2" class="break">فترة استراحة</td>
-          <td colspan="6"></td>
-        </tr>
-        <tr><td class="day-col">الأربعاء</td><td colspan="12"></td></tr>
-        <tr>
-          <td class="day-col">الخميس</td>
-          <td colspan="2" class="lecture">تصميم منطقى<span class="sub-info">د/ فاطمه صقر مدرج 4</span></td>
-          <td></td>
-          <td colspan="2" class="lecture">هياكل بيانات<span class="sub-info">د/ احمد حسن مدرج 3</span></td>
-          <td></td>
-          <td colspan="2" class="lecture">جبر خطي<span class="sub-info">د/ مصطفى حسن مدرج 1</span></td>
-          <td colspan="4"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  const container = document.getElementById('sectionsGridContainer');
+  container.innerHTML = '';
 
-  <!-- سكشن 36 -->
-  <div id="table-36" class="schedule-container">
-    <h2>المجموعة السادسة — سكشن 36</h2>
-    <table>
-      <thead>
-        <tr>
-          <th class="day-col">اليوم</th>
-          <th>1<br>09:00 - 09:45</th><th>2<br>09:45 - 10:30</th><th>3<br>10:30 - 11:15</th><th>4<br>11:15 - 12:00</th>
-          <th>5<br>12:00 - 12:45</th><th>6<br>12:45 - 01:30</th><th>7<br>01:30 - 02:15</th><th>8<br>02:15 - 03:00</th>
-          <th>9<br>03:00 - 03:45</th><th>10<br>03:45 - 04:30</th><th>11<br>04:30 - 05:15</th><th>12<br>05:15 - 06:00</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="day-col">السبت</td>
-          <td class="section">تصميم منطقى عملى<span class="sub-info">م/ محمد مصطفي معمل تصميم منطقى 1</span></td>
-          <td colspan="11"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الأحد</td>
-          <td colspan="2" class="lecture">مهارات الاتصال<span class="sub-info">د/ محمد فوزى مدرج 4</span></td>
-          <td colspan="2"></td>
-          <td colspan="2" class="section">تصميم منطقى تمارين<span class="sub-info">م/ غاده رفاعي قاعة 7</span></td>
-          <td colspan="2" class="section">تحليل احصائي<span class="sub-info">م/ روان علاء قاعة 9</span></td>
-          <td colspan="4"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الإثنين</td>
-          <td colspan="2" class="section">مقدمة فى نظم المعلومات<span class="sub-info">م/ محمد ابراهيم معمل 5</span></td>
-          <td colspan="2"></td>
-          <td colspan="2" class="lecture">تحليل احصائي<span class="sub-info">د/ امال ابو الخير مدرج 2</span></td>
-          <td colspan="2" class="section">جبر خطي<span class="sub-info">م/ نيرة طارق قاعة 5</span></td>
-          <td colspan="2" class="lecture">مقدمة فى نظم المعلومات<span class="sub-info">د/ شيماء اسماعيل مدرج 3</span></td>
-          <td colspan="2"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الثلاثاء</td>
-          <td colspan="4"></td>
-          <td colspan="2" class="break">فترة استراحة</td>
-          <td colspan="6"></td>
-        </tr>
-        <tr><td class="day-col">الأربعاء</td><td colspan="12"></td></tr>
-        <tr>
-          <td class="day-col">الخميس</td>
-          <td colspan="2" class="lecture">تصميم منطقى<span class="sub-info">د/ فاطمه صقر مدرج 4</span></td>
-          <td></td>
-          <td colspan="2" class="lecture">هياكل بيانات<span class="sub-info">د/ احمد حسن مدرج 3</span></td>
-          <td></td>
-          <td colspan="2" class="lecture">جبر خطي<span class="sub-info">د/ مصطفى حسن مدرج 1</span></td>
-          <td></td>
-          <td colspan="2" class="section">هياكل بيانات<span class="sub-info">م/ احمد رضوان معمل 8</span></td>
-          <td></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  GROUPS_DATA[groupId].sections.forEach((sec, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'btn-sec-card';
+    btn.style.animationDelay = `${idx * 0.05}s`;
+    btn.textContent = `سكشن ${sec}` + (sec === 32 ? ' ⭐' : '');
+    btn.onclick = () => selectSection(sec);
+    container.appendChild(btn);
+  });
+}
 
-  <!-- سكشن 37 -->
-  <div id="table-37" class="schedule-container">
-    <h2>المجموعة السادسة — سكشن 37</h2>
-    <table>
-      <thead>
-        <tr>
-          <th class="day-col">اليوم</th>
-          <th>1<br>09:00 - 09:45</th><th>2<br>09:45 - 10:30</th><th>3<br>10:30 - 11:15</th><th>4<br>11:15 - 12:00</th>
-          <th>5<br>12:00 - 12:45</th><th>6<br>12:45 - 01:30</th><th>7<br>01:30 - 02:15</th><th>8<br>02:15 - 03:00</th>
-          <th>9<br>03:00 - 03:45</th><th>10<br>03:45 - 04:30</th><th>11<br>04:30 - 05:15</th><th>12<br>05:15 - 06:00</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="day-col">السبت</td>
-          <td colspan="2" class="section">تصميم منطقى تمارين<span class="sub-info">م/ مصطفى سامي قاعة 6</span></td>
-          <td></td>
-          <td class="section">تصميم منطقى عملى<span class="sub-info">م/ محمد مصطفي معمل تصميم منطقى 1</span></td>
-          <td colspan="8"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الأحد</td>
-          <td colspan="2" class="lecture">مهارات الاتصال<span class="sub-info">د/ محمد فوزى مدرج 4</span></td>
-          <td colspan="2" class="section">تحليل احصائي<span class="sub-info">م/ شهد حمدي قاعة 9</span></td>
-          <td colspan="2" class="section">جبر خطي<span class="sub-info">م/ الاء ابراهيم قاعة 3</span></td>
-          <td colspan="6"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الإثنين</td>
-          <td colspan="2"></td>
-          <td colspan="2" class="section">مقدمة فى نظم المعلومات<span class="sub-info">م/ محمد ابراهيم معمل 5</span></td>
-          <td colspan="2" class="lecture">تحليل احصائي<span class="sub-info">د/ امال ابو الخير مدرج 2</span></td>
-          <td colspan="2" class="section">هياكل بيانات<span class="sub-info">م/ عبدالحميد احمد معمل 9</span></td>
-          <td colspan="2" class="lecture">مقدمة فى نظم المعلومات<span class="sub-info">د/ شيماء اسماعيل مدرج 3</span></td>
-          <td colspan="2"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الثلاثاء</td>
-          <td colspan="4"></td>
-          <td colspan="2" class="break">فترة استراحة</td>
-          <td colspan="6"></td>
-        </tr>
-        <tr><td class="day-col">الأربعاء</td><td colspan="12"></td></tr>
-        <tr>
-          <td class="day-col">الخميس</td>
-          <td colspan="2" class="lecture">تصميم منطقى<span class="sub-info">د/ فاطمه صقر مدرج 4</span></td>
-          <td></td>
-          <td colspan="2" class="lecture">هياكل بيانات<span class="sub-info">د/ احمد حسن مدرج 3</span></td>
-          <td></td>
-          <td colspan="2" class="lecture">جبر خطي<span class="sub-info">د/ مصطفى حسن مدرج 1</span></td>
-          <td colspan="4"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+function backToGroupStep() {
+  document.getElementById('stepSection').style.display = 'none';
+  document.getElementById('scheduleApp').classList.remove('active');
+  document.getElementById('stepGroup').style.display = 'block';
+}
 
-  <!-- سكشن 38 -->
-  <div id="table-38" class="schedule-container">
-    <h2>المجموعة السادسة — سكشن 38</h2>
-    <table>
-      <thead>
-        <tr>
-          <th class="day-col">اليوم</th>
-          <th>1<br>09:00 - 09:45</th><th>2<br>09:45 - 10:30</th><th>3<br>10:30 - 11:15</th><th>4<br>11:15 - 12:00</th>
-          <th>5<br>12:00 - 12:45</th><th>6<br>12:45 - 01:30</th><th>7<br>01:30 - 02:15</th><th>8<br>02:15 - 03:00</th>
-          <th>9<br>03:00 - 03:45</th><th>10<br>03:45 - 04:30</th><th>11<br>04:30 - 05:15</th><th>12<br>05:15 - 06:00</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="day-col">السبت</td>
-          <td colspan="2" class="section">مقدمة فى نظم المعلومات<span class="sub-info">م/ محمد ابراهيم معمل 5</span></td>
-          <td class="section">تصميم منطقى عملى<span class="sub-info">م/ محمد مصطفي معمل تصميم منطقى 1</span></td>
-          <td colspan="9"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الأحد</td>
-          <td colspan="2" class="lecture">مهارات الاتصال<span class="sub-info">د/ محمد فوزى مدرج 4</span></td>
-          <td colspan="2" class="section">هياكل بيانات<span class="sub-info">م/ عبدالحميد احمد معمل 9</span></td>
-          <td colspan="2" class="section">تحليل احصائي<span class="sub-info">م/ روان علاء قاعة 9</span></td>
-          <td colspan="2" class="section">جبر خطي<span class="sub-info">م/ الاء ابراهيم قاعة 3</span></td>
-          <td colspan="2"></td>
-          <td colspan="2" class="section">تصميم منطقى تمارين<span class="sub-info">م/ منة الله نبيل قاعة 6</span></td>
-        </tr>
-        <tr>
-          <td class="day-col">الإثنين</td>
-          <td colspan="4"></td>
-          <td colspan="2" class="lecture">تحليل احصائي<span class="sub-info">د/ امال ابو الخير مدرج 2</span></td>
-          <td colspan="2"></td>
-          <td colspan="2" class="lecture">مقدمة فى نظم المعلومات<span class="sub-info">د/ شيماء اسماعيل مدرج 3</span></td>
-          <td colspan="2"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الثلاثاء</td>
-          <td colspan="4"></td>
-          <td colspan="2" class="break">فترة استراحة</td>
-          <td colspan="6"></td>
-        </tr>
-        <tr><td class="day-col">الأربعاء</td><td colspan="12"></td></tr>
-        <tr>
-          <td class="day-col">الخميس</td>
-          <td colspan="2" class="lecture">تصميم منطقى<span class="sub-info">د/ فاطمه صقر مدرج 4</span></td>
-          <td></td>
-          <td colspan="2" class="lecture">هياكل بيانات<span class="sub-info">د/ احمد حسن مدرج 3</span></td>
-          <td></td>
-          <td colspan="2" class="lecture">جبر خطي<span class="sub-info">د/ مصطفى حسن مدرج 1</span></td>
-          <td colspan="4"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+function backToSectionStep() {
+  document.getElementById('scheduleApp').classList.remove('active');
+  document.getElementById('stepSection').style.display = 'block';
+}
 
-  <!-- سكشن 39 -->
-  <div id="table-39" class="schedule-container">
-    <h2>المجموعة السادسة — سكشن 39</h2>
-    <table>
-      <thead>
-        <tr>
-          <th class="day-col">اليوم</th>
-          <th>1<br>09:00 - 09:45</th><th>2<br>09:45 - 10:30</th><th>3<br>10:30 - 11:15</th><th>4<br>11:15 - 12:00</th>
-          <th>5<br>12:00 - 12:45</th><th>6<br>12:45 - 01:30</th><th>7<br>01:30 - 02:15</th><th>8<br>02:15 - 03:00</th>
-          <th>9<br>03:00 - 03:45</th><th>10<br>03:45 - 04:30</th><th>11<br>04:30 - 05:15</th><th>12<br>05:15 - 06:00</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="day-col">السبت</td>
-          <td class="section">تصميم منطقى عملى<span class="sub-info">م/ محمد مصطفي معمل تصميم منطقى 1</span></td>
-          <td></td>
-          <td colspan="2" class="section">مقدمة فى نظم المعلومات<span class="sub-info">م/ محمد ابراهيم معمل 5</span></td>
-          <td colspan="8"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الأحد</td>
-          <td colspan="2" class="lecture">مهارات الاتصال<span class="sub-info">د/ محمد فوزى مدرج 4</span></td>
-          <td colspan="2"></td>
-          <td colspan="2" class="section">تحليل احصائي<span class="sub-info">م/ روان علاء قاعة 9</span></td>
-          <td colspan="2"></td>
-          <td colspan="2" class="section">تصميم منطقى تمارين<span class="sub-info">م/ منة الله نبيل قاعة 6</span></td>
-          <td colspan="2"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الإثنين</td>
-          <td colspan="4"></td>
-          <td colspan="2" class="lecture">تحليل احصائي<span class="sub-info">د/ امال ابو الخير مدرج 2</span></td>
-          <td colspan="2" class="section">جبر خطي<span class="sub-info">م/ نيرة طارق قاعة 5</span></td>
-          <td colspan="2" class="lecture">مقدمة فى نظم المعلومات<span class="sub-info">د/ شيماء اسماعيل مدرج 3</span></td>
-          <td colspan="2"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الثلاثاء</td>
-          <td colspan="4"></td>
-          <td colspan="2" class="break">فترة استراحة</td>
-          <td colspan="6"></td>
-        </tr>
-        <tr><td class="day-col">الأربعاء</td><td colspan="12"></td></tr>
-        <tr>
-          <td class="day-col">الخميس</td>
-          <td colspan="2" class="lecture">تصميم منطقى<span class="sub-info">د/ فاطمه صقر مدرج 4</span></td>
-          <td></td>
-          <td colspan="2" class="lecture">هياكل بيانات<span class="sub-info">د/ احمد حسن مدرج 3</span></td>
-          <td></td>
-          <td colspan="2" class="lecture">جبر خطي<span class="sub-info">د/ مصطفى حسن مدرج 1</span></td>
-          <td></td>
-          <td colspan="2" class="section">هياكل بيانات<span class="sub-info">م/ عبدالحميد احمد معمل 9</span></td>
-          <td></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+function selectSection(secId) {
+  currentSection = secId;
+  document.getElementById('stepSection').style.display = 'none';
+  
+  const app = document.getElementById('scheduleApp');
+  app.classList.add('active');
 
-  <!-- سكشن 40 -->
-  <div id="table-40" class="schedule-container">
-    <h2>المجموعة السادسة — سكشن 40</h2>
-    <table>
-      <thead>
-        <tr>
-          <th class="day-col">اليوم</th>
-          <th>1<br>09:00 - 09:45</th><th>2<br>09:45 - 10:30</th><th>3<br>10:30 - 11:15</th><th>4<br>11:15 - 12:00</th>
-          <th>5<br>12:00 - 12:45</th><th>6<br>12:45 - 01:30</th><th>7<br>01:30 - 02:15</th><th>8<br>02:15 - 03:00</th>
-          <th>9<br>03:00 - 03:45</th><th>10<br>03:45 - 04:30</th><th>11<br>04:30 - 05:15</th><th>12<br>05:15 - 06:00</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td class="day-col">السبت</td><td colspan="12"></td></tr>
-        <tr>
-          <td class="day-col">الأحد</td>
-          <td colspan="2" class="lecture">مهارات الاتصال<span class="sub-info">د/ محمد فوزى مدرج 4</span></td>
-          <td colspan="2" class="section">مقدمة فى نظم المعلومات<span class="sub-info">م/ فاطمة صبحى معمل 12</span></td>
-          <td class="section">تصميم منطقى عملى<span class="sub-info">م/ جمال عادل معمل تصميم منطقى 2</span></td>
-          <td></td>
-          <td colspan="2" class="section">جبر خطي<span class="sub-info">م/ كرستين نادر قاعة 12</span></td>
-          <td colspan="2"></td>
-          <td colspan="2" class="section">تصميم منطقى تمارين<span class="sub-info">م/ منة الله نبيل قاعة 6</span></td>
-        </tr>
-        <tr>
-          <td class="day-col">الإثنين</td>
-          <td colspan="4"></td>
-          <td colspan="2" class="lecture">تحليل احصائي<span class="sub-info">د/ امال ابو الخير مدرج 2</span></td>
-          <td colspan="2"></td>
-          <td colspan="2" class="lecture">مقدمة فى نظم المعلومات<span class="sub-info">د/ شيماء اسماعيل مدرج 3</span></td>
-          <td colspan="2"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الثلاثاء</td>
-          <td colspan="4"></td>
-          <td colspan="2" class="break">فترة استراحة</td>
-          <td colspan="6"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الأربعاء</td>
-          <td colspan="2" class="section">هياكل بيانات<span class="sub-info">م/ رويدا عادل معمل 12</span></td>
-          <td colspan="2" class="section">تحليل احصائي<span class="sub-info">م/ مياده مصطفي قاعة 4</span></td>
-          <td colspan="8"></td>
-        </tr>
-        <tr>
-          <td class="day-col">الخميس</td>
-          <td colspan="2" class="lecture">تصميم منطقى<span class="sub-info">د/ فاطمه صقر مدرج 4</span></td>
-          <td></td>
-          <td colspan="2" class="lecture">هياكل بيانات<span class="sub-info">د/ احمد حسن مدرج 3</span></td>
-          <td></td>
-          <td colspan="2" class="lecture">جبر خطي<span class="sub-info">د/ مصطفى حسن مدرج 1</span></td>
-          <td colspan="4"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  document.getElementById('badgeIndicator').textContent = `${GROUPS_DATA[currentGroup].title} | سكشن ${secId}`;
+  
+  buildSchedule();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-  <script>
-    const groups = {
-      group5: [27, 28, 29, 30, 31, 32, 33],
-      group6: [34, 35, 36, 37, 38, 39, 40]
-    };
+function buildSchedule() {
+  const lectures = GROUPS_DATA[currentGroup].lectures;
+  const sections = SECTIONS_DATA[currentSection] || [];
 
-    function updateSections() {
-      const groupVal = document.getElementById("groupSelect").value;
-      const secSelect = document.getElementById("sectionSelect");
-      
-      // إخفاء كل الجداول
-      hideAllTables();
+  const tbody = document.getElementById('tableBody');
+  const mobileContainer = document.getElementById('mobileContainer');
+  tbody.innerHTML = '';
+  mobileContainer.innerHTML = '';
 
-      secSelect.innerHTML = '<option value="">-- اختر السكشن --</option>';
+  DAYS_CONFIG.forEach(dObj => {
+    const day = dObj.name;
+    const dayId = dObj.id;
 
-      if (!groupVal) {
-        secSelect.disabled = true;
-        return;
+    const tr = document.createElement('tr');
+    const dayTd = document.createElement('td');
+    dayTd.className = 'day-title';
+    dayTd.textContent = day;
+    tr.appendChild(dayTd);
+
+    let period = 1;
+    let dayHasItems = false;
+    const mobileItems = [];
+
+    while (period <= 12) {
+      // استراحة الثلاثاء ف5 وف6
+      if (day === 'الثلاثاء' && period === 5) {
+        dayHasItems = true;
+        const td = document.createElement('td');
+        td.colSpan = 2;
+        td.innerHTML = `
+          <div class="item-card type-break">
+            <div class="card-top"><span class="subject-name" style="margin:auto;">استراحة رسمية</span><span class="badge-type">راحة</span></div>
+            <div class="instructor" style="text-align:center;">12:00 م - 01:30 م</div>
+          </div>
+        `;
+        tr.appendChild(td);
+
+        mobileItems.push({
+          startPeriod: 5, endPeriod: 6,
+          title: 'فترة استراحة رسمية', type: 'break',
+          badge: 'راحة', doc: 'الكلية', loc: 'استراحة'
+        });
+
+        period += 2;
+        continue;
       }
 
-      groups[groupVal].forEach(sec => {
-        const opt = document.createElement("option");
-        opt.value = sec;
-        opt.textContent = `سكشن ${sec}` + (sec === 32 ? " (جدولك المعتمد)" : "");
-        secSelect.appendChild(opt);
+      // محاضرات
+      const lec = lectures.find(l => l.day === day && l.start === period);
+      if (lec) {
+        dayHasItems = true;
+        const td = document.createElement('td');
+        td.colSpan = lec.span;
+        td.innerHTML = `
+          <div class="item-card type-${lec.type}" data-course="${lec.course}">
+            <div class="card-top"><span class="subject-name">${lec.title}</span><span class="badge-type">${lec.typeName}</span></div>
+            <div class="instructor">${lec.doc}</div>
+            <div class="location">${lec.loc}</div>
+          </div>
+        `;
+        tr.appendChild(td);
+
+        mobileItems.push({
+          startPeriod: period, endPeriod: period + lec.span - 1,
+          title: lec.title, type: lec.type, badge: lec.typeName,
+          course: lec.course, doc: lec.doc, loc: lec.loc
+        });
+
+        period += lec.span;
+        continue;
+      }
+
+      // سكاشن ومعامل
+      const sec = sections.find(s => s.day === day && s.start === period);
+      if (sec) {
+        dayHasItems = true;
+        const td = document.createElement('td');
+        td.colSpan = sec.span;
+        td.innerHTML = `
+          <div class="item-card type-${sec.type}" data-course="${sec.course}">
+            <div class="card-top"><span class="subject-name">${sec.title}</span><span class="badge-type">${sec.typeName}</span></div>
+            <div class="instructor">${sec.doc}</div>
+            <div class="location">${sec.loc}</div>
+          </div>
+        `;
+        tr.appendChild(td);
+
+        mobileItems.push({
+          startPeriod: period, endPeriod: period + sec.span - 1,
+          title: sec.title, type: sec.type, badge: sec.typeName,
+          course: sec.course, doc: sec.doc, loc: sec.loc
+        });
+
+        period += sec.span;
+        continue;
+      }
+
+      // فارغ
+      const td = document.createElement('td');
+      td.className = 'empty-cell';
+      td.textContent = '—';
+      tr.appendChild(td);
+      period++;
+    }
+
+    if (!dayHasItems) {
+      tr.innerHTML = `<td class="day-title">${day}</td><td class="empty-cell" colspan="12">— لا توجد حصص مجدولة —</td>`;
+    }
+    tbody.appendChild(tr);
+
+    // Mobile View
+    const dayWrap = document.createElement('div');
+    dayWrap.id = `day-content-${dayId}`;
+    dayWrap.className = 'day-content';
+    dayWrap.style.display = (dayId === 'sat') ? 'block' : 'none';
+
+    const titleH = document.createElement('div');
+    titleH.className = 'mobile-day-title';
+    titleH.textContent = `📅 يوم ${day}`;
+    dayWrap.appendChild(titleH);
+
+    if (mobileItems.length === 0) {
+      dayWrap.innerHTML += `<div class="app-empty-day">لا توجد محاضرات أو سكاشن مجدولة يوم ${day}</div>`;
+    } else {
+      mobileItems.forEach(item => {
+        const tStart = PERIOD_TIMES[item.startPeriod].start;
+        const tEnd = PERIOD_TIMES[item.endPeriod].end;
+        const pLabel = (item.startPeriod === item.endPeriod) ? `فترة ${item.startPeriod}` : `فترة ${item.startPeriod} - ${item.endPeriod}`;
+        const cAttr = item.course ? `data-course="${item.course}"` : '';
+
+        dayWrap.innerHTML += `
+          <div class="app-timeline-card type-${item.type}" ${cAttr}>
+            <div class="app-time-col">
+              <div class="app-time-start">${tStart}</div>
+              <div class="app-time-end">${tEnd}</div>
+              <div class="app-time-period">${pLabel}</div>
+            </div>
+            <div class="app-info-col">
+              <div class="app-info-header">
+                <span class="app-subject-title">${item.title}</span>
+                <span class="badge-type">${item.badge}</span>
+              </div>
+              <div class="app-details">
+                <span>${item.doc}</span>
+                <span class="location">${item.loc}</span>
+              </div>
+            </div>
+          </div>
+        `;
       });
-
-      secSelect.disabled = false;
     }
 
-    function showSectionSchedule() {
-      const secVal = document.getElementById("sectionSelect").value;
-      hideAllTables();
+    mobileContainer.appendChild(dayWrap);
+  });
 
-      if (!secVal) return;
+  resetAllCourses();
+}
 
-      const target = document.getElementById(`table-${secVal}`);
-      if (target) {
-        target.style.display = "block";
-      }
+function toggleCourse(courseKey, btn) {
+  btn.classList.toggle('excluded');
+  const isExcluded = btn.classList.contains('excluded');
+  btn.querySelector('span').textContent = isExcluded ? '✕' : '✓';
+
+  const targets = document.querySelectorAll(`[data-course="${courseKey}"]`);
+  targets.forEach(el => {
+    if (isExcluded) {
+      el.classList.add('is-hidden');
+    } else {
+      el.classList.remove('is-hidden');
     }
+  });
+}
 
-    function hideAllTables() {
-      const allTables = document.querySelectorAll(".schedule-container");
-      allTables.forEach(t => t.style.display = "none");
-    }
-  </script>
+function resetAllCourses() {
+  document.querySelectorAll('.btn-course').forEach(btn => {
+    btn.classList.remove('excluded');
+    btn.querySelector('span').textContent = '✓';
+  });
+  document.querySelectorAll('[data-course]').forEach(el => {
+    el.classList.remove('is-hidden');
+  });
+}
 
+function switchDay(dayId, btn) {
+  document.querySelectorAll('.day-tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  document.querySelectorAll('.day-content').forEach(c => c.style.display = 'none');
+  const target = document.getElementById(`day-content-${dayId}`);
+  if (target) target.style.display = 'block';
+}
+</script>
 </body>
 </html>
