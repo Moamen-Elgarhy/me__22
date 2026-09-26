@@ -247,7 +247,7 @@ body{
   color:#f87171;text-decoration:line-through;
 }
 
-/* جدول العرض المكتبي المضبوط هندسياً */
+/* جدول العرض المكتبي بنظام table-layout fixed */
 .table-view{display:block;}
 .table-wrap{
   overflow-x:auto;border-radius:18px;border:1px solid var(--border-color);
@@ -259,7 +259,7 @@ table{
   border-spacing:0;
   text-align:center;
   min-width:1250px;
-  table-layout:fixed; /* السر هنا لتثبيت وتوحيد عرض الأعمدة بدقة */
+  table-layout:fixed;
 }
 th{
   background:#0b1329;color:#94a3b8;font-size:0.82rem;font-weight:800;
@@ -272,11 +272,10 @@ th span{
 td{
   padding:5px 4px;border-bottom:1px solid var(--border-color);
   border-left:1px solid #1e293b;vertical-align:middle;background:var(--bg-card);
-  height:95px; /* ارتفاع موحد لجميع الصفوف لمنع التذبذب */
+  height:95px;
 }
 tr:nth-child(even) td{background:#0b1324;}
 
-/* تثبيت عرض عمود اليوم */
 .col-day {
   width: 90px;
 }
@@ -286,7 +285,6 @@ tr:nth-child(even) td{background:#0b1324;}
 }
 .empty-cell{color:#334155;font-size:1.1rem;}
 
-/* بطاقة الحصة داخل الخلية مع نظام Flex متكامل */
 .item-card{
   height:100%;
   width:100%;
@@ -504,11 +502,10 @@ tr:nth-child(even) td{background:#0b1324;}
       </div>
     </div>
 
-    <!-- العرض المكتبي (الجدول الرئيسي بتوزيع متكافئ) -->
+    <!-- العرض المكتبي -->
     <div class="table-view">
       <div class="table-wrap">
         <table>
-          <!-- ضبط نسب الأعمدة الـ 12 بالتساوي الصارم -->
           <colgroup>
             <col class="col-day">
             <col style="width: calc((100% - 90px) / 12);">
@@ -546,7 +543,7 @@ tr:nth-child(even) td{background:#0b1324;}
       </div>
     </div>
 
-    <!-- عرض الموبايل (Cards Timeline) -->
+    <!-- عرض الموبايل -->
     <div class="app-view">
       <div class="app-day-tabs">
         <button class="day-tab-btn active" onclick="switchDay('sat', this)">السبت</button>
@@ -675,7 +672,6 @@ const SECTIONS_DATA = {
   ],
 
   // المجموعة 6
-  // سكشن 34
   34: [
     { day: 'السبت', start: 1, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ مصطفى سامي', loc: '📍 قاعة 6' },
     { day: 'السبت', start: 3, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ مصطفى سامي', loc: '📍 معمل 2' },
@@ -684,8 +680,6 @@ const SECTIONS_DATA = {
     { day: 'الإثنين', start: 3, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ شهد حمدي', loc: '📍 قاعة 12' },
     { day: 'الإثنين', start: 7, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ كرستين نادر', loc: '📍 قاعة 3' }
   ],
-
-  // سكشن 35
   35: [
     { day: 'السبت', start: 3, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ مصطفى سامي', loc: '📍 معمل 2' },
     { day: 'السبت', start: 5, span: 2, title: 'مقدمة نظم معلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ جمال عصام', loc: '📍 معمل 14' },
@@ -694,8 +688,6 @@ const SECTIONS_DATA = {
     { day: 'الإثنين', start: 3, span: 2, title: 'تحليل إحصائي', type: 'sec', typeName: 'تمارين', course: 'stat', doc: 'م/ شهد حمدي', loc: '📍 قاعة 12' },
     { day: 'الإثنين', start: 7, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ أحمد عادل', loc: '📍 معمل 9' }
   ],
-
-  // سكشن 36
   36: [
     { day: 'السبت', start: 1, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ محمد مصطفى', loc: '📍 معمل 1' },
     { day: 'الأحد', start: 4, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ غادة رفاعي', loc: '📍 قاعة 7' },
@@ -704,8 +696,6 @@ const SECTIONS_DATA = {
     { day: 'الإثنين', start: 7, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ نيرة طارق', loc: '📍 قاعة 5' },
     { day: 'الخميس', start: 10, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ أحمد رضوان', loc: '📍 معمل 8' }
   ],
-
-  // سكشن 37
   37: [
     { day: 'السبت', start: 1, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ مصطفى سامي', loc: '📍 قاعة 6' },
     { day: 'السبت', start: 4, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ محمد مصطفى', loc: '📍 معمل 1' },
@@ -714,8 +704,6 @@ const SECTIONS_DATA = {
     { day: 'الإثنين', start: 3, span: 2, title: 'مقدمة نظم معلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ محمد إبراهيم', loc: '📍 معمل 5' },
     { day: 'الإثنين', start: 7, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ عبد الحميد أحمد', loc: '📍 معمل 9' }
   ],
-
-  // سكشن 38
   38: [
     { day: 'السبت', start: 1, span: 2, title: 'مقدمة نظم معلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ محمد إبراهيم', loc: '📍 معمل 5' },
     { day: 'السبت', start: 3, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ محمد مصطفى', loc: '📍 معمل 1' },
@@ -724,8 +712,6 @@ const SECTIONS_DATA = {
     { day: 'الأحد', start: 7, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ آلاء إبراهيم', loc: '📍 قاعة 3' },
     { day: 'الأحد', start: 11, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ منة الله نبيل', loc: '📍 قاعة 6' }
   ],
-
-  // سكشن 39
   39: [
     { day: 'السبت', start: 1, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ محمد مصطفى', loc: '📍 معمل 1' },
     { day: 'السبت', start: 3, span: 2, title: 'مقدمة نظم معلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ محمد إبراهيم', loc: '📍 معمل 5' },
@@ -734,8 +720,6 @@ const SECTIONS_DATA = {
     { day: 'الإثنين', start: 7, span: 2, title: 'جبر خطي', type: 'sec', typeName: 'تمارين', course: 'linear', doc: 'م/ نيرة طارق', loc: '📍 قاعة 5' },
     { day: 'الخميس', start: 10, span: 2, title: 'هياكل بيانات', type: 'lab', typeName: 'عملي', course: 'ds', doc: 'م/ عبد الحميد أحمد', loc: '📍 معمل 9' }
   ],
-
-  // سكشن 40
   40: [
     { day: 'الأحد', start: 3, span: 2, title: 'مقدمة نظم معلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ فاطمة صبحي', loc: '📍 معمل 12' },
     { day: 'الأحد', start: 5, span: 1, title: 'تصميم منطقي', type: 'lab', typeName: 'عملي', course: 'logic', doc: 'م/ جمال عادل', loc: '📍 معمل 2' },
@@ -765,24 +749,24 @@ function selectGroup(groupId) {
     const btn = document.createElement('button');
     btn.className = 'btn-sec-card';
     btn.style.animationDelay = `${idx * 0.05}s`;
-btn.textContent = `سكشن ${sec}` + (sec === 35 ? ' ❤️' : (sec === 32 ? ' ⭐' : ''));    btn.onclick = () => selectSection(sec);
+    btn.textContent = `سكشن ${sec}` + (sec === 35 ? ' ❤️' : (sec === 32 ? ' ⭐' : ''));
+    btn.onclick = () => selectSection(sec);
     container.appendChild(btn);
   });
 }
 
-function backToGroupStep() {
-  document.getElementById('stepSection').style.display = 'none';
-  document.getElementById('scheduleApp').classList.remove('active');
-  document.getElementById('stepGroup').style.display = 'block';
-}
-
-function backToSectionStep() {
-  document.getElementById('scheduleApp').classList.remove('active');
-  document.getElementById('stepSection').style.display = 'block';
-}
-
 function selectSection(secId) {
   currentSection = secId;
+  
+  try {
+    localStorage.setItem('savedGroup', currentGroup);
+    localStorage.setItem('savedSection', secId);
+  } catch(e) {}
+
+  // حفظ فوري في رابط المتصفح لمنع إعادة السؤال عند أي Refresh
+  window.location.hash = `g=${currentGroup}&s=${secId}`;
+
+  document.getElementById('stepGroup').style.display = 'none';
   document.getElementById('stepSection').style.display = 'none';
   
   const app = document.getElementById('scheduleApp');
@@ -792,6 +776,21 @@ function selectSection(secId) {
   
   buildSchedule();
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function backToGroupStep() {
+  try { localStorage.clear(); } catch(e) {}
+  history.replaceState(null, null, ' ');
+  document.getElementById('stepSection').style.display = 'none';
+  document.getElementById('scheduleApp').classList.remove('active');
+  document.getElementById('stepGroup').style.display = 'block';
+}
+
+function backToSectionStep() {
+  try { localStorage.removeItem('savedSection'); } catch(e) {}
+  history.replaceState(null, null, ' ');
+  document.getElementById('scheduleApp').classList.remove('active');
+  document.getElementById('stepSection').style.display = 'block';
 }
 
 function buildSchedule() {
@@ -818,7 +817,6 @@ function buildSchedule() {
     const mobileItems = [];
 
     while (period <= 12) {
-      // استراحة الثلاثاء ف5 وف6
       if (day === 'الثلاثاء' && period === 5) {
         dayHasItems = true;
         const td = document.createElement('td');
@@ -841,7 +839,6 @@ function buildSchedule() {
         continue;
       }
 
-      // محاضرات
       const lec = lectures.find(l => l.day === day && l.start === period);
       if (lec) {
         dayHasItems = true;
@@ -866,7 +863,6 @@ function buildSchedule() {
         continue;
       }
 
-      // سكاشن ومعامل
       const sec = sections.find(s => s.day === day && s.start === period);
       if (sec) {
         dayHasItems = true;
@@ -891,7 +887,6 @@ function buildSchedule() {
         continue;
       }
 
-      // فارغ
       const td = document.createElement('td');
       td.className = 'empty-cell';
       td.textContent = '—';
@@ -904,7 +899,6 @@ function buildSchedule() {
     }
     tbody.appendChild(tr);
 
-    // Mobile View
     const dayWrap = document.createElement('div');
     dayWrap.id = `day-content-${dayId}`;
     dayWrap.className = 'day-content';
@@ -985,6 +979,39 @@ function switchDay(dayId, btn) {
   const target = document.getElementById(`day-content-${dayId}`);
   if (target) target.style.display = 'block';
 }
+
+// فحص فوري بدون انتظار DOMContentLoaded
+(function autoLoadSavedSchedule() {
+  let sGroup = null;
+  let sSec = null;
+
+  if (window.location.hash) {
+    const params = new URLSearchParams(window.location.hash.substring(1));
+    sGroup = params.get('g');
+    sSec = params.get('s');
+  }
+
+  if (!sGroup || !sSec) {
+    try {
+      sGroup = localStorage.getItem('savedGroup');
+      sSec = localStorage.getItem('savedSection');
+    } catch(e) {}
+  }
+
+  if (sGroup && sSec && GROUPS_DATA[sGroup] && SECTIONS_DATA[sSec]) {
+    currentGroup = sGroup;
+    currentSection = sSec;
+
+    document.getElementById('stepGroup').style.display = 'none';
+    document.getElementById('stepSection').style.display = 'none';
+
+    const app = document.getElementById('scheduleApp');
+    app.classList.add('active');
+    document.getElementById('badgeIndicator').textContent = `${GROUPS_DATA[currentGroup].title} | سكشن ${currentSection}`;
+    
+    buildSchedule();
+  }
+})();
 </script>
 </body>
 </html>
