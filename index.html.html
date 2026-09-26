@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الجدول الدراسي الأسبوعي الذكي</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-main: #0b1120;
+      --bg-card: #131c31;
+      --border-color: #23314d;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      
+      --lec-bg: linear-gradient(135deg, rgba(30, 58, 138, 0.5), rgba(15, 23, 42, 0.7));
+      --lec-border: #3b82f6;
+      --sec-bg: linear-gradient(135deg, rgba(6, 78, 59, 0.5), rgba(15, 23, 42, 0.7));
+      --sec-border: #10b981;
+      --lab-bg: linear-gradient(135deg, rgba(124, 45, 18, 0.5), rgba(15, 23, 42, 0.7));
+      --lab-border: #f97316;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      padding: 24px 16px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1480px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 22px 28px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+    }
+
+    .header h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #38bdf8;
+      margin-bottom: 4px;
+    }
+
+    .header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .student-badge {
+      background: #1e293b;
+      padding: 10px 18px;
+      border-radius: 12px;
+      border-right: 4px solid #38bdf8;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    /* صندوق فلترة واستبعاد المواد */
+    .filter-panel {
+      background: #131c31;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .filter-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #cbd5e1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .filter-title span {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: normal;
+    }
+
+    .course-badges {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-course {
+      background: rgba(30, 41, 59, 0.8);
+      color: #38bdf8;
+      border: 1px solid #0284c7;
+      padding: 8px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 700;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+    }
+
+    .btn-course:hover {
+      background: #1e293b;
+    }
+
+    /* شكل المادة عند استبعادها */
+    .btn-course.excluded {
+      background: rgba(239, 68, 68, 0.12);
+      border-color: #ef4444;
+      color: #f87171;
+      text-decoration: line-through;
+      opacity: 0.75;
+    }
+
+    .btn-reset {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px dashed var(--border-color);
+      padding: 8px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .btn-reset:hover {
+      color: #fff;
+      border-color: #64748b;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      text-align: center;
+      min-width: 1200px;
+    }
+
+    th {
+      background: #0f172a;
+      color: #cbd5e1;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 12px 6px;
+      border-bottom: 2px solid #334155;
+      border-left: 1px solid #1f293d;
+    }
+
+    th span {
+      display: block;
+      font-size: 0.75rem;
+      color: #64748b;
+      font-weight: 500;
+      margin-top: 3px;
+    }
+
+    td {
+      padding: 8px 6px;
+      border-bottom: 1px solid var(--border-color);
+      border-left: 1px solid #233147;
+      vertical-align: middle;
+      background: #131c31;
+    }
+
+    tr:nth-child(even) td {
+      background: #111a2e;
+    }
+
+    .day-title {
+      background: #0f172a !important;
+      color: #38bdf8;
+      font-weight: 800;
+      font-size: 1rem;
+      width: 100px;
+      border-left: 2px solid var(--border-color);
+    }
+
+    .empty-cell {
+      color: #475569;
+      font-size: 1.1rem;
+    }
+
+    .item-card {
+      border-radius: 10px;
+      padding: 9px 8px;
+      text-align: right;
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+      border-right: 4px solid transparent;
+      margin: 2px 0;
+    }
+
+    .item-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .item-card.type-lec {
+      background: var(--lec-bg);
+      border-color: var(--lec-border);
+    }
+    .item-card.type-lec:hover {
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+    }
+
+    .item-card.type-sec {
+      background: var(--sec-bg);
+      border-color: var(--sec-border);
+    }
+    .item-card.type-sec:hover {
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+    }
+
+    .item-card.type-lab {
+      background: var(--lab-bg);
+      border-color: var(--lab-border);
+    }
+    .item-card.type-lab:hover {
+      box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+
+    .subject-name {
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: #ffffff;
+    }
+
+    .badge-type {
+      font-size: 0.68rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+
+    .type-lec .badge-type { background: #1d4ed8; color: #dbeafe; }
+    .type-sec .badge-type { background: #047857; color: #d1fae5; }
+    .type-lab .badge-type { background: #b45309; color: #fef3c7; }
+
+    .instructor {
+      font-size: 0.78rem;
+      color: #cbd5e1;
+      margin-bottom: 5px;
+    }
+
+    .location {
+      font-size: 0.76rem;
+      font-weight: 600;
+      display: inline-block;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 2px 7px;
+      border-radius: 6px;
+      color: #e2e8f0;
+    }
+
+    /* إخفاء الحصة تماماً عند استبعاد المادة */
+    .item-card.is-hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <div>
+        <h1>الجدول الدراسي الأسبوعي الموحد</h1>
+        <p>كلية الحاسبات والذكاء الاصطناعي — المستوى الثاني</p>
+      </div>
+      <div class="student-badge">
+        المجموعة الخامسة | سكشن 32
+      </div>
+    </div>
+
+    <!-- لوحة استبعاد وفلترة المواد -->
+    <div class="filter-panel">
+      <div class="filter-title">
+        <span>اضغط على أي مادة مش مسجلها لإخفائها فوراً من الجدول (محاضرات + سكاشن):</span>
+        <button class="btn-reset" onclick="resetAllCourses()">إعادة إظهار الكل</button>
+      </div>
+
+      <div class="course-badges">
+        <button class="btn-course" data-course="logic" onclick="toggleCourse('logic', this)">
+          <span>✓</span> تصميم منطقي
+        </button>
+        <button class="btn-course" data-course="linear" onclick="toggleCourse('linear', this)">
+          <span>✓</span> جبر خطي
+        </button>
+        <button class="btn-course" data-course="ds" onclick="toggleCourse('ds', this)">
+          <span>✓</span> هياكل بيانات
+        </button>
+        <button class="btn-course" data-course="stat" onclick="toggleCourse('stat', this)">
+          <span>✓</span> تحليل إحصائي
+        </button>
+        <button class="btn-course" data-course="is" onclick="toggleCourse('is', this)">
+          <span>✓</span> مقدمة في نظم المعلومات
+        </button>
+        <button class="btn-course" data-course="comm" onclick="toggleCourse('comm', this)">
+          <span>✓</span> مهارات الاتصال
+        </button>
+      </div>
+    </div>
+
+    <!-- الجدول الموحد الكامل -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="day-title">اليوم</th>
+            <th>1<br><span>09:00 - 09:45</span></th>
+            <th>2<br><span>09:45 - 10:30</span></th>
+            <th>3<br><span>10:30 - 11:15</span></th>
+            <th>4<br><span>11:15 - 12:00</span></th>
+            <th>5<br><span>12:00 - 12:45</span></th>
+            <th>6<br><span>12:45 - 01:30</span></th>
+            <th>7<br><span>01:30 - 02:15</span></th>
+            <th>8<br><span>02:15 - 03:00</span></th>
+            <th>9<br><span>03:00 - 03:45</span></th>
+            <th>10<br><span>03:45 - 04:30</span></th>
+            <th>11<br><span>04:30 - 05:15</span></th>
+            <th>12<br><span>05:15 - 06:00</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- السبت -->
+          <tr>
+            <td class="day-title">السبت</td>
+            <td class="empty-cell" colspan="12" style="color: #64748b; font-size: 0.95rem;">
+              لا توجد محاضرات أو سكاشن مجدولة
+            </td>
+          </tr>
+
+          <!-- الأحد -->
+          <tr>
+            <td class="day-title">الأحد</td>
+            <td class="empty-cell" colspan="12" style="color: #64748b; font-size: 0.95rem;">
+              لا توجد محاضرات أو سكاشن مجدولة
+            </td>
+          </tr>
+
+          <!-- الإثنين -->
+          <tr>
+            <td class="day-title">الإثنين</td>
+            <!-- ف1 وف2: عملي تصميم منطقي -->
+            <td colspan="2">
+              <div class="item-card type-lab" data-course="logic">
+                <div class="card-top">
+                  <span class="subject-name">تصميم منطقي</span>
+                  <span class="badge-type">عملي</span>
+                </div>
+                <div class="instructor">م/ محمد مصطفى</div>
+                <div class="location">📍 معمل تصميم منطقي 1</div>
+              </div>
+            </td>
+            <!-- ف3 وف4: محاضرة تصميم منطقي -->
+            <td colspan="2">
+              <div class="item-card type-lec" data-course="logic">
+                <div class="card-top">
+                  <span class="subject-name">تصميم منطقي</span>
+                  <span class="badge-type">محاضرة</span>
+                </div>
+                <div class="instructor">د/ فاطمة صقر</div>
+                <div class="location">📍 مدرج 4</div>
+              </div>
+            </td>
+            <!-- ف5: سكشن تمارين جبر خطي -->
+            <td>
+              <div class="item-card type-sec" data-course="linear">
+                <div class="card-top">
+                  <span class="subject-name">جبر خطي</span>
+                  <span class="badge-type">تمارين</span>
+                </div>
+                <div class="instructor">م/ آلاء إبراهيم</div>
+                <div class="location">📍 قاعة 4</div>
+              </div>
+            </td>
+            <td class="empty-cell" colspan="7">—</td>
+          </tr>
+
+          <!-- الثلاثاء -->
+          <tr>
+            <td class="day-title">الثلاثاء</td>
+            <!-- ف1 وف2: محاضرة هياكل بيانات -->
+            <td colspan="2">
+              <div class="item-card type-lec" data-course="ds">
+                <div class="card-top">
+                  <span class="subject-name">هياكل بيانات</span>
+                  <span class="badge-type">محاضرة</span>
+                </div>
+                <div class="instructor">د/ أحمد حسن</div>
+                <div class="location">📍 مدرج 1</div>
+              </div>
+            </td>
+            <!-- ف3: سكشن تحليل إحصائي -->
+            <td>
+              <div class="item-card type-sec" data-course="stat">
+                <div class="card-top">
+                  <span class="subject-name">تحليل إحصائي</span>
+                  <span class="badge-type">تمارين</span>
+                </div>
+                <div class="instructor">م/ ميادة مصطفى</div>
+                <div class="location">📍 قاعة 4</div>
+              </div>
+            </td>
+            <td class="empty-cell" colspan="3">—</td>
+            <!-- ف7 وف8: عملي هياكل بيانات -->
+            <td colspan="2">
+              <div class="item-card type-lab" data-course="ds">
+                <div class="card-top">
+                  <span class="subject-name">هياكل بيانات</span>
+                  <span class="badge-type">عملي</span>
+                </div>
+                <div class="instructor">م/ عمر رمضان</div>
+                <div class="location">📍 معمل 2</div>
+              </div>
+            </td>
+            <td class="empty-cell" colspan="4">—</td>
+          </tr>
+
+          <!-- الأربعاء -->
+          <tr>
+            <td class="day-title">الأربعاء</td>
+            <td class="empty-cell" colspan="4">—</td>
+            <!-- ف5 وف6: محاضرة مقدمة نظم معلومات -->
+            <td colspan="2">
+              <div class="item-card type-lec" data-course="is">
+                <div class="card-top">
+                  <span class="subject-name">مقدمة في نظم المعلومات</span>
+                  <span class="badge-type">محاضرة</span>
+                </div>
+                <div class="instructor">د/ شيماء إسماعيل</div>
+                <div class="location">📍 مدرج 2</div>
+              </div>
+            </td>
+            <td class="empty-cell" colspan="4">—</td>
+            <!-- ف11 وف12: محاضرة مهارات الاتصال -->
+            <td colspan="2">
+              <div class="item-card type-lec" data-course="comm">
+                <div class="card-top">
+                  <span class="subject-name">مهارات الاتصال</span>
+                  <span class="badge-type">محاضرة</span>
+                </div>
+                <div class="instructor">د/ محمد فوزي</div>
+                <div class="location">📍 مدرج 2</div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- الخميس -->
+          <tr>
+            <td class="day-title">الخميس</td>
+            <!-- ف1 وف2: محاضرة جبر خطي -->
+            <td colspan="2">
+              <div class="item-card type-lec" data-course="linear">
+                <div class="card-top">
+                  <span class="subject-name">جبر خطي</span>
+                  <span class="badge-type">محاضرة</span>
+                </div>
+                <div class="instructor">د/ مصطفى حسن</div>
+                <div class="location">📍 مدرج 1</div>
+              </div>
+            </td>
+            <!-- ف3 وف4: محاضرة تحليل إحصائي -->
+            <td colspan="2">
+              <div class="item-card type-lec" data-course="stat">
+                <div class="card-top">
+                  <span class="subject-name">تحليل إحصائي</span>
+                  <span class="badge-type">محاضرة</span>
+                </div>
+                <div class="instructor">د/ نهى عبد الكريم</div>
+                <div class="location">📍 مدرج 5</div>
+              </div>
+            </td>
+            <!-- ف5: سكشن تصميم منطقي تمارين -->
+            <td>
+              <div class="item-card type-sec" data-course="logic">
+                <div class="card-top">
+                  <span class="subject-name">تصميم منطقي</span>
+                  <span class="badge-type">تمارين</span>
+                </div>
+                <div class="instructor">م/ منة الله نبيل</div>
+                <div class="location">📍 قاعة 9</div>
+              </div>
+            </td>
+            <!-- ف6 وف7: عملي مقدمة في نظم المعلومات -->
+            <td colspan="2">
+              <div class="item-card type-lab" data-course="is">
+                <div class="card-top">
+                  <span class="subject-name">مقدمة في نظم المعلومات</span>
+                  <span class="badge-type">عملي</span>
+                </div>
+                <div class="instructor">م/ آيات عبد الرحمن</div>
+                <div class="location">📍 معمل 10</div>
+              </div>
+            </td>
+            <td class="empty-cell" colspan="5">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    // تفعيل / استبعاد المادة بمجرد النقر عليها
+    function toggleCourse(courseKey, btn) {
+      btn.classList.toggle('excluded');
+      const isExcluded = btn.classList.contains('excluded');
+      btn.querySelector('span').textContent = isExcluded ? '✕' : '✓';
+
+      // إخفاء أو إظهار كافة الحصص المرتبطة بالمادة في الجدول
+      const targetCards = document.querySelectorAll(`.item-card[data-course="${courseKey}"]`);
+      targetCards.forEach(card => {
+        if (isExcluded) {
+          card.classList.add('is-hidden');
+        } else {
+          card.classList.remove('is-hidden');
+        }
+      });
+    }
+
+    // زر استرجاع كافة المواد
+    function resetAllCourses() {
+      document.querySelectorAll('.btn-course').forEach(btn => {
+        btn.classList.remove('excluded');
+        btn.querySelector('span').textContent = '✓';
+      });
+      document.querySelectorAll('.item-card').forEach(card => {
+        card.classList.remove('is-hidden');
+      });
+    }
+  </script>
+</body>
+</html>
