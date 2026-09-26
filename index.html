@@ -118,10 +118,11 @@ body{
 }
 
 .sections-grid {
-  display: grid;
+  display: grid !important;
   grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   gap: 14px;
   margin-top: 25px;
+  width: 100%;
 }
 
 .btn-sec-card {
@@ -247,7 +248,7 @@ body{
   color:#f87171;text-decoration:line-through;
 }
 
-/* جدول العرض المكتبي بنظام table-layout fixed */
+/* جدول العرض المكتبي */
 .table-view{display:block;}
 .table-wrap{
   overflow-x:auto;border-radius:18px;border:1px solid var(--border-color);
@@ -734,18 +735,20 @@ let currentGroup = null;
 let currentSection = null;
 
 function selectGroup(groupId) {
-  currentGroup = groupId;
+  currentGroup = String(groupId);
   document.getElementById('stepGroup').style.display = 'none';
 
   const stepSec = document.getElementById('stepSection');
   stepSec.style.display = 'block';
 
-  document.getElementById('secGreetingTitle').textContent = `يا هلا بـ ${GROUPS_DATA[groupId].title}! سكشن كام بقى؟ 😉`;
+  const groupInfo = GROUPS_DATA[currentGroup] || GROUPS_DATA[parseInt(currentGroup)];
+  
+  document.getElementById('secGreetingTitle').textContent = `يا هلا بـ ${groupInfo.title}! سكشن كام بقى؟ 😉`;
 
   const container = document.getElementById('sectionsGridContainer');
   container.innerHTML = '';
 
-  GROUPS_DATA[groupId].sections.forEach((sec, idx) => {
+  groupInfo.sections.forEach((sec, idx) => {
     const btn = document.createElement('button');
     btn.className = 'btn-sec-card';
     btn.style.animationDelay = `${idx * 0.05}s`;
@@ -763,7 +766,6 @@ function selectSection(secId) {
     localStorage.setItem('savedSection', secId);
   } catch(e) {}
 
-  // حفظ فوري في رابط المتصفح لمنع إعادة السؤال عند أي Refresh
   window.location.hash = `g=${currentGroup}&s=${secId}`;
 
   document.getElementById('stepGroup').style.display = 'none';
@@ -772,7 +774,8 @@ function selectSection(secId) {
   const app = document.getElementById('scheduleApp');
   app.classList.add('active');
 
-  document.getElementById('badgeIndicator').textContent = `${GROUPS_DATA[currentGroup].title} | سكشن ${secId}`;
+  const gInfo = GROUPS_DATA[currentGroup] || GROUPS_DATA[parseInt(currentGroup)];
+  document.getElementById('badgeIndicator').textContent = `${gInfo.title} | سكشن ${secId}`;
   
   buildSchedule();
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -794,7 +797,8 @@ function backToSectionStep() {
 }
 
 function buildSchedule() {
-  const lectures = GROUPS_DATA[currentGroup].lectures;
+  const gKey = currentGroup;
+  const lectures = (GROUPS_DATA[gKey] || GROUPS_DATA[parseInt(gKey)]).lectures;
   const sections = SECTIONS_DATA[currentSection] || [];
 
   const tbody = document.getElementById('tableBody');
@@ -980,7 +984,6 @@ function switchDay(dayId, btn) {
   if (target) target.style.display = 'block';
 }
 
-// فحص فوري بدون انتظار DOMContentLoaded
 (function autoLoadSavedSchedule() {
   let sGroup = null;
   let sSec = null;
@@ -998,8 +1001,8 @@ function switchDay(dayId, btn) {
     } catch(e) {}
   }
 
-  if (sGroup && sSec && GROUPS_DATA[sGroup] && SECTIONS_DATA[sSec]) {
-    currentGroup = sGroup;
+  if (sGroup && sSec && (GROUPS_DATA[sGroup] || GROUPS_DATA[parseInt(sGroup)]) && SECTIONS_DATA[sSec]) {
+    currentGroup = String(sGroup);
     currentSection = sSec;
 
     document.getElementById('stepGroup').style.display = 'none';
@@ -1007,7 +1010,8 @@ function switchDay(dayId, btn) {
 
     const app = document.getElementById('scheduleApp');
     app.classList.add('active');
-    document.getElementById('badgeIndicator').textContent = `${GROUPS_DATA[currentGroup].title} | سكشن ${currentSection}`;
+    const gInfo = GROUPS_DATA[currentGroup] || GROUPS_DATA[parseInt(currentGroup)];
+    document.getElementById('badgeIndicator').textContent = `${gInfo.title} | سكشن ${currentSection}`;
     
     buildSchedule();
   }
