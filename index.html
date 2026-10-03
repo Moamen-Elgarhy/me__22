@@ -61,7 +61,6 @@ html, body {
   overflow-x: hidden;
 }
 
-/* خلفية النجوم والتوهج الدائري الجمالي */
 body {
   background: 
     radial-gradient(ellipse 80% 50% at 50% -20%, rgba(56, 189, 248, 0.15), transparent),
@@ -413,7 +412,7 @@ tr:nth-child(even) td {
   font-size: 1.1rem;
 }
 
-/* حركة التتريس والشقلبة الانسيابية لكروت الحصص (Drop & Bounce) */
+/* حركة التتريس والشقلبة الانسيابية لكروت الحصص */
 .item-card {
   height: 100%;
   width: 100%;
@@ -507,7 +506,7 @@ tr:nth-child(even) td {
   width: fit-content;
 }
 
-/* كروت الموبايل الشيك مع فيزياء الـ Slide-in النظيفة */
+/* كروت الموبايل الشيك */
 .app-view {
   display: none;
 }
@@ -802,13 +801,9 @@ const GROUPS_DATA = {
     title: 'المجموعة الرابعة',
     sections: [20, 21, 22, 23, 24, 25, 26],
     lectures: [
-      // الأحد: مفيش محاضرات خالص (سكاشن بيضاء فقط)[cite: 1]
-      // الثلاثاء: المحاضرات بعد الظهر مع الاستراحة في النص[cite: 2]
       { day: 'الثلاثاء', start: 7, span: 2, title: 'تصميم منطقي', type: 'lec', typeName: 'محاضرة', course: 'logic', doc: 'د/ آية حاتم', loc: '📍 مدرج 1' },
       { day: 'الثلاثاء', start: 9, span: 2, title: 'مهارات الاتصال', type: 'lec', typeName: 'محاضرة', course: 'comm', doc: 'د/ محمد العربي', loc: '📍 مدرج 5' },
-      // الأربعاء: محاضرة نظم في النص[cite: 3]
       { day: 'الأربعاء', start: 5, span: 2, title: 'مقدمة في نظم المعلومات', type: 'lec', typeName: 'محاضرة', course: 'is', doc: 'د/ شيماء إسماعيل', loc: '📍 مدرج 2' },
-      // الخميس: محاضرتين الصبح ومحاضرة بعد الظهر[cite: 4]
       { day: 'الخميس', start: 1, span: 2, title: 'تحليل إحصائي', type: 'lec', typeName: 'محاضرة', course: 'stat', doc: 'د/ نهى عبد الكريم', loc: '📍 مدرج 5' },
       { day: 'الخميس', start: 3, span: 2, title: 'جبر خطي', type: 'lec', typeName: 'محاضرة', course: 'linear', doc: 'د/ مصطفى حسن', loc: '📍 مدرج 1' },
       { day: 'الخميس', start: 9, span: 2, title: 'هياكل بيانات', type: 'lec', typeName: 'محاضرة', course: 'ds', doc: 'د/ محمد السيد غنيمي', loc: '📍 مدرج 3' }
@@ -841,7 +836,7 @@ const GROUPS_DATA = {
 };
 
 const SECTIONS_DATA = {
-  // المجموعة 4 (مفرغة 100% وبالمللي من صورك الأربعة المرفقة)[cite: 1, 2, 3, 4]
+  // المجموعة 4 (مفرغة بالكامل من الصور الأصلية بدقة 100%)
   20: [
     { day: 'الثلاثاء', start: 1, span: 2, title: 'تصميم منطقي', type: 'sec', typeName: 'تمارين', course: 'logic', doc: 'م/ منيرة منير', loc: '📍 قاعة 12' },
     { day: 'الثلاثاء', start: 3, span: 2, title: 'مقدمة في نظم المعلومات', type: 'lab', typeName: 'عملي', course: 'is', doc: 'م/ جمال عصام', loc: '📍 معمل 14' },
@@ -1108,7 +1103,7 @@ function buildSchedule() {
   mobileContainer.innerHTML = '';
 
   let firstActiveDay = null;
-  let cardCount = 0; // لحساب توقيت هبوط كل كارت بالدور
+  let cardCount = 0;
 
   DAYS_CONFIG.forEach(dObj => {
     const day = dObj.name;
@@ -1210,7 +1205,7 @@ function buildSchedule() {
     }
     tbody.appendChild(tr);
 
-    // كروت الموبايل مع ضبط تأثير النزول التتابعي
+    // كروت الموبايل
     const dayWrap = document.createElement('div');
     dayWrap.id = `day-content-${dayId}`;
     dayWrap.className = 'day-content';
@@ -1252,7 +1247,6 @@ function buildSchedule() {
     mobileContainer.appendChild(dayWrap);
   });
 
-  // فتح أول يوم فيه دراسة تلقائياً
   const targetDay = firstActiveDay || 'sun';
   const targetTab = document.querySelector(`.day-tab-btn[data-day="${targetDay}"]`);
   if (targetTab) {
@@ -1294,7 +1288,6 @@ function switchDay(dayId, btn) {
   if (target) target.style.display = 'block';
 }
 
-/* دالة تصوير وتحميل الأسبوع بالكامل دفعة واحدة بجودة عالية جداً */
 function downloadFullWeekSchedule() {
   const btn = document.getElementById('downloadFullBtn');
   const originalText = btn.innerHTML;
@@ -1319,7 +1312,6 @@ function downloadFullWeekSchedule() {
       btn.style.pointerEvents = 'auto';
     });
   } else {
-    // على الموبايل: إنشاء لقطة مجمعة لكل أيام الأسبوع وراء بعضها
     const printClone = document.createElement('div');
     printClone.style.position = 'fixed';
     printClone.style.top = '-99999px';
